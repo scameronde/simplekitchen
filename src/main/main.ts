@@ -22,7 +22,7 @@ function createWindow() {
   // In development, load from Vite dev server
   // In production, load from built files
   const isDev = process.env.NODE_ENV === 'development';
-  
+
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173'); // Vite default port
     mainWindow.webContents.openDevTools();

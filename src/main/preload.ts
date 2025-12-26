@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld('electron', {
     chrome: process.versions.chrome,
     electron: process.versions.electron,
   },
-  
+
   // Placeholder for future IPC channels (Phase 3+)
   // recipeAPI: {
   //   getAll: () => ipcRenderer.invoke('recipe:getAll'),

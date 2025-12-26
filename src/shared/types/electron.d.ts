@@ -7,7 +7,7 @@ export interface ElectronAPI {
     chrome: string;
     electron: string;
   };
-  
+
   // Future APIs (Phase 3+):
   // recipeAPI: {
   //   getAll: () => Promise<Recipe[]>;
