@@ -1,8 +1,8 @@
 # State: Phase 0 - Technology Stack Selection & Project Scaffolding
 
 **Plan**: thoughts/shared/plans/2025-12-25-Recipe-Collection-Phase0-Stack-Selection.md  
-**Current Task**: PLAN-000 (awaiting user approval)  
-**Completed Tasks**: (none yet)
+**Current Task**: DECISION GATE (awaiting user approval)  
+**Completed Tasks**: PLAN-000
 
 ## Quick Verification
 
@@ -30,7 +30,7 @@ npm run format:check
 
 ## Task Progress
 
-- [ ] PLAN-000: Decision resolution document created
+- [x] PLAN-000: Decision resolution document created
 - [ ] **DECISION GATE**: User approval of technology stack
 - [ ] PLAN-001: Node.js project initialized
 - [ ] PLAN-002: Core dependencies installed
