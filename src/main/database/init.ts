@@ -8,8 +8,14 @@ import type { Database as DatabaseSchema } from '../../shared/types/database';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Database file location: app user data directory
-const dbPath = path.join(app.getPath('userData'), 'recipes.db');
+// Database file location: app user data directory (or temp for tests)
+let dbPath: string;
+if (process.env.VITEST || process.env.NODE_ENV === 'test') {
+  // Use in-memory database for tests
+  dbPath = ':memory:';
+} else {
+  dbPath = path.join(app.getPath('userData'), 'recipes.db');
+}
 
 // Initialize better-sqlite3 connection with durability settings
 const sqlite = new Database(dbPath);
