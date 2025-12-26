@@ -1,8 +1,8 @@
 # State: Phase 1 - Data Model & Persistence Foundation
 
 **Plan**: thoughts/shared/plans/2025-12-26-Recipe-Collection-Phase1-Data-Persistence.md  
-**Current Task**: PLAN-111  
-**Completed Tasks**: PLAN-101, PLAN-102, PLAN-103, PLAN-104, PLAN-105, PLAN-106, PLAN-107, PLAN-108, PLAN-109, PLAN-110
+**Current Task**: PLAN-112  
+**Completed Tasks**: PLAN-101, PLAN-102, PLAN-103, PLAN-104, PLAN-105, PLAN-106, PLAN-107, PLAN-108, PLAN-109, PLAN-110, PLAN-111
 
 ## Quick Verification
 
@@ -29,7 +29,7 @@ npm run dev
 
 **Started**: 2025-12-26  
 **Total Tasks**: 15  
-**Completed**: 10 / 15
+**Completed**: 11 / 15
 
 ## Task Progress
 
@@ -43,7 +43,7 @@ npm run dev
 - [x] PLAN-108: Create database index (barrel export)
 - [x] PLAN-109: Initialize database on app start
 - [x] PLAN-110: Create unit tests - Recipe CRUD
-- [ ] PLAN-111: Create unit tests - Dietary profile
+- [x] PLAN-111: Create unit tests - Dietary profile
 - [ ] PLAN-112: Create unit tests - Database durability
 - [ ] PLAN-113: Create unit tests - Schema constraints
 - [ ] PLAN-114: Update package scripts
