@@ -1,0 +1,17 @@
+{
+  "name": "simplekitchen",
+  "version": "0.1.0",
+  "description": "Intelligent cooking companion for just-in-time dinner decision support",
+  "main": "dist/main/main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
