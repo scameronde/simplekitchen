@@ -19,7 +19,9 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:db": "vitest run src/main/database",
+    "test:db:watch": "vitest src/main/database"
   },
   "keywords": [],
   "author": "",
