@@ -78,6 +78,7 @@ export interface UpdateRecipeInput {
   cookingTimeMinutes?: number;
   prepTimeMinutes?: number;
   cookwareType?: CookwareType;
+  servings?: number; // Must be 2, validation enforced
   dietaryTags?: DietaryTag[];
   seasonality?: Season[];
   instructions?: string;

@@ -1,8 +1,8 @@
 # State: Phase 2 - Core Constraint Validation System
 
 **Plan**: thoughts/shared/plans/2025-12-26-Recipe-Collection-Phase2-Constraint-Validation.md  
-**Current Task**: PLAN-205  
-**Completed Tasks**: PLAN-201, PLAN-202, PLAN-203, PLAN-204
+**Current Task**: PLAN-207  
+**Completed Tasks**: PLAN-201, PLAN-202, PLAN-203, PLAN-204, PLAN-205, PLAN-206
 
 ## Quick Verification
 
@@ -38,7 +38,7 @@ npm run test:coverage -- src/main/validation
 **Started**: 2025-12-26  
 **Completed**: In progress  
 **Total Tasks**: 15  
-**Completed**: 4 / 15
+**Completed**: 6 / 15
 
 ## Task Progress
 
@@ -46,8 +46,8 @@ npm run test:coverage -- src/main/validation
 - [x] PLAN-202: Create static ingredient database
 - [x] PLAN-203: Create dietary constraint validator
 - [x] PLAN-204: Create time constraint validator
-- [ ] PLAN-205: Create cookware constraint validator
-- [ ] PLAN-206: Create servings constraint validator
+- [x] PLAN-205: Create cookware constraint validator
+- [x] PLAN-206: Create servings constraint validator
 - [ ] PLAN-207: Create validation orchestrator
 - [ ] PLAN-208: Create validation index (barrel export)
 - [ ] PLAN-209: Integrate validation into Recipe DAL
