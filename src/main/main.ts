@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { runMigrations, closeDatabase } from './database';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,17 +15,15 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false, // CRITICAL: security best practice
-      sandbox: false, // Required for preload script access
+      nodeIntegration: false,
+      sandbox: false,
     },
   });
 
-  // In development, load from Vite dev server
-  // In production, load from built files
   const isDev = process.env.NODE_ENV === 'development';
-
+  
   if (isDev) {
-    mainWindow.loadURL('http://localhost:5173'); // Vite default port
+    mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
@@ -36,6 +35,11 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // Initialize database before creating window
+  console.log('Initializing database...');
+  runMigrations();
+  console.log('Database ready');
+
   createWindow();
 
   app.on('activate', () => {
@@ -47,6 +51,12 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    closeDatabase();
     app.quit();
   }
+});
+
+// Graceful shutdown
+app.on('before-quit', () => {
+  closeDatabase();
 });
