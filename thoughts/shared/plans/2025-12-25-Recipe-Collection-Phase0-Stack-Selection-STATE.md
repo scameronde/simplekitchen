@@ -1,8 +1,8 @@
 # State: Phase 0 - Technology Stack Selection & Project Scaffolding
 
 **Plan**: thoughts/shared/plans/2025-12-25-Recipe-Collection-Phase0-Stack-Selection.md  
-**Current Task**: PLAN-002  
-**Completed Tasks**: PLAN-000, PLAN-001
+**Current Task**: PLAN-003  
+**Completed Tasks**: PLAN-000, PLAN-001, PLAN-002
 
 ## Quick Verification
 
@@ -33,7 +33,7 @@ npm run format:check
 - [x] PLAN-000: Decision resolution document created
 - [x] **DECISION GATE**: User approval of technology stack
 - [x] PLAN-001: Node.js project initialized
-- [ ] PLAN-002: Core dependencies installed
+- [x] PLAN-002: Core dependencies installed
 - [ ] PLAN-003: TypeScript configured
 - [ ] PLAN-004: Directory structure created
 - [ ] PLAN-005: Electron main process created
