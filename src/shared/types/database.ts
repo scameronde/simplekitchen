@@ -1,3 +1,9 @@
+/**
+ * @module database-types
+ * Database schema types for Kysely ORM.
+ * Defines table structures and type enums for SQLite database.
+ */
+
 // Database schema types (will be used by Kysely)
 
 export type CookwareType = 'one-pot' | 'one-pan' | 'oven';
@@ -7,19 +13,14 @@ export type Season = 'spring' | 'summer' | 'fall' | 'winter' | 'any';
 export type SourceType = 'manual' | 'ai-generated' | 'web-imported';
 
 // Dietary restriction enums
-export type DietaryTag = 
-  | 'gluten-free' 
-  | 'lactose-free' 
-  | 'vegetarian' 
-  | 'vegan' 
-  | 'pescatarian';
+export type DietaryTag = 'gluten-free' | 'lactose-free' | 'vegetarian' | 'vegan' | 'pescatarian';
 
-export type DietaryProperty = 
-  | 'contains-gluten' 
-  | 'contains-lactose' 
-  | 'contains-eggs' 
-  | 'contains-fish' 
-  | 'contains-meat' 
+export type DietaryProperty =
+  | 'contains-gluten'
+  | 'contains-lactose'
+  | 'contains-eggs'
+  | 'contains-fish'
+  | 'contains-meat'
   | 'none';
 
 // Recipe table
@@ -40,7 +41,12 @@ export interface RecipeTable {
   updated_at: string; // ISO 8601 timestamp
 }
 
-// Ingredient table (one-to-many with Recipe)
+/**
+ * Ingredient table schema (one-to-many with Recipe).
+ * @future Phase 4 - Used in recipe detail view
+ * @future Phase 5 - Used in AI recipe generation
+ * @future Phase 6 - Used in web recipe import
+ */
 export interface IngredientTable {
   id: string; // UUID primary key
   recipe_id: string; // Foreign key to recipes.id

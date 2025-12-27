@@ -1,3 +1,9 @@
+/**
+ * @module recipe-types
+ * Application-level recipe types with parsed JSON fields.
+ * These types are used throughout the application for type-safe recipe handling.
+ */
+
 import type { CookwareType, Season, SourceType, DietaryTag, DietaryProperty } from './database';
 
 export type { CookwareType, Season, SourceType, DietaryTag, DietaryProperty } from './database';
@@ -21,7 +27,12 @@ export interface Recipe {
   updatedAt: Date;
 }
 
-// Application-level Ingredient
+/**
+ * Application-level Ingredient with parsed fields.
+ * @future Phase 4 - Used in recipe detail view
+ * @future Phase 5 - Used in AI recipe generation
+ * @future Phase 6 - Used in web recipe import
+ */
 export interface Ingredient {
   id: string;
   recipeId: string;

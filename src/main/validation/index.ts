@@ -1,25 +1,103 @@
 /**
+ * @module validation
  * Validation Layer - Barrel Export
- * 
+ *
  * Central export point for all recipe validation functionality.
  * Provides both high-level orchestration and granular validators.
+ * Many validators are exported for future phases but not yet used in Phase 3.
+ * See Phase 4-6 plans for usage in recipe browsing, AI generation, and import features.
  */
 
 // Main validation orchestrator
-export { validateRecipe, validateRecipeOrThrow } from './validator.js';
+export { validateRecipeOrThrow } from './validator.js';
+
+/**
+ * Validate a recipe and return detailed validation result.
+ * @future Phase 4 - Recipe editing UI with inline validation feedback
+ */
+export { validateRecipe } from './validator.js';
 
 // Individual validators (for granular use if needed)
+/**
+ * Validate dietary constraints against user profile.
+ * @future Phase 4 - Recipe filtering by dietary compatibility
+ */
 export { validateDietaryConstraints } from './dietary-validator.js';
-export { validateTimeConstraints, getTimeConstraints } from './time-validator.js';
-export { validateCookwareConstraints, getValidCookwareTypes } from './cookware-validator.js';
-export { validateServingsConstraints, getRequiredServings } from './servings-validator.js';
+
+/**
+ * Validate time constraints.
+ * @future Phase 4 - Recipe filtering by time range
+ */
+export { validateTimeConstraints } from './time-validator.js';
+
+/**
+ * Get time constraint configuration.
+ * @future Phase 4 - Display time constraints in filter UI
+ */
+export { getTimeConstraints } from './time-validator.js';
+
+/**
+ * Validate cookware constraints.
+ * @future Phase 4 - Recipe filtering by cookware type
+ */
+export { validateCookwareConstraints } from './cookware-validator.js';
+
+/**
+ * Get valid cookware types.
+ * @future Phase 4 - Populate cookware filter dropdown
+ */
+export { getValidCookwareTypes } from './cookware-validator.js';
+
+/**
+ * Validate servings constraints.
+ * @future Phase 4 - Recipe editing validation
+ */
+export { validateServingsConstraints } from './servings-validator.js';
+
+/**
+ * Get required servings value.
+ * @future Phase 4 - Display servings constraint in UI
+ */
+export { getRequiredServings } from './servings-validator.js';
 
 // Static ingredient database
-export {
-  lookupIngredient,
-  getIngredientProperties,
-  isKnownSafe,
-  getKnownIngredientCount,
-  INGREDIENT_DATABASE,
-  type IngredientData,
-} from './ingredient-database.js';
+/**
+ * Look up ingredient by name.
+ * @future Phase 5 - AI recipe generation validation
+ * @future Phase 6 - Web recipe import validation
+ */
+export { lookupIngredient } from './ingredient-database.js';
+
+/**
+ * Get ingredient dietary properties.
+ * @future Phase 5 - AI recipe generation validation
+ * @future Phase 6 - Web recipe import validation
+ */
+export { getIngredientProperties } from './ingredient-database.js';
+
+/**
+ * Check if ingredient is known safe.
+ * @future Phase 5 - AI recipe generation validation
+ * @future Phase 6 - Web recipe import validation
+ */
+export { isKnownSafe } from './ingredient-database.js';
+
+/**
+ * Get count of known ingredients in database.
+ * @future Phase 4 - Display ingredient database statistics
+ */
+export { getKnownIngredientCount } from './ingredient-database.js';
+
+/**
+ * Raw ingredient database for advanced queries.
+ * @future Phase 5 - AI recipe generation validation
+ * @future Phase 6 - Web recipe import validation
+ */
+export { INGREDIENT_DATABASE } from './ingredient-database.js';
+
+/**
+ * Ingredient data type definition.
+ * @future Phase 5 - AI recipe generation validation
+ * @future Phase 6 - Web recipe import validation
+ */
+export { type IngredientData } from './ingredient-database.js';
