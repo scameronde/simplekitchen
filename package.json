@@ -13,6 +13,7 @@
     "dev": "concurrently \"npm run watch:main\" \"npm run watch:renderer\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron dist/main/main.js\"",
     "start": "electron dist/main/main.js",
     "package": "npm run build && electron-builder",
+    "typecheck": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.renderer.json",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
