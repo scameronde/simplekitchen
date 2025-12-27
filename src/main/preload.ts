@@ -1,4 +1,5 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+import type { CreateRecipeInput } from '../shared/types/recipe';
 
 // Expose safe APIs to renderer process
 // NEVER expose entire ipcRenderer or Node.js APIs directly
@@ -11,19 +12,7 @@ contextBridge.exposeInMainWorld('electron', {
     electron: process.versions.electron,
   },
 
-  // Placeholder for future IPC channels (Phase 3+)
-  // recipeAPI: {
-  //   getAll: () => ipcRenderer.invoke('recipe:getAll'),
-  //   save: (recipe: Recipe) => ipcRenderer.invoke('recipe:save', recipe),
-  // },
+  recipeAPI: {
+    create: (input: CreateRecipeInput) => ipcRenderer.invoke('recipe:create', input),
+  },
 });
-
-// Type definition for window.electron (to be moved to shared/types in next step)
-export type ElectronAPI = {
-  platform: string;
-  versions: {
-    node: string;
-    chrome: string;
-    electron: string;
-  };
-};

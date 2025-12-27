@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { runMigrations, closeDatabase } from './database';
+import { registerAllHandlers } from './ipc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +22,7 @@ function createWindow() {
   });
 
   const isDev = process.env.NODE_ENV === 'development';
-  
+
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
@@ -39,6 +40,9 @@ app.whenReady().then(() => {
   console.log('Initializing database...');
   runMigrations();
   console.log('Database ready');
+
+  // Register IPC handlers before creating window
+  registerAllHandlers();
 
   createWindow();
 
