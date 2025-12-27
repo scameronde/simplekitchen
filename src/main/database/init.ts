@@ -1,12 +1,8 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import { app } from 'electron';
-import { fileURLToPath } from 'url';
 import { Kysely, SqliteDialect } from 'kysely';
 import type { Database as DatabaseSchema } from '../../shared/types/database.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Database file location: app user data directory (or temp for tests)
 let dbPath: string;

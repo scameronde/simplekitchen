@@ -1,5 +1,4 @@
 import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
-import type { DietaryProfile } from '../../shared/types/recipe.js';
 import type { ValidationError, ValidationResult } from '../../shared/types/validation.js';
 import { validateDietaryConstraints } from './dietary-validator.js';
 import { validateTimeConstraints } from './time-validator.js';
@@ -41,7 +40,7 @@ export async function validateRecipeOrThrow(
   recipeInput: CreateRecipeInput | UpdateRecipeInput
 ): Promise<void> {
   const result = await validateRecipe(recipeInput);
-  
+
   if (!result.valid) {
     const errorMessages = result.errors.map(e => `${e.field}: ${e.message}`).join('\n');
     throw new Error(`Recipe validation failed:\n${errorMessages}`);

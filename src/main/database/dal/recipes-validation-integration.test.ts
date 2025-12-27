@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { createRecipe, updateRecipe, getRecipeById, closeDatabase } from '../index';
+import { createRecipe, updateRecipe, closeDatabase } from '../index';
 import { runMigrations } from '../migrations';
 import type { CreateRecipeInput, CookwareType } from '../../../shared/types/recipe';
 

@@ -5,8 +5,8 @@ import type {
 } from '../../shared/types/recipe.js';
 import type { DietaryProfile } from '../../shared/types/recipe.js';
 import type { DietaryTag, DietaryProperty } from '../../shared/types/database.js';
-import type { ValidationError, ValidationResult } from '../../shared/types/validation.js';
-import { lookupIngredient, getIngredientProperties } from './ingredient-database.js';
+import type { ValidationError } from '../../shared/types/validation.js';
+import { getIngredientProperties } from './ingredient-database.js';
 
 // Validate recipe against dietary constraints
 export async function validateDietaryConstraints(

@@ -1,7 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { validateDietaryConstraints } from './dietary-validator';
 import type { CreateRecipeInput, DietaryProfile } from '../../shared/types/recipe';
-import type { DietaryTag } from '../../shared/types/database';
 
 describe('Dietary Constraint Validator', () => {
   const defaultProfile: DietaryProfile = {
@@ -29,7 +28,13 @@ describe('Dietary Constraint Validator', () => {
       ...baseRecipe,
       ingredients: [
         { name: 'rice', quantity: 1, unit: 'cup', dietaryProperties: ['none'], orderIndex: 1 },
-        { name: 'chicken breast', quantity: 300, unit: 'g', dietaryProperties: ['contains-meat'], orderIndex: 2 },
+        {
+          name: 'chicken breast',
+          quantity: 300,
+          unit: 'g',
+          dietaryProperties: ['contains-meat'],
+          orderIndex: 2,
+        },
       ],
     };
 
@@ -41,7 +46,13 @@ describe('Dietary Constraint Validator', () => {
     const recipe: CreateRecipeInput = {
       ...baseRecipe,
       ingredients: [
-        { name: 'wheat flour', quantity: 2, unit: 'cups', dietaryProperties: ['contains-gluten'], orderIndex: 1 },
+        {
+          name: 'wheat flour',
+          quantity: 2,
+          unit: 'cups',
+          dietaryProperties: ['contains-gluten'],
+          orderIndex: 1,
+        },
       ],
     };
 
@@ -55,8 +66,20 @@ describe('Dietary Constraint Validator', () => {
     const recipe: CreateRecipeInput = {
       ...baseRecipe,
       ingredients: [
-        { name: 'milk', quantity: 1, unit: 'cup', dietaryProperties: ['contains-lactose'], orderIndex: 1 },
-        { name: 'butter', quantity: 2, unit: 'tbsp', dietaryProperties: ['contains-lactose'], orderIndex: 2 },
+        {
+          name: 'milk',
+          quantity: 1,
+          unit: 'cup',
+          dietaryProperties: ['contains-lactose'],
+          orderIndex: 1,
+        },
+        {
+          name: 'butter',
+          quantity: 2,
+          unit: 'tbsp',
+          dietaryProperties: ['contains-lactose'],
+          orderIndex: 2,
+        },
       ],
     };
 
@@ -90,7 +113,13 @@ describe('Dietary Constraint Validator', () => {
     const recipe: CreateRecipeInput = {
       ...baseRecipe,
       ingredients: [
-        { name: 'parmesan cheese', quantity: 50, unit: 'g', dietaryProperties: ['contains-lactose'], orderIndex: 1 },
+        {
+          name: 'parmesan cheese',
+          quantity: 50,
+          unit: 'g',
+          dietaryProperties: ['contains-lactose'],
+          orderIndex: 1,
+        },
       ],
     };
 
@@ -122,7 +151,13 @@ describe('Dietary Constraint Validator', () => {
       ...baseRecipe,
       ingredients: [
         // Unknown ingredient not in static database, no properties declared
-        { name: 'exotic-spice-xyz', quantity: 1, unit: 'tsp', dietaryProperties: [], orderIndex: 1 },
+        {
+          name: 'exotic-spice-xyz',
+          quantity: 1,
+          unit: 'tsp',
+          dietaryProperties: [],
+          orderIndex: 1,
+        },
       ],
     };
 
@@ -141,7 +176,13 @@ describe('Dietary Constraint Validator', () => {
     const recipe: CreateRecipeInput = {
       ...baseRecipe,
       ingredients: [
-        { name: 'chicken breast', quantity: 300, unit: 'g', dietaryProperties: ['contains-meat'], orderIndex: 1 },
+        {
+          name: 'chicken breast',
+          quantity: 300,
+          unit: 'g',
+          dietaryProperties: ['contains-meat'],
+          orderIndex: 1,
+        },
       ],
     };
 
@@ -160,8 +201,20 @@ describe('Dietary Constraint Validator', () => {
     const recipe: CreateRecipeInput = {
       ...baseRecipe,
       ingredients: [
-        { name: 'eggs', quantity: 2, unit: 'whole', dietaryProperties: ['contains-eggs'], orderIndex: 1 },
-        { name: 'salmon', quantity: 200, unit: 'g', dietaryProperties: ['contains-fish'], orderIndex: 2 },
+        {
+          name: 'eggs',
+          quantity: 2,
+          unit: 'whole',
+          dietaryProperties: ['contains-eggs'],
+          orderIndex: 1,
+        },
+        {
+          name: 'salmon',
+          quantity: 200,
+          unit: 'g',
+          dietaryProperties: ['contains-fish'],
+          orderIndex: 2,
+        },
       ],
     };
 
@@ -175,7 +228,13 @@ describe('Dietary Constraint Validator', () => {
     const recipe: CreateRecipeInput = {
       ...baseRecipe,
       ingredients: [
-        { name: 'WHEAT FLOUR', quantity: 2, unit: 'cups', dietaryProperties: ['contains-gluten'], orderIndex: 1 },
+        {
+          name: 'WHEAT FLOUR',
+          quantity: 2,
+          unit: 'cups',
+          dietaryProperties: ['contains-gluten'],
+          orderIndex: 1,
+        },
       ],
     };
 
