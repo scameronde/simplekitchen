@@ -1,21 +1,24 @@
 /// <reference types="@testing-library/jest-dom" />
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import type { ElectronAPI } from './src/shared/types/electron';
 
 declare global {
   interface Window {
-    electron: {
-      ipcRenderer: {
-        invoke: (channel: string, ...args: unknown[]) => Promise<unknown>;
-      };
-    };
+    electron: ElectronAPI;
   }
 }
 
 // Type-safe global setup
 globalThis.window = globalThis.window || (globalThis as unknown as Window);
 globalThis.window.electron = {
-  ipcRenderer: {
-    invoke: vi.fn(),
+  platform: 'test',
+  versions: {
+    node: '22.0.0',
+    chrome: '126.0.0',
+    electron: '39.0.0',
+  },
+  recipeAPI: {
+    create: vi.fn(),
   },
 };
