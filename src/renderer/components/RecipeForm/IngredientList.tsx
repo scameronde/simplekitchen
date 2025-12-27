@@ -16,7 +16,7 @@ interface IngredientListProps {
 export function IngredientList({ ingredients, setIngredients }: IngredientListProps) {
   const handleChange = (index: number, field: string, value: string | boolean) => {
     const updated = [...ingredients];
-    (updated[index] as any)[field] = value;
+    updated[index] = { ...updated[index], [field]: value } as Ingredient;
     setIngredients(updated);
   };
 

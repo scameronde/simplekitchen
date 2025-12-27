@@ -6,7 +6,12 @@ import { RecipeSeasonality } from './RecipeSeasonality';
 import { IngredientList } from './IngredientList';
 import { Button } from '../common/Button';
 import { determineDietaryProperties } from '../../utils/ingredient-classifier';
-import type { CreateRecipeInput, CookwareType } from '../../../shared/types/recipe';
+import type {
+  CreateRecipeInput,
+  CookwareType,
+  DietaryTag,
+  Season,
+} from '../../../shared/types/recipe';
 
 export function RecipeForm() {
   const [formData, setFormData] = useState({
@@ -14,8 +19,8 @@ export function RecipeForm() {
     cookingTimeMinutes: '',
     prepTimeMinutes: '',
     cookwareType: '',
-    dietaryTags: [] as string[],
-    seasonality: [] as string[],
+    dietaryTags: [] as DietaryTag[],
+    seasonality: [] as Season[],
     instructions: '',
   });
 
@@ -43,8 +48,8 @@ export function RecipeForm() {
       prepTimeMinutes: formData.prepTimeMinutes ? parseInt(formData.prepTimeMinutes) : undefined,
       cookwareType: formData.cookwareType as CookwareType,
       servings: 2,
-      dietaryTags: formData.dietaryTags as any[],
-      seasonality: formData.seasonality.length > 0 ? (formData.seasonality as any[]) : ['any'],
+      dietaryTags: formData.dietaryTags,
+      seasonality: formData.seasonality.length > 0 ? formData.seasonality : ['any'],
       sourceType: 'manual',
       instructions: formData.instructions || undefined,
       ingredients: ingredients.map((ing, i) => ({

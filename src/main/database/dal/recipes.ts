@@ -1,11 +1,16 @@
 import { db } from '../init.js';
 import { randomUUID } from 'crypto';
-import type { Recipe, CreateRecipeInput, UpdateRecipeInput, RecipeFilter } from '../../../shared/types/recipe.js';
+import type {
+  Recipe,
+  CreateRecipeInput,
+  UpdateRecipeInput,
+  RecipeFilter,
+} from '../../../shared/types/recipe.js';
 import type { RecipeTable } from '../../../shared/types/database.js';
 import { validateRecipeOrThrow } from '../../validation/index.js';
 
 // Helper: Convert database row to application Recipe (deserialize JSON, parse dates)
-function dbToRecipe(row: RecipeTable, ingredients: any[]): Recipe {
+function dbToRecipe(row: RecipeTable, ingredients: Recipe['ingredients']): Recipe {
   return {
     id: row.id,
     title: row.title,
@@ -29,7 +34,7 @@ function dbToRecipe(row: RecipeTable, ingredients: any[]): Recipe {
 export async function createRecipe(input: CreateRecipeInput): Promise<Recipe> {
   const recipeId = randomUUID();
   const now = new Date().toISOString();
-  
+
   const totalTime = (input.prepTimeMinutes || 0) + input.cookingTimeMinutes;
 
   // Validate recipe before persisting
