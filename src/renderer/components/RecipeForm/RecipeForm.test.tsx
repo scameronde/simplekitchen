@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -23,7 +24,7 @@ describe('RecipeForm', () => {
     const user = userEvent.setup();
     (window.electron.recipeAPI.create as any).mockResolvedValue({
       success: true,
-      recipe: { id: '123', title: 'Test Recipe' }
+      recipe: { id: '123', title: 'Test Recipe' },
     });
 
     render(<RecipeForm />);
@@ -56,12 +57,22 @@ describe('RecipeForm', () => {
     const user = userEvent.setup();
     (window.electron.recipeAPI.create as any).mockResolvedValue({
       success: false,
-      errors: [
-        { field: 'cookingTimeMinutes', message: 'Must be between 30-45 minutes' }
-      ]
+      errors: [{ field: 'cookingTimeMinutes', message: 'Must be between 30-45 minutes' }],
     });
 
     render(<RecipeForm />);
+
+    // Fill in required fields with invalid data
+    await user.type(screen.getByLabelText(/recipe title/i), 'Test Recipe');
+    await user.type(screen.getByLabelText(/cooking time/i), '60'); // Invalid: exceeds 45 minutes
+    await user.selectOptions(screen.getByLabelText(/cookware type/i), 'one-pot');
+
+    // Fill in ingredient (required)
+    const ingredientInputs = screen.getAllByPlaceholderText(/name/i);
+    await user.type(ingredientInputs[0], 'test ingredient');
+    await user.type(screen.getByPlaceholderText(/qty/i), '100');
+    await user.type(screen.getByPlaceholderText(/unit/i), 'g');
+
     await user.click(screen.getByText(/save recipe/i));
 
     await waitFor(() => {
