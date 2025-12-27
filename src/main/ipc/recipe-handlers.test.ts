@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as recipeDAL from '../database/dal/recipes';
+import type { Recipe, CreateRecipeInput } from '../../shared/types/recipe';
 
 vi.mock('../database/dal/recipes');
 
@@ -13,8 +14,11 @@ vi.mock('electron', () => ({
   },
 }));
 
+type IpcHandlerResult = { success: boolean; recipe?: Recipe; errors?: unknown[] };
+type IpcHandler = (event: unknown, input: CreateRecipeInput) => Promise<IpcHandlerResult>;
+
 describe('Recipe IPC Handlers', () => {
-  let handlerFn: any;
+  let handlerFn: IpcHandler | undefined;
 
   beforeEach(async () => {
     // Reset mocks
@@ -24,8 +28,8 @@ describe('Recipe IPC Handlers', () => {
     const { ipcMain } = await import('electron');
 
     // Capture handler function when handle is called
-    vi.mocked(ipcMain.handle).mockImplementation((channel: string, fn: any) => {
-      if (channel === 'recipe:create') handlerFn = fn;
+    vi.mocked(ipcMain.handle).mockImplementation((channel, fn) => {
+      if (channel === 'recipe:create') handlerFn = fn as IpcHandler;
     });
 
     // Import and register handlers after mocks are set up
@@ -35,9 +39,9 @@ describe('Recipe IPC Handlers', () => {
 
   it('returns success when recipe is created', async () => {
     const mockRecipe = { id: '123', title: 'Test', cookingTimeMinutes: 35 };
-    vi.mocked(recipeDAL.createRecipe).mockResolvedValue(mockRecipe as any);
+    vi.mocked(recipeDAL.createRecipe).mockResolvedValue(mockRecipe as Recipe);
 
-    const input = {
+    const input: CreateRecipeInput = {
       title: 'Test',
       cookingTimeMinutes: 35,
       cookwareType: 'one-pot',
@@ -57,6 +61,7 @@ describe('Recipe IPC Handlers', () => {
       ],
     };
 
+    if (!handlerFn) throw new Error('handlerFn not initialized');
     const result = await handlerFn(null, input);
 
     expect(result.success).toBe(true);
@@ -68,10 +73,12 @@ describe('Recipe IPC Handlers', () => {
       new Error('Recipe validation failed:\ntitle: Title is required')
     );
 
-    const result = await handlerFn(null, { title: '' });
+    const invalidInput = { title: '' } as CreateRecipeInput;
+    if (!handlerFn) throw new Error('handlerFn not initialized');
+    const result = await handlerFn(null, invalidInput);
 
     expect(result.success).toBe(false);
     expect(result.errors).toBeDefined();
-    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.errors?.length).toBeGreaterThan(0);
   });
 });

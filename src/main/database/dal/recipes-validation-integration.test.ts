@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { createRecipe, updateRecipe, getRecipeById, closeDatabase } from '../index';
 import { runMigrations } from '../migrations';
-import type { CreateRecipeInput } from '../../../shared/types/recipe';
+import type { CreateRecipeInput, CookwareType } from '../../../shared/types/recipe';
 
 // Run migrations before each test to ensure clean state
 beforeEach(() => {
@@ -123,7 +123,7 @@ describe('Recipe DAL with Validation Integration', () => {
   it('should reject recipe with invalid cookware type', async () => {
     const invalidRecipe: CreateRecipeInput = {
       ...validRecipe,
-      cookwareType: 'multi-pot' as any, // Invalid cookware type
+      cookwareType: 'multi-pot' as unknown as CookwareType, // Invalid cookware type
     };
 
     await expect(createRecipe(invalidRecipe)).rejects.toThrow('Recipe validation failed');
@@ -134,14 +134,14 @@ describe('Recipe DAL with Validation Integration', () => {
     const recipe = await createRecipe(validRecipe);
 
     // Try to update with invalid cooking time
-    await expect(
-      updateRecipe(recipe.id, { cookingTimeMinutes: 60 })
-    ).rejects.toThrow('Recipe validation failed');
+    await expect(updateRecipe(recipe.id, { cookingTimeMinutes: 60 })).rejects.toThrow(
+      'Recipe validation failed'
+    );
 
     // Try to update with invalid servings
-    await expect(
-      updateRecipe(recipe.id, { servings: 3 })
-    ).rejects.toThrow('Recipe validation failed');
+    await expect(updateRecipe(recipe.id, { servings: 3 })).rejects.toThrow(
+      'Recipe validation failed'
+    );
 
     // Try to update with gluten ingredient
     await expect(
