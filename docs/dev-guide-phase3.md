@@ -99,6 +99,9 @@ npm run test:e2e:ui
 # Install dependencies
 npm install
 
+# Rebuild native modules for Electron (required after npm install)
+npx @electron/rebuild -f
+
 # Run in development mode (hot reload)
 npm run dev
 
@@ -115,7 +118,131 @@ npm run lint
 npm run format
 ```
 
+## Build Configuration
+
+### TypeScript Configuration
+
+The project uses ES modules with TypeScript. Key configuration points:
+
+**`tsconfig.main.json`** (Main process):
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "dist", // Output to dist/main/*, dist/shared/*
+    "rootDir": "src", // Source root to preserve structure
+    "module": "ESNext", // ES modules
+    "noEmit": false // Actually emit files
+  },
+  "include": ["src/main/**/*", "src/shared/**/*"]
+}
+```
+
+**Important**: All imports in the main process must use `.js` extensions:
+
+```typescript
+// Correct
+import { db } from './database/index.js';
+import type { Recipe } from '../../shared/types/recipe.js';
+
+// Incorrect
+import { db } from './database';
+import type { Recipe } from '../../shared/types/recipe';
+```
+
+This is required because Node.js ES modules need explicit file extensions.
+
+### Development Mode Detection
+
+The main process detects development mode using two checks:
+
+```typescript
+const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+```
+
+- `NODE_ENV=development`: Set by `cross-env` in dev script
+- `!app.isPackaged`: Fallback - true when running from source
+
+In dev mode:
+
+- Loads renderer from Vite dev server (`http://localhost:5173`)
+- Opens DevTools automatically
+
+In production mode:
+
+- Loads renderer from `dist/renderer/index.html`
+- No DevTools
+
+### Native Modules
+
+**better-sqlite3** requires native compilation:
+
+- Version: `12.5.0` (required for Electron 39)
+- Must be rebuilt for Electron after installation
+- Build process: `npx @electron/rebuild -f`
+
+**Troubleshooting native module issues**:
+
+1. Check Electron version matches better-sqlite3 compatibility
+2. Ensure C++ build tools installed (gcc, make)
+3. Clear node-gyp cache: `rm -rf ~/.electron-gyp`
+4. Reinstall and rebuild: `npm install && npx @electron/rebuild -f`
+
 ## Common Issues
+
+### Issue: Empty window when running `npm run dev`
+
+**Cause**: Development mode not properly detected, or renderer trying to load wrong URL.
+
+**Solution**:
+
+1. Ensure `NODE_ENV=development` is set in dev script (uses `cross-env`)
+2. Check `main.ts` uses `!app.isPackaged` as fallback for dev mode detection
+3. Verify Vite dev server is running on port 5173
+4. Check that production path uses `index.html` not `index.html.js`
+
+### Issue: Module resolution errors with ES modules
+
+**Cause**: TypeScript ES modules require explicit `.js` file extensions in imports.
+
+**Solution**:
+
+1. All relative imports in `src/main/` must include `.js` extension
+2. Example: `import { db } from './init.js'` not `'./init'`
+3. This applies even though source files are `.ts` - the extension refers to the compiled output
+
+### Issue: better-sqlite3 native module version mismatch
+
+**Cause**: Native module was compiled for different Node.js/Electron version.
+
+**Solution**:
+
+```bash
+# Rebuild native modules for Electron
+npx @electron/rebuild -f
+
+# Or if that fails, ensure compatible version
+npm install --save-exact better-sqlite3@12.5.0
+npx @electron/rebuild -f
+```
+
+**Note**: better-sqlite3 v12.5.0+ is required for Electron 39 compatibility.
+
+### Issue: TypeScript compiling to wrong output directory
+
+**Cause**: Incorrect `rootDir` and `outDir` in `tsconfig.main.json`.
+
+**Solution**: Ensure `tsconfig.main.json` has:
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/main/**/*", "src/shared/**/*"]
+}
+```
 
 ### Issue: Tailwind classes not applying
 
@@ -166,6 +293,77 @@ npm run format
 - AI-powered recipe generation (Phase 5)
 - Web import functionality (Phase 6)
 
+## Troubleshooting Guide
+
+### Seeing old/cached UI (wrong dietary tags, outdated components)
+
+**Symptoms**: UI shows old content even after updating source code.
+
+**Cause**: Vite dev server or compiled dist files are cached/stale.
+
+**Solution**:
+
+```bash
+# Stop all running processes
+pkill -f electron
+pkill -f vite
+
+# Clean build
+rm -rf dist/
+npm run build
+
+# Restart dev server
+npm run dev
+```
+
+### `ERR_MODULE_NOT_FOUND` errors when running app
+
+**Symptoms**: Node.js can't find modules, error mentions `.js` extension missing.
+
+**Cause**: ES module imports missing `.js` extensions.
+
+**Solution**: Add `.js` to all relative imports in `src/main/`:
+
+```typescript
+// Before
+import { validateRecipe } from './validator';
+
+// After
+import { validateRecipe } from './validator.js';
+```
+
+### `NODE_MODULE_VERSION` mismatch error
+
+**Symptoms**:
+
+```
+was compiled against a different Node.js version using NODE_MODULE_VERSION 141.
+This version of Node.js requires NODE_MODULE_VERSION 140.
+```
+
+**Cause**: better-sqlite3 compiled for system Node.js instead of Electron.
+
+**Solution**:
+
+```bash
+npx @electron/rebuild -f
+```
+
+If that fails, ensure you have the correct version:
+
+```bash
+npm install --save-exact better-sqlite3@12.5.0
+npx @electron/rebuild -f
+```
+
+### Build outputs to wrong directory (nested `dist/main/main/`)
+
+**Symptoms**: TypeScript creates `dist/main/main/main.js` instead of `dist/main/main.js`.
+
+**Cause**: `rootDir` not set in `tsconfig.main.json`.
+
+**Solution**: Set `rootDir: "src"` in `tsconfig.main.json` to preserve structure correctly.
+
 ## Contributing
 
 When adding features:
@@ -175,3 +373,5 @@ When adding features:
 3. Write unit/integration tests
 4. Update documentation
 5. Test manually before committing
+6. Remember to use `.js` extensions in ES module imports
+7. Rebuild native modules after dependency changes
