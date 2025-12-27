@@ -1,10 +1,10 @@
 import React from 'react';
-import { BasicRecipeForm } from '../components/RecipeForm/BasicRecipeForm';
+import { RecipeForm } from '../components/RecipeForm/RecipeForm';
 
 export function AddRecipePage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <BasicRecipeForm />
+    <div className="container mx-auto px-4 py-8">
+      <RecipeForm />
     </div>
   );
 }
