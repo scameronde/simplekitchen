@@ -25,8 +25,10 @@ See `thoughts/shared/plans/` for detailed implementation plans.
 
 ### Prerequisites
 
-- Node.js 20+ and npm 10+
+- Node.js 22+ and npm 10+
 - Git
+
+**Note**: This project requires Node.js 22.x to match Electron 39's internal Node.js version. Use `nvm` or `fnm` to manage Node.js versions.
 
 ### Installation
 
@@ -110,6 +112,7 @@ npm run package
 ```
 
 Distributables will be created in `release/` directory:
+
 - **macOS**: `.dmg` and `.zip`
 - **Windows**: `.exe` installer and portable `.exe`
 - **Linux**: `.AppImage` and `.deb`
