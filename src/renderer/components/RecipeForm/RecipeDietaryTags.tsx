@@ -6,7 +6,9 @@ const DIETARY_TAGS = [
   { value: 'lactose-free', label: 'Lactose-Free' },
   { value: 'vegetarian', label: 'Vegetarian' },
   { value: 'vegan', label: 'Vegan' },
-  { value: 'pescatarian', label: 'Pescatarian' },
+  { value: 'low-carb', label: 'Low-Carb' },
+  { value: 'keto', label: 'Keto' },
+  { value: 'paleo', label: 'Paleo' },
 ];
 
 interface RecipeDietaryTagsProps {

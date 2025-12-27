@@ -1,8 +1,8 @@
 # State: Phase 3.2 - Complete Manual Entry (Full Featured Form)
 
 **Plan**: thoughts/shared/plans/2025-12-27-Recipe-Collection-Phase3.2-Complete-Manual-Entry.md  
-**Current Task**: PLAN-321  
-**Completed Tasks**: (none yet)
+**Current Task**: PLAN-332  
+**Completed Tasks**: PLAN-321, PLAN-322, PLAN-323, PLAN-324, PLAN-325, PLAN-326, PLAN-327, PLAN-328, PLAN-329, PLAN-330, PLAN-331
 
 ## Quick Verification
 
@@ -47,23 +47,23 @@ npm run build
 **Completed**: (not completed)  
 **Depends On**: Phase 3.1 MUST be complete  
 **Total Tasks**: 27 (20 implementation + 7 verification)  
-**Completed**: 0 / 27
+**Completed**: 11 / 27
 
 ## Task Progress
 
 ### UI Components (Priority 1)
 
-- [ ] PLAN-321: Create Checkbox component
-- [ ] PLAN-322: Create IngredientRow component
-- [ ] PLAN-323: Create IngredientList component
-- [ ] PLAN-324: Create RecipeBasicInfo component
-- [ ] PLAN-325: Create RecipeDietaryTags component
-- [ ] PLAN-326: Create RecipeSeasonality component
-- [ ] PLAN-327: Create ValidationErrors component
-- [ ] PLAN-328: Create full RecipeForm (replaces BasicRecipeForm)
-- [ ] PLAN-329: Update AddRecipePage to use RecipeForm
-- [ ] PLAN-330: Create RecipeForm barrel export
-- [ ] PLAN-331: Create common components barrel export
+- [x] PLAN-321: Create Checkbox component
+- [x] PLAN-322: Create IngredientRow component
+- [x] PLAN-323: Create IngredientList component
+- [x] PLAN-324: Create RecipeBasicInfo component
+- [x] PLAN-325: Create RecipeDietaryTags component
+- [x] PLAN-326: Create RecipeSeasonality component
+- [x] PLAN-327: Create ValidationErrors component
+- [x] PLAN-328: Create full RecipeForm (replaces BasicRecipeForm)
+- [x] PLAN-329: Update AddRecipePage to use RecipeForm
+- [x] PLAN-330: Create RecipeForm barrel export
+- [x] PLAN-331: Create common components barrel export
 
 ### Testing Setup (Priority 2)
 
