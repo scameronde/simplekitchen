@@ -1,4 +1,4 @@
-import { rawDb } from './init';
+import { rawDb } from './init.js';
 
 // Migration version tracking table
 function createMigrationsTable(): void {
@@ -14,9 +14,7 @@ function createMigrationsTable(): void {
 
 // Check if migration has been applied
 function isMigrationApplied(version: number): boolean {
-  const result = rawDb
-    .prepare('SELECT version FROM migrations WHERE version = ?')
-    .get(version);
+  const result = rawDb.prepare('SELECT version FROM migrations WHERE version = ?').get(version);
   return result !== undefined;
 }
 

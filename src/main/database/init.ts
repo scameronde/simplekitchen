@@ -3,7 +3,7 @@ import path from 'path';
 import { app } from 'electron';
 import { fileURLToPath } from 'url';
 import { Kysely, SqliteDialect } from 'kysely';
-import type { Database as DatabaseSchema } from '../../shared/types/database';
+import type { Database as DatabaseSchema } from '../../shared/types/database.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

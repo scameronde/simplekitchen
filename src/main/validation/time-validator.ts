@@ -1,5 +1,5 @@
-import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe';
-import type { ValidationError } from '../../shared/types/validation';
+import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
+import type { ValidationError } from '../../shared/types/validation.js';
 
 const MIN_COOKING_TIME = 30;
 const MAX_COOKING_TIME = 45;

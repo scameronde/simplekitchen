@@ -1,7 +1,7 @@
-import { db } from '../init';
-import type { DietaryProfile } from '../../../shared/types/recipe';
-import type { DietaryProfileTable } from '../../../shared/types/database';
-import type { DietaryTag } from '../../../shared/types/database';
+import { db } from '../init.js';
+import type { DietaryProfile } from '../../../shared/types/recipe.js';
+import type { DietaryProfileTable } from '../../../shared/types/database.js';
+import type { DietaryTag } from '../../../shared/types/database.js';
 
 // Get dietary profile (singleton - always ID 1)
 export async function getDietaryProfile(): Promise<DietaryProfile> {

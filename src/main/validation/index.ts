@@ -6,13 +6,13 @@
  */
 
 // Main validation orchestrator
-export { validateRecipe, validateRecipeOrThrow } from './validator';
+export { validateRecipe, validateRecipeOrThrow } from './validator.js';
 
 // Individual validators (for granular use if needed)
-export { validateDietaryConstraints } from './dietary-validator';
-export { validateTimeConstraints, getTimeConstraints } from './time-validator';
-export { validateCookwareConstraints, getValidCookwareTypes } from './cookware-validator';
-export { validateServingsConstraints, getRequiredServings } from './servings-validator';
+export { validateDietaryConstraints } from './dietary-validator.js';
+export { validateTimeConstraints, getTimeConstraints } from './time-validator.js';
+export { validateCookwareConstraints, getValidCookwareTypes } from './cookware-validator.js';
+export { validateServingsConstraints, getRequiredServings } from './servings-validator.js';
 
 // Static ingredient database
 export {
@@ -22,4 +22,4 @@ export {
   getKnownIngredientCount,
   INGREDIENT_DATABASE,
   type IngredientData,
-} from './ingredient-database';
+} from './ingredient-database.js';

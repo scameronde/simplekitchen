@@ -1,8 +1,8 @@
-import { db } from '../init';
+import { db } from '../init.js';
 import { randomUUID } from 'crypto';
-import type { Recipe, CreateRecipeInput, UpdateRecipeInput, RecipeFilter } from '../../../shared/types/recipe';
-import type { RecipeTable } from '../../../shared/types/database';
-import { validateRecipeOrThrow } from '../../validation';
+import type { Recipe, CreateRecipeInput, UpdateRecipeInput, RecipeFilter } from '../../../shared/types/recipe.js';
+import type { RecipeTable } from '../../../shared/types/database.js';
+import { validateRecipeOrThrow } from '../../validation/index.js';
 
 // Helper: Convert database row to application Recipe (deserialize JSON, parse dates)
 function dbToRecipe(row: RecipeTable, ingredients: any[]): Recipe {

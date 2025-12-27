@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { CreateRecipeInput } from '../shared/types/recipe';
+import type { CreateRecipeInput } from '../shared/types/recipe.js';
 
 // Expose safe APIs to renderer process
 // NEVER expose entire ipcRenderer or Node.js APIs directly

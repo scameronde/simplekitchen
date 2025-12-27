@@ -1,6 +1,6 @@
-import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe';
-import type { CookwareType } from '../../shared/types/database';
-import type { ValidationError } from '../../shared/types/validation';
+import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
+import type { CookwareType } from '../../shared/types/database.js';
+import type { ValidationError } from '../../shared/types/validation.js';
 
 const VALID_COOKWARE_TYPES: CookwareType[] = ['one-pot', 'one-pan', 'oven'];
 

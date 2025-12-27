@@ -1,11 +1,11 @@
-import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe';
-import type { DietaryProfile } from '../../shared/types/recipe';
-import type { ValidationError, ValidationResult } from '../../shared/types/validation';
-import { validateDietaryConstraints } from './dietary-validator';
-import { validateTimeConstraints } from './time-validator';
-import { validateCookwareConstraints } from './cookware-validator';
-import { validateServingsConstraints } from './servings-validator';
-import { getDietaryProfile } from '../database/dal/dietary-profile';
+import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
+import type { DietaryProfile } from '../../shared/types/recipe.js';
+import type { ValidationError, ValidationResult } from '../../shared/types/validation.js';
+import { validateDietaryConstraints } from './dietary-validator.js';
+import { validateTimeConstraints } from './time-validator.js';
+import { validateCookwareConstraints } from './cookware-validator.js';
+import { validateServingsConstraints } from './servings-validator.js';
+import { getDietaryProfile } from '../database/dal/dietary-profile.js';
 
 // Validate recipe against ALL constraints
 export async function validateRecipe(

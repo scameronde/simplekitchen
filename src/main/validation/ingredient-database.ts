@@ -1,4 +1,4 @@
-import type { DietaryProperty } from '../../shared/types/database';
+import type { DietaryProperty } from '../../shared/types/database.js';
 
 // Ingredient dietary property mapping
 export interface IngredientData {

@@ -1,8 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { runMigrations, closeDatabase } from './database';
-import { registerAllHandlers } from './ipc';
+import { runMigrations, closeDatabase } from './database/index.js';
+import { registerAllHandlers } from './ipc/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +21,7 @@ function createWindow() {
     },
   });
 
-  const isDev = process.env.NODE_ENV === 'development';
+  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173');

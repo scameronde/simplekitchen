@@ -1,8 +1,12 @@
-import type { CreateRecipeInput, UpdateRecipeInput, CreateIngredientInput } from '../../shared/types/recipe';
-import type { DietaryProfile } from '../../shared/types/recipe';
-import type { DietaryTag, DietaryProperty } from '../../shared/types/database';
-import type { ValidationError, ValidationResult } from '../../shared/types/validation';
-import { lookupIngredient, getIngredientProperties } from './ingredient-database';
+import type {
+  CreateRecipeInput,
+  UpdateRecipeInput,
+  CreateIngredientInput,
+} from '../../shared/types/recipe.js';
+import type { DietaryProfile } from '../../shared/types/recipe.js';
+import type { DietaryTag, DietaryProperty } from '../../shared/types/database.js';
+import type { ValidationError, ValidationResult } from '../../shared/types/validation.js';
+import { lookupIngredient, getIngredientProperties } from './ingredient-database.js';
 
 // Validate recipe against dietary constraints
 export async function validateDietaryConstraints(
@@ -84,20 +88,25 @@ function validateIngredient(
         field: `ingredients[${index}].name`,
         constraint: `dietary-${violatedRestriction}`,
         message: `Ingredient "${ingredient.name}" contains ${formatProperty(property)}, which violates your ${violatedRestriction} dietary restriction.`,
-        suggestedFix: staticProperties === 'unknown' 
-          ? 'This ingredient is not in our database. Please verify its dietary properties manually or choose an alternative.'
-          : `Replace with a ${violatedRestriction} alternative or remove this ingredient.`,
+        suggestedFix:
+          staticProperties === 'unknown'
+            ? 'This ingredient is not in our database. Please verify its dietary properties manually or choose an alternative.'
+            : `Replace with a ${violatedRestriction} alternative or remove this ingredient.`,
       });
     }
   }
 
   // Warn if ingredient is unknown (not in static database and no properties declared)
-  if (staticProperties === 'unknown' && (!ingredient.dietaryProperties || ingredient.dietaryProperties.length === 0)) {
+  if (
+    staticProperties === 'unknown' &&
+    (!ingredient.dietaryProperties || ingredient.dietaryProperties.length === 0)
+  ) {
     errors.push({
       field: `ingredients[${index}].name`,
       constraint: 'dietary-unknown',
       message: `Ingredient "${ingredient.name}" is not in our database and has no dietary properties declared. Manual verification required.`,
-      suggestedFix: 'Please verify this ingredient is safe for your dietary restrictions or use a known alternative.',
+      suggestedFix:
+        'Please verify this ingredient is safe for your dietary restrictions or use a known alternative.',
     });
   }
 
@@ -115,7 +124,7 @@ function mapPropertyToRestriction(
     'contains-eggs': 'vegan', // Eggs violate vegan
     'contains-fish': 'vegan', // Fish violates vegan
     'contains-meat': 'vegetarian', // Meat violates vegetarian and vegan
-    'none': null,
+    none: null,
   };
 
   const restrictionTag = mapping[property];
@@ -142,7 +151,7 @@ function formatProperty(property: DietaryProperty): string {
     'contains-eggs': 'eggs',
     'contains-fish': 'fish',
     'contains-meat': 'meat',
-    'none': 'no dietary restrictions',
+    none: 'no dietary restrictions',
   };
   return formats[property] || property;
 }

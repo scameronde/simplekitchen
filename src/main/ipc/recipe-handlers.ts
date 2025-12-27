@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { createRecipe } from '../database/dal/recipes';
-import type { CreateRecipeInput } from '../../shared/types/recipe';
+import { createRecipe } from '../database/dal/recipes.js';
+import type { CreateRecipeInput } from '../../shared/types/recipe.js';
 
 export function registerRecipeHandlers(): void {
   ipcMain.handle('recipe:create', async (_event, input: CreateRecipeInput) => {

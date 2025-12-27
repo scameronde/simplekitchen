@@ -1,6 +1,6 @@
 // Database initialization and connection
-export { db, rawDb, closeDatabase } from './init';
-export { runMigrations } from './migrations';
+export { db, rawDb, closeDatabase } from './init.js';
+export { runMigrations } from './migrations.js';
 
 // Data Access Layer - Recipes
 export {
@@ -10,11 +10,11 @@ export {
   updateRecipe,
   deleteRecipe,
   getRecipeCount,
-} from './dal/recipes';
+} from './dal/recipes.js';
 
 // Data Access Layer - Dietary Profile
 export {
   getDietaryProfile,
   updateDietaryProfile,
   resetDietaryProfile,
-} from './dal/dietary-profile';
+} from './dal/dietary-profile.js';

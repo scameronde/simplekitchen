@@ -1,5 +1,5 @@
-import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe';
-import type { ValidationError } from '../../shared/types/validation';
+import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
+import type { ValidationError } from '../../shared/types/validation.js';
 
 const REQUIRED_SERVINGS = 2;
 
