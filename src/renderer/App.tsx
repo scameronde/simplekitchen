@@ -1,4 +1,3 @@
-import React from 'react';
 import { AddRecipePage } from './pages/AddRecipePage';
 
 export default function App() {

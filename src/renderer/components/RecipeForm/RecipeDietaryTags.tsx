@@ -1,4 +1,3 @@
-import React from 'react';
 import { Checkbox } from '../common/Checkbox';
 
 const DIETARY_TAGS = [

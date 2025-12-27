@@ -192,6 +192,6 @@ describe('Recipe DAL with Validation Integration', () => {
     expect(updated!.title).toBe('Updated Rice and Chicken');
     expect(updated!.cookingTimeMinutes).toBe(40);
     expect(updated!.ingredients).toHaveLength(2);
-    expect(updated!.ingredients[0].name).toBe('brown rice');
+    expect(updated!.ingredients[0]!.name).toBe('brown rice');
   });
 });

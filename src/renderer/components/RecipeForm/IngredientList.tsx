@@ -1,4 +1,3 @@
-import React from 'react';
 import { IngredientRow } from './IngredientRow';
 
 interface Ingredient {

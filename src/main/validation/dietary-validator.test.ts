@@ -58,8 +58,8 @@ describe('Dietary Constraint Validator', () => {
 
     const errors = await validateDietaryConstraints(recipe, defaultProfile);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('dietary-gluten-free');
-    expect(errors[0].message).toContain('contains gluten');
+    expect(errors[0]!.constraint).toBe('dietary-gluten-free');
+    expect(errors[0]!.message).toContain('contains gluten');
   });
 
   it('should reject lactose-containing ingredients (milk, butter)', async () => {
@@ -85,8 +85,8 @@ describe('Dietary Constraint Validator', () => {
 
     const errors = await validateDietaryConstraints(recipe, defaultProfile);
     expect(errors).toHaveLength(2);
-    expect(errors[0].constraint).toBe('dietary-lactose-free');
-    expect(errors[1].constraint).toBe('dietary-lactose-free');
+    expect(errors[0]!.constraint).toBe('dietary-lactose-free');
+    expect(errors[1]!.constraint).toBe('dietary-lactose-free');
   });
 
   it('should use static database lookup for known ingredients', async () => {
@@ -101,7 +101,7 @@ describe('Dietary Constraint Validator', () => {
     const errors = await validateDietaryConstraints(recipe, defaultProfile);
     // soy sauce contains gluten (wheat) in static database
     expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].message).toContain('gluten');
+    expect(errors[0]!.message).toContain('gluten');
   });
 
   it('should allow explicit inclusions despite restrictions', async () => {
@@ -142,8 +142,8 @@ describe('Dietary Constraint Validator', () => {
 
     const errors = await validateDietaryConstraints(recipe, profileWithExclusions);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('dietary-explicit-exclusion');
-    expect(errors[0].message).toContain('explicitly excluded');
+    expect(errors[0]!.constraint).toBe('dietary-explicit-exclusion');
+    expect(errors[0]!.message).toContain('explicitly excluded');
   });
 
   it('should warn about unknown ingredients', async () => {
@@ -163,8 +163,8 @@ describe('Dietary Constraint Validator', () => {
 
     const errors = await validateDietaryConstraints(recipe, defaultProfile);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('dietary-unknown');
-    expect(errors[0].message).toContain('not in our database');
+    expect(errors[0]!.constraint).toBe('dietary-unknown');
+    expect(errors[0]!.message).toContain('not in our database');
   });
 
   it('should handle vegetarian restriction (reject meat)', async () => {
@@ -188,8 +188,8 @@ describe('Dietary Constraint Validator', () => {
 
     const errors = await validateDietaryConstraints(recipe, vegetarianProfile);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('dietary-vegetarian');
-    expect(errors[0].message).toContain('contains meat');
+    expect(errors[0]!.constraint).toBe('dietary-vegetarian');
+    expect(errors[0]!.message).toContain('contains meat');
   });
 
   it('should handle vegan restriction (reject eggs, fish, meat)', async () => {
@@ -240,7 +240,7 @@ describe('Dietary Constraint Validator', () => {
 
     const errors = await validateDietaryConstraints(recipe, defaultProfile);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('dietary-gluten-free');
+    expect(errors[0]!.constraint).toBe('dietary-gluten-free');
   });
 
   it('should handle ingredient aliases (zucchini/courgette)', async () => {

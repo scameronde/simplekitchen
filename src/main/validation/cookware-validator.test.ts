@@ -31,7 +31,7 @@ describe('Cookware Constraint Validator', () => {
     const recipe = { ...baseRecipe, cookwareType: 'multi-pot' as any };
     const errors = validateCookwareConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('cookware-single');
+    expect(errors[0]!.constraint).toBe('cookware-single');
   });
 
   it('should return valid cookware types', () => {

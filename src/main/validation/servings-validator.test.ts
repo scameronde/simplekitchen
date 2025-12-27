@@ -19,15 +19,15 @@ describe('Servings Constraint Validator', () => {
     const recipe = { ...baseRecipe, servings: 1 };
     const errors = validateServingsConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('servings-exact');
-    expect(errors[0].message).toContain('exactly 2');
+    expect(errors[0]!.constraint).toBe('servings-exact');
+    expect(errors[0]!.message).toContain('exactly 2');
   });
 
   it('should reject 4 servings', () => {
     const recipe = { ...baseRecipe, servings: 4 };
     const errors = validateServingsConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('servings-exact');
+    expect(errors[0]!.constraint).toBe('servings-exact');
   });
 
   it('should return required servings', () => {

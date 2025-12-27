@@ -31,16 +31,16 @@ describe('Time Constraint Validator', () => {
     const recipe = { ...baseRecipe, cookingTimeMinutes: 25 };
     const errors = validateTimeConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('time-minimum');
-    expect(errors[0].message).toContain('at least 30');
+    expect(errors[0]!.constraint).toBe('time-minimum');
+    expect(errors[0]!.message).toContain('at least 30');
   });
 
   it('should reject cooking time above 45 minutes', () => {
     const recipe = { ...baseRecipe, cookingTimeMinutes: 50 };
     const errors = validateTimeConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
-    expect(errors[0].constraint).toBe('time-maximum');
-    expect(errors[0].message).toContain('at most 45');
+    expect(errors[0]!.constraint).toBe('time-maximum');
+    expect(errors[0]!.message).toContain('at most 45');
   });
 
   it('should return time constraints', () => {

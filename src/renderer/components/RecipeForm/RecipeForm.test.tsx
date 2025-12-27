@@ -1,4 +1,3 @@
-import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -34,7 +33,7 @@ describe('RecipeForm', () => {
     await user.selectOptions(screen.getByLabelText(/cookware type/i), 'one-pot');
 
     const ingredientInputs = screen.getAllByPlaceholderText(/name/i);
-    await user.type(ingredientInputs[0], 'pasta');
+    await user.type(ingredientInputs[0]!, 'pasta');
     await user.type(screen.getByPlaceholderText(/qty/i), '200');
     await user.type(screen.getByPlaceholderText(/unit/i), 'g');
 
@@ -69,7 +68,7 @@ describe('RecipeForm', () => {
 
     // Fill in ingredient (required)
     const ingredientInputs = screen.getAllByPlaceholderText(/name/i);
-    await user.type(ingredientInputs[0], 'test ingredient');
+    await user.type(ingredientInputs[0]!, 'test ingredient');
     await user.type(screen.getByPlaceholderText(/qty/i), '100');
     await user.type(screen.getByPlaceholderText(/unit/i), 'g');
 
@@ -91,7 +90,7 @@ describe('RecipeForm', () => {
     expect(screen.getAllByPlaceholderText(/name/i)).toHaveLength(2);
 
     const removeButtons = screen.getAllByTitle(/remove ingredient/i);
-    await user.click(removeButtons[0]);
+    await user.click(removeButtons[0]!);
     expect(screen.getAllByPlaceholderText(/name/i)).toHaveLength(1);
   });
 

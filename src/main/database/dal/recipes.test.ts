@@ -60,7 +60,7 @@ describe('Recipe CRUD Operations', () => {
     expect(recipe.totalTimeMinutes).toBe(40); // 10 prep + 30 cook
     expect(recipe.servings).toBe(2);
     expect(recipe.ingredients).toHaveLength(2);
-    expect(recipe.ingredients[0].name).toBe('gluten-free pasta');
+    expect(recipe.ingredients[0]!.name).toBe('gluten-free pasta');
   });
 
   it('should retrieve recipe by ID', async () => {
@@ -126,7 +126,7 @@ describe('Recipe CRUD Operations', () => {
     });
 
     expect(updated!.ingredients).toHaveLength(1);
-    expect(updated!.ingredients[0].name).toBe('rice');
+    expect(updated!.ingredients[0]!.name).toBe('rice');
   });
 
   it('should delete recipe', async () => {

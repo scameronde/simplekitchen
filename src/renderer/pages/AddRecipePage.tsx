@@ -1,4 +1,3 @@
-import React from 'react';
 import { RecipeForm } from '../components/RecipeForm/RecipeForm';
 
 export function AddRecipePage() {

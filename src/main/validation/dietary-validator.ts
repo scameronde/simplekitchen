@@ -22,7 +22,7 @@ export async function validateDietaryConstraints(
 
   // Check each ingredient against dietary profile
   for (let i = 0; i < recipeInput.ingredients.length; i++) {
-    const ingredient = recipeInput.ingredients[i];
+    const ingredient = recipeInput.ingredients[i]!;
     const ingredientErrors = validateIngredient(ingredient, i, profile);
     errors.push(...ingredientErrors);
   }

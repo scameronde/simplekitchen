@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input } from '../common/Input';
 import { Select } from '../common/Select';
 

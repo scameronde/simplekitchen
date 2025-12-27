@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface IngredientRowProps {
   index: number;
   ingredient: { name: string; quantity: string; unit: string; optional: boolean };
