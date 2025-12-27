@@ -7,7 +7,31 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 export default [
   js.configs.recommended,
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['src/main/**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        process: 'readonly',
+        __dirname: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
+    rules: {
+      ...tsPlugin.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+    },
+  },
+  {
+    files: ['src/renderer/**/*.tsx', 'src/renderer/**/*.ts'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -18,14 +42,12 @@ export default [
         },
       },
       globals: {
-        // Node.js globals for main process
-        process: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        // Browser globals for renderer process
         window: 'readonly',
         document: 'readonly',
         HTMLElement: 'readonly',
+        HTMLButtonElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLSelectElement: 'readonly',
       },
     },
     plugins: {
