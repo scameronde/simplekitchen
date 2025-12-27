@@ -1,10 +1,20 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Mock window.electron for renderer tests
-global.window = global.window || ({} as any);
-(global.window as any).electron = {
-  recipeAPI: {
-    create: vi.fn(),
+declare global {
+  interface Window {
+    electron: {
+      ipcRenderer: {
+        invoke: (channel: string, ...args: unknown[]) => Promise<unknown>;
+      };
+    };
+  }
+}
+
+// Type-safe global setup
+globalThis.window = globalThis.window || (globalThis as unknown as Window);
+globalThis.window.electron = {
+  ipcRenderer: {
+    invoke: vi.fn(),
   },
 };
