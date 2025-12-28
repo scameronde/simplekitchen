@@ -21,6 +21,11 @@ export interface RunResult {
  */
 export interface Statement {
   /**
+   * Indicates whether this statement returns data (SELECT) or not (INSERT/UPDATE/DELETE).
+   */
+  readonly reader: boolean;
+
+  /**
    * Execute the statement and return metadata about changes.
    * @param params - Parameters to bind to the SQL statement
    * @returns Metadata about the operation (rows changed, last insert ID)
@@ -40,6 +45,13 @@ export interface Statement {
    * @returns Array of all matching rows
    */
   all(...params: unknown[]): unknown[];
+
+  /**
+   * Execute the statement and return an iterator over result rows.
+   * @param params - Parameters to bind to the SQL statement
+   * @returns Iterator over all matching rows
+   */
+  iterate(...params: unknown[]): IterableIterator<unknown>;
 }
 
 /**
