@@ -71,5 +71,7 @@ export async function runPerformanceBenchmark(): Promise<void> {
   console.log('=== Benchmark Complete ===');
 }
 
-// For manual testing: uncomment to run on import
-// runPerformanceBenchmark().catch(console.error);
+// Execute when run directly with tsx
+if (import.meta.url === `file://${process.argv[1]}`) {
+  runPerformanceBenchmark().catch(console.error);
+}

@@ -28,6 +28,8 @@
     "test:unit": "vitest run",
     "test:integration": "vitest run src/renderer",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "seed:db": "tsx src/main/database/seed-data.ts",
+    "benchmark": "tsx src/main/database/benchmark.ts",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "keywords": [],
@@ -72,6 +74,7 @@
     "prettier": "^3.7.4",
     "sql.js": "^1.12.0",
     "tailwindcss": "^4.1.18",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^6.4.1",
     "vitest": "^2.1.9",

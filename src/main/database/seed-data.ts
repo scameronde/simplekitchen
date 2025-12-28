@@ -178,3 +178,8 @@ export async function seedDatabase(count: number = 10): Promise<void> {
 
   console.log(`Successfully seeded ${count} recipes.`);
 }
+
+// Execute when run directly with tsx
+if (import.meta.url === `file://${process.argv[1]}`) {
+  seedDatabase(50).catch(console.error);
+}
