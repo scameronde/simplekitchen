@@ -74,6 +74,20 @@ export default [
     },
   },
   {
+    files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts'],
+    languageOptions: {
+      parser: tsParser,
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        vi: 'readonly',
+      },
+    },
+  },
+  {
     files: ['*.config.ts', 'vitest.setup.ts'],
     languageOptions: {
       parser: tsParser,
