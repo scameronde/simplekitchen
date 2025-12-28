@@ -7,7 +7,7 @@ test.describe('Recipe Viewing and Filtering', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'test',
+        NODE_ENV: 'development',
       },
     });
 
