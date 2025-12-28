@@ -20,10 +20,17 @@ const SQL = await initSqlJs();
  * Wrapper class that adapts sql.js Statement API to match better-sqlite3 Statement interface.
  */
 class SqlJsStatementAdapter implements Statement {
+  readonly reader: boolean;
+
   constructor(
     private db: Database,
     private sql: string
-  ) {}
+  ) {
+    // Prepare statement once to detect if it's a reader (SELECT) or writer (INSERT/UPDATE/DELETE)
+    const stmt = db.prepare(sql);
+    this.reader = stmt.getColumnNames().length > 0;
+    stmt.free();
+  }
 
   /**
    * Execute the statement and return metadata about changes.
