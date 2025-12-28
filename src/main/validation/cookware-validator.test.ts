@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { validateCookwareConstraints, getValidCookwareTypes } from './cookware-validator';
-import type { CreateRecipeInput } from '../../shared/types/recipe';
+import type { CreateRecipeInput, CookwareType } from '../../shared/types/recipe';
 
 describe('Cookware Constraint Validator', () => {
   const baseRecipe: Partial<CreateRecipeInput> = {
@@ -28,7 +28,7 @@ describe('Cookware Constraint Validator', () => {
   });
 
   it('should reject invalid cookware type', () => {
-    const recipe = { ...baseRecipe, cookwareType: 'multi-pot' as any };
+    const recipe = { ...baseRecipe, cookwareType: 'multi-pot' as CookwareType };
     const errors = validateCookwareConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
     expect(errors[0]!.constraint).toBe('cookware-single');
