@@ -113,6 +113,27 @@ class SqlJsStatementAdapter implements Statement {
       stmt.free();
     }
   }
+
+  /**
+   * Execute the statement and return an iterator over result rows.
+   * @param params - Parameters to bind to the SQL statement
+   * @returns Iterator that yields rows one at a time
+   */
+  *iterate(...params: unknown[]): IterableIterator<unknown> {
+    const stmt = this.db.prepare(this.sql);
+    try {
+      if (params.length > 0) {
+        // Flatten Kysely's nested array format
+        const bindParams = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+        stmt.bind(bindParams);
+      }
+      while (stmt.step()) {
+        yield stmt.getAsObject();
+      }
+    } finally {
+      stmt.free();
+    }
+  }
 }
 
 /**
