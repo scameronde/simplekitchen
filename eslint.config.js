@@ -73,4 +73,14 @@ export default [
       },
     },
   },
+  {
+    files: ['*.config.ts', 'vitest.setup.ts'],
+    languageOptions: {
+      parser: tsParser,
+      globals: {
+        __dirname: 'readonly',
+        process: 'readonly',
+      },
+    },
+  },
 ];
