@@ -2,12 +2,19 @@
 
 ## Architecture
 
-SimpleKitchen uses SQLite for local data persistence with the following guarantees:
+SimpleKitchen uses SQLite for local data persistence with a dual-client architecture:
+
+- **Production**: better-sqlite3 (native module with superior performance)
+- **Testing**: sql.js (pure JavaScript SQLite compiled to WebAssembly)
+- **Abstraction**: `IDatabaseClient` interface ensures identical behavior
+
+### Database Guarantees
 
 - **Crash-safe durability**: WAL mode + FULL synchronous + fsync
 - **Type safety**: Kysely query builder with generated TypeScript types
 - **Schema versioning**: Migration system tracks applied changes
 - **Performance**: Indexed queries for filtering operations
+- **Test isolation**: sql.js runs in-memory for fast, isolated tests
 
 ## Database Location
 
@@ -15,6 +22,7 @@ SimpleKitchen uses SQLite for local data persistence with the following guarante
 - **Production**: Same location (OS-specific user data directory)
 
 ### Platform-Specific Paths
+
 - **macOS**: `~/Library/Application Support/simplekitchen/recipes.db`
 - **Windows**: `%APPDATA%/simplekitchen/recipes.db`
 - **Linux**: `~/.config/simplekitchen/recipes.db`
@@ -22,32 +30,40 @@ SimpleKitchen uses SQLite for local data persistence with the following guarante
 ## Tables
 
 ### recipes
+
 Stores recipe metadata (title, times, cookware, dietary tags, source).
 
 **Constraints:**
+
 - `cooking_time_minutes`: Must be 30-45 (spec requirement)
 - `servings`: Must be exactly 2 (spec requirement)
 - `cookware_type`: One of 'one-pot', 'one-pan', 'oven'
 - `source_type`: One of 'manual', 'ai-generated', 'web-imported'
 
 **Indexes:**
+
 - `idx_recipes_cooking_time`: For time-based filtering
 - `idx_recipes_cookware_type`: For cookware filtering
 - `idx_recipes_source_type`: For source filtering
 
 ### ingredients
+
 Stores ingredient details linked to recipes (one-to-many).
 
 **Foreign Key:**
+
 - `recipe_id` → `recipes.id` (CASCADE DELETE)
 
 **Indexes:**
+
 - `idx_ingredients_recipe_id`: For efficient joins
 
 ### dietary_profile
+
 Singleton table (always ID=1) storing user dietary preferences.
 
 **Default values:**
+
 - `hard_restrictions`: ["gluten-free", "lactose-free"]
 - `preferences`: []
 - `explicit_inclusions`: []
@@ -69,8 +85,22 @@ const recipe = await createRecipe({
   seasonality: ['any'],
   sourceType: 'manual',
   ingredients: [
-    { name: 'chicken breast', quantity: 300, unit: 'g', dietaryProperties: ['contains-meat'], optional: false, orderIndex: 1 },
-    { name: 'broccoli', quantity: 200, unit: 'g', dietaryProperties: ['none'], optional: false, orderIndex: 2 },
+    {
+      name: 'chicken breast',
+      quantity: 300,
+      unit: 'g',
+      dietaryProperties: ['contains-meat'],
+      optional: false,
+      orderIndex: 1,
+    },
+    {
+      name: 'broccoli',
+      quantity: 200,
+      unit: 'g',
+      dietaryProperties: ['none'],
+      optional: false,
+      orderIndex: 2,
+    },
   ],
 });
 ```
@@ -115,22 +145,45 @@ const recipe: CreateRecipeInput = {
 
 ## Testing
 
+### Testing Strategy
+
+Database tests use **sql.js** (pure JavaScript SQLite) instead of better-sqlite3:
+
+**Benefits:**
+
+- ✅ No native module compilation required
+- ✅ Fast execution in CI/CD environments
+- ✅ Isolated in-memory databases for each test suite
+- ✅ Identical SQL behavior via `IDatabaseClient` abstraction
+
+**Implementation:**
+
+- Factory function in `client.ts` detects `VITEST` or `NODE_ENV=test`
+- Returns `SqlJsAdapter` instance instead of `SqliteDatabaseClient`
+- All tests use in-memory database (`:memory:`)
+- Kysely queries work identically with both clients
+
 Run database tests:
 
 ```bash
-npm run test:db          # Run once
-npm run test:db:watch    # Watch mode
+npm run test:db          # Run once (uses sql.js)
+npm run test:db:watch    # Watch mode (uses sql.js)
+npm test                 # All tests (uses sql.js)
 ```
 
-All tests use the same database file, so migrations are idempotent.
+**Production vs Testing:**
+
+- Production (`npm run dev`, `npm run package`): better-sqlite3
+- Testing (`npm test`): sql.js
+- Migrations are idempotent and run on both clients
 
 ## Durability Configuration
 
 Critical PRAGMA settings applied at initialization:
 
 ```typescript
-db.pragma('journal_mode = WAL');   // Write-Ahead Logging
-db.pragma('synchronous = FULL');   // Full fsync guarantees
+db.pragma('journal_mode = WAL'); // Write-Ahead Logging
+db.pragma('synchronous = FULL'); // Full fsync guarantees
 ```
 
 **Why this matters:** Default SQLite configuration can lose data on crashes. These settings ensure crash-safe durability (verified by research).

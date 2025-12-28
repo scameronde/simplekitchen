@@ -175,16 +175,37 @@ In production mode:
 
 ### Native Modules
 
-**better-sqlite3** requires native compilation:
+**better-sqlite3** is used in production and development mode:
 
 - Version: `12.5.0` (required for Electron 39)
-- Must be rebuilt for Electron after installation
-- Build process: `npx @electron/rebuild -f`
+- Automatically rebuilt for Electron via postinstall hook
+- Manual rebuild: `npx @electron/rebuild -f`
 
-**Troubleshooting native module issues**:
+**Testing Environment:**
+
+Tests use **sql.js** (pure JavaScript) instead of better-sqlite3:
+
+- ✅ No native module compilation required for `npm test`
+- ✅ Fast CI/CD execution without C++ build tools
+- ✅ Identical SQL behavior via `IDatabaseClient` abstraction
+- Factory function in `src/main/database/client.ts` switches based on environment
+
+**When native module rebuild is needed:**
+
+- Running `npm run dev` (development mode with Electron)
+- Running `npm run test:e2e` (E2E tests use real Electron)
+- Creating production builds with `npm run package`
+
+**When native module rebuild is NOT needed:**
+
+- Running `npm test` (unit/integration tests use sql.js)
+- Running `npm run test:watch` (watch mode also uses sql.js)
+- CI/CD pipelines running unit tests only
+
+**Troubleshooting native module issues** (for dev/E2E/production only):
 
 1. Check Electron version matches better-sqlite3 compatibility
-2. Ensure C++ build tools installed (gcc, make)
+2. Ensure C++ build tools installed (gcc, make, Python)
 3. Clear node-gyp cache: `rm -rf ~/.electron-gyp`
 4. Reinstall and rebuild: `npm install && npx @electron/rebuild -f`
 

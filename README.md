@@ -8,17 +8,26 @@ SimpleKitchen lifts the cognitive load of deciding what to cook on busy weeknigh
 
 ## Project Status
 
-**Current Phase**: Phase 0 - Technology Stack Scaffolding  
-**Next Phase**: Phase 1 - Data Model & Persistence Foundation
+**Current Phase**: Phase 3 - Manual Recipe Entry (Complete)  
+**Next Phase**: Phase 4 - Recipe Viewing & Filtering
+
+**Completed Phases:**
+
+- ✅ Phase 0: Technology Stack Scaffolding
+- ✅ Phase 1: Data Model & Persistence Foundation
+- ✅ Phase 2: Constraint Validation System
+- ✅ Phase 3: Manual Recipe Entry UI with E2E Tests
 
 See `thoughts/shared/plans/` for detailed implementation plans.
 
 ## Technology Stack
 
 - **Framework**: Electron v39+ with React 18+ and TypeScript 5+
-- **Database**: SQLite with better-sqlite3
+- **Database**: SQLite with dual-client architecture
+  - Production: better-sqlite3 (native performance)
+  - Testing: sql.js (pure JavaScript, no native compilation)
 - **Build Tool**: Vite (renderer) + TypeScript compiler (main)
-- **Testing**: Vitest (unit/integration) + Playwright (E2E, future)
+- **Testing**: Vitest (unit/integration) + Playwright (E2E)
 - **Linting/Formatting**: ESLint + Prettier
 
 ## Development Setup
@@ -90,8 +99,21 @@ SimpleKitchen uses Electron's two-process architecture:
 
 ## Testing
 
+SimpleKitchen uses a dual-client database architecture to avoid native module issues in testing:
+
+- **Production**: Uses better-sqlite3 (native module with superior performance)
+- **Testing**: Uses sql.js (pure JavaScript SQLite compiled to WebAssembly)
+- **Abstraction**: `IDatabaseClient` interface ensures identical behavior
+
+This approach provides:
+
+- ✅ Fast test execution without native module rebuilds
+- ✅ CI/CD compatibility (no C++ compilation required for tests)
+- ✅ Identical SQL behavior between test and production environments
+- ✅ Native performance in production builds
+
 ```bash
-# Run all tests
+# Run all tests (uses sql.js automatically)
 npm test
 
 # Run tests in watch mode (auto-rerun on changes)
@@ -99,7 +121,15 @@ npm run test:watch
 
 # Generate coverage report
 npm run test:coverage
+
+# Run E2E tests (uses real Electron with better-sqlite3)
+npm run test:e2e
+
+# Run E2E tests with UI
+npm run test:e2e:ui
 ```
+
+**Note**: Unit tests (`npm test`) use sql.js and require no native module setup. E2E tests and `npm run dev` use better-sqlite3 and will automatically rebuild via the postinstall hook.
 
 ## Building for Production
 
