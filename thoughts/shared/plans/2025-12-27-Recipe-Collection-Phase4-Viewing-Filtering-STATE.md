@@ -2,8 +2,8 @@
 
 **Plan**: thoughts/shared/plans/2025-12-28-Recipe-Collection-Phase4-Viewing-Filtering-UPDATED.md  
 **Original Plan**: thoughts/shared/plans/2025-12-27-Recipe-Collection-Phase4-Viewing-Filtering.md (OUTDATED - see updated plan)  
-**Current Task**: PLAN-405  
-**Completed Tasks**: PLAN-401, PLAN-402, PLAN-403, PLAN-404
+**Current Task**: PLAN-406  
+**Completed Tasks**: PLAN-401, PLAN-402, PLAN-403, PLAN-404, PLAN-405
 
 **IMPORTANT**: The original plan from 2025-12-27 is outdated due to architectural changes (dual-client database, UUID IDs, async DAL). Use the UPDATED plan dated 2025-12-28.
 
@@ -64,7 +64,7 @@ npm run build
 - [x] PLAN-402: Add recipe:getById IPC handler
 - [x] PLAN-403: Complete dietary tags and seasonality filtering in getRecipes()
 - [x] PLAN-404: Add recipe:filter IPC handler
-- [ ] PLAN-405: Update electron.d.ts with new IPC methods
+- [x] PLAN-405: Update electron.d.ts with new IPC methods
 - [ ] PLAN-406: Expose new IPC methods in preload.ts
 
 ### Database Performance (Priority 1 - Critical Path)
