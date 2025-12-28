@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { CreateRecipeInput } from '../shared/types/recipe.js';
+import type { CreateRecipeInput, RecipeFilter } from '../shared/types/recipe.js';
 
 // Expose safe APIs to renderer process
 // NEVER expose entire ipcRenderer or Node.js APIs directly
@@ -14,5 +14,8 @@ contextBridge.exposeInMainWorld('electron', {
 
   recipeAPI: {
     create: (input: CreateRecipeInput) => ipcRenderer.invoke('recipe:create', input),
+    getAll: () => ipcRenderer.invoke('recipe:getAll'),
+    getById: (id: string) => ipcRenderer.invoke('recipe:getById', id),
+    filter: (filter: RecipeFilter) => ipcRenderer.invoke('recipe:filter', filter),
   },
 });
