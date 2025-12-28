@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { createRecipe, getRecipes } from '../database/dal/recipes.js';
+import { createRecipe, getRecipes, getRecipeById } from '../database/dal/recipes.js';
 import type { CreateRecipeInput } from '../../shared/types/recipe.js';
 
 export function registerRecipeHandlers(): void {
@@ -41,6 +41,26 @@ export function registerRecipeHandlers(): void {
     try {
       const recipes = await getRecipes(); // No filter = all recipes
       return { success: true, recipe: recipes };
+    } catch (error) {
+      return {
+        success: false,
+        errors: [
+          { field: 'general', message: error instanceof Error ? error.message : 'Unknown error' },
+        ],
+      };
+    }
+  });
+
+  ipcMain.handle('recipe:getById', async (_event, id: string) => {
+    try {
+      const recipe = await getRecipeById(id);
+      if (!recipe) {
+        return {
+          success: false,
+          errors: [{ field: 'general', message: 'Recipe not found' }],
+        };
+      }
+      return { success: true, recipe };
     } catch (error) {
       return {
         success: false,
