@@ -1,5 +1,6 @@
 import { db } from '../init.js';
 import { randomUUID } from 'crypto';
+import { sql } from 'kysely';
 import type {
   Recipe,
   CreateRecipeInput,
@@ -132,7 +133,24 @@ export async function getRecipes(filter?: RecipeFilter): Promise<Recipe[]> {
     if (filter.sourceTypes && filter.sourceTypes.length > 0) {
       query = query.where('source_type', 'in', filter.sourceTypes);
     }
-    // Note: dietaryTags and seasonality filtering requires JSON operations (Phase 4)
+
+    // Apply dietary tags filter (check if ALL selected tags are present)
+    if (filter.dietaryTags && filter.dietaryTags.length > 0) {
+      for (const tag of filter.dietaryTags) {
+        // SQLite JSON array contains check using LIKE pattern
+        query = query.where(sql<boolean>`dietary_tags LIKE ${'%"' + tag + '"%'}`);
+      }
+    }
+
+    // Apply seasonality filter (check if ANY selected season matches)
+    if (filter.seasonality && filter.seasonality.length > 0) {
+      query = query.where(({ eb, or }) => {
+        const seasonalityConditions = filter.seasonality!.map(season =>
+          eb(sql<string>`seasonality`, 'like', `%"${season}"%`)
+        );
+        return or(seasonalityConditions);
+      });
+    }
   }
 
   const recipeRows = await query.execute();
