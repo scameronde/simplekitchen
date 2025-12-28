@@ -31,24 +31,32 @@ class SqlJsStatementAdapter implements Statement {
    * @returns Metadata about the operation (rows changed, last insert ID)
    */
   run(...params: unknown[]): RunResult {
-    // Execute the statement with parameters
-    this.db.run(this.sql, params as any[]);
+    // Execute the statement with parameters using prepare/bind/step pattern
+    const stmt = this.db.prepare(this.sql);
+    try {
+      // sql.js bind() expects parameters as an array (0-based indexing for ?)
+      if (params.length > 0) {
+        stmt.bind(params);
+      }
+      stmt.step(); // Execute the statement
 
-    // Query SQLite for changes and last insert rowid
-    // Note: sql.js exec() returns array of results, we need the first value
-    const changesResult = this.db.exec('SELECT changes()');
-    const changes =
-      changesResult.length > 0 && changesResult[0]?.values.length > 0
-        ? (changesResult[0].values[0]?.[0] as number)
-        : 0;
+      // Query SQLite for changes and last insert rowid
+      const changesResult = this.db.exec('SELECT changes()');
+      const changes =
+        changesResult.length > 0 && changesResult[0]?.values.length > 0
+          ? (changesResult[0].values[0]?.[0] as number)
+          : 0;
 
-    const rowidResult = this.db.exec('SELECT last_insert_rowid()');
-    const lastInsertRowid =
-      rowidResult.length > 0 && rowidResult[0]?.values.length > 0
-        ? (rowidResult[0].values[0]?.[0] as number)
-        : 0;
+      const rowidResult = this.db.exec('SELECT last_insert_rowid()');
+      const lastInsertRowid =
+        rowidResult.length > 0 && rowidResult[0]?.values.length > 0
+          ? (rowidResult[0].values[0]?.[0] as number)
+          : 0;
 
-    return { changes, lastInsertRowid };
+      return { changes, lastInsertRowid };
+    } finally {
+      stmt.free();
+    }
   }
 
   /**
@@ -59,7 +67,9 @@ class SqlJsStatementAdapter implements Statement {
   get(...params: unknown[]): unknown {
     const stmt = this.db.prepare(this.sql);
     try {
-      stmt.bind(params as any[]);
+      if (params.length > 0) {
+        stmt.bind(params);
+      }
       if (stmt.step()) {
         return stmt.getAsObject();
       }
@@ -77,7 +87,9 @@ class SqlJsStatementAdapter implements Statement {
   all(...params: unknown[]): unknown[] {
     const stmt = this.db.prepare(this.sql);
     try {
-      stmt.bind(params as any[]);
+      if (params.length > 0) {
+        stmt.bind(params);
+      }
       const results: unknown[] = [];
       while (stmt.step()) {
         results.push(stmt.getAsObject());

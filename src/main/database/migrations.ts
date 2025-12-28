@@ -2,14 +2,18 @@ import { rawDb } from './init.js';
 
 // Migration version tracking table
 function createMigrationsTable(): void {
-  rawDb.exec(`
+  rawDb
+    .prepare(
+      `
     CREATE TABLE IF NOT EXISTS migrations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       version INTEGER UNIQUE NOT NULL,
       name TEXT NOT NULL,
       applied_at TEXT NOT NULL
     )
-  `);
+  `
+    )
+    .run();
 }
 
 // Check if migration has been applied
@@ -32,8 +36,10 @@ function migration001_initialSchema(): void {
 
   console.log('Running migration 001: Initial schema');
 
-  rawDb.exec(`
-    -- Recipes table
+  // Create recipes table
+  rawDb
+    .prepare(
+      `
     CREATE TABLE recipes (
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
@@ -49,9 +55,15 @@ function migration001_initialSchema(): void {
       instructions TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    );
+    )
+  `
+    )
+    .run();
 
-    -- Ingredients table
+  // Create ingredients table
+  rawDb
+    .prepare(
+      `
     CREATE TABLE ingredients (
       id TEXT PRIMARY KEY,
       recipe_id TEXT NOT NULL,
@@ -62,9 +74,15 @@ function migration001_initialSchema(): void {
       optional INTEGER NOT NULL DEFAULT 0 CHECK(optional IN (0, 1)),
       order_index INTEGER NOT NULL,
       FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
-    );
+    )
+  `
+    )
+    .run();
 
-    -- Dietary Profile table (singleton)
+  // Create dietary profile table (singleton)
+  rawDb
+    .prepare(
+      `
     CREATE TABLE dietary_profile (
       id INTEGER PRIMARY KEY CHECK(id = 1),
       hard_restrictions TEXT NOT NULL DEFAULT '["gluten-free", "lactose-free"]',
@@ -72,18 +90,24 @@ function migration001_initialSchema(): void {
       explicit_inclusions TEXT NOT NULL DEFAULT '[]',
       explicit_exclusions TEXT NOT NULL DEFAULT '[]',
       updated_at TEXT NOT NULL
-    );
+    )
+  `
+    )
+    .run();
 
-    -- Indexes for query performance
-    CREATE INDEX idx_recipes_cooking_time ON recipes(cooking_time_minutes);
-    CREATE INDEX idx_recipes_cookware_type ON recipes(cookware_type);
-    CREATE INDEX idx_recipes_source_type ON recipes(source_type);
-    CREATE INDEX idx_ingredients_recipe_id ON ingredients(recipe_id);
-    
-    -- Initialize default dietary profile
-    INSERT INTO dietary_profile (id, hard_restrictions, updated_at) 
-    VALUES (1, '["gluten-free", "lactose-free"]', datetime('now'));
-  `);
+  // Create indexes for query performance
+  rawDb.prepare('CREATE INDEX idx_recipes_cooking_time ON recipes(cooking_time_minutes)').run();
+  rawDb.prepare('CREATE INDEX idx_recipes_cookware_type ON recipes(cookware_type)').run();
+  rawDb.prepare('CREATE INDEX idx_recipes_source_type ON recipes(source_type)').run();
+  rawDb.prepare('CREATE INDEX idx_ingredients_recipe_id ON ingredients(recipe_id)').run();
+
+  // Initialize default dietary profile
+  rawDb
+    .prepare(
+      `INSERT INTO dietary_profile (id, hard_restrictions, updated_at) 
+       VALUES (?, ?, ?)`
+    )
+    .run(1, '["gluten-free", "lactose-free"]', new Date().toISOString());
 
   recordMigration(version, 'initial_schema');
   console.log('Migration 001 complete');

@@ -1,8 +1,14 @@
 # State: Native Module Testing Strategy
 
 **Plan**: thoughts/shared/plans/2025-12-28-Native-Module-Testing-Strategy.md  
-**Current Task**: PLAN-005  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-006
+**Current Task**: PLAN-007  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006
+
+## Known Issues
+
+- sql.js adapter has parameter binding issue causing dietary profile INSERT to fail
+- Need to debug why parameters aren't being passed correctly to sql.js
+- Init tests pass, but DAL tests fail due to missing dietary profile
 
 ## Quick Verification
 

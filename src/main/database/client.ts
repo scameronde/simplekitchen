@@ -68,6 +68,10 @@ export interface IDatabaseClient {
   close(): void;
 }
 
+// Import both implementations - tree-shaking will remove unused code in production
+import { SqlJsAdapter } from './sqljs-adapter.js';
+import { SqliteDatabaseClient } from './sqlite-client.js';
+
 /**
  * Factory function to create appropriate database client based on environment.
  *
@@ -79,13 +83,7 @@ export interface IDatabaseClient {
  */
 export function createDatabaseClient(dbPath: string): IDatabaseClient {
   if (process.env.VITEST || process.env.NODE_ENV === 'test') {
-    // Dynamic import to avoid loading in production
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { SqlJsAdapter } = require('./sqljs-adapter.js');
     return new SqlJsAdapter(dbPath);
   }
-  // Dynamic import to avoid loading in test environment
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { SqliteDatabaseClient } = require('./sqlite-client.js');
   return new SqliteDatabaseClient(dbPath);
 }
