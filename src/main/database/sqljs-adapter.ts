@@ -35,8 +35,11 @@ class SqlJsStatementAdapter implements Statement {
     const stmt = this.db.prepare(this.sql);
     try {
       // sql.js bind() expects parameters as an array (0-based indexing for ?)
+      // Kysely passes parameters as a nested array [[param1, param2]], so we need to flatten
       if (params.length > 0) {
-        stmt.bind(params);
+        // If params is a single-element array containing another array, flatten it
+        const bindParams = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+        stmt.bind(bindParams);
       }
       stmt.step(); // Execute the statement
 
@@ -68,7 +71,9 @@ class SqlJsStatementAdapter implements Statement {
     const stmt = this.db.prepare(this.sql);
     try {
       if (params.length > 0) {
-        stmt.bind(params);
+        // Flatten Kysely's nested array format
+        const bindParams = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+        stmt.bind(bindParams);
       }
       if (stmt.step()) {
         return stmt.getAsObject();
@@ -88,7 +93,9 @@ class SqlJsStatementAdapter implements Statement {
     const stmt = this.db.prepare(this.sql);
     try {
       if (params.length > 0) {
-        stmt.bind(params);
+        // Flatten Kysely's nested array format
+        const bindParams = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+        stmt.bind(bindParams);
       }
       const results: unknown[] = [];
       while (stmt.step()) {

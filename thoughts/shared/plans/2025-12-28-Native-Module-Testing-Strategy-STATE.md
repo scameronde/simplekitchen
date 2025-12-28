@@ -4,11 +4,20 @@
 **Current Task**: DEBUG (sql.js parameter binding)  
 **Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007
 
-## Known Issues
+## Known Issues (DEBUG in progress)
 
-- sql.js adapter has parameter binding issue causing dietary profile INSERT to fail
-- Need to debug why parameters aren't being passed correctly to sql.js
-- Init tests pass, but DAL tests fail due to missing dietary profile
+- sql.js adapter has a bug where Kysely queries don't return results
+- INSERT operations work correctly (verified with debug logging)
+- The row is inserted into the database successfully
+- But subsequent SELECT queries via Kysely return empty results
+- Direct rawDb.prepare().run() works fine (migrations succeed)
+- Issue appears to be with how Kysely interacts with the sql.js adapter
+- Possible causes:
+  1. Kysely might be using a different code path (not calling all/get/run as expected)
+  2. sql.js might require explicit transaction commits for Kysely queries
+  3. There might be a timing issue with statement lifecycle
+- Init tests: PASS ✅ (4/4)
+- DAL tests: FAIL ❌ (10/36 pass, 26 fail due to this issue)
 
 ## Quick Verification
 
