@@ -1,6 +1,7 @@
 import path from 'path';
 import { app } from 'electron';
 import { Kysely, SqliteDialect } from 'kysely';
+import type Database from 'better-sqlite3';
 import type { Database as DatabaseSchema } from '../../shared/types/database.js';
 import { createDatabaseClient } from './client.js';
 
@@ -32,7 +33,7 @@ sqlite.pragma('temp_store = MEMORY');
 // Create Kysely instance with type-safe schema
 export const db = new Kysely<DatabaseSchema>({
   dialect: new SqliteDialect({
-    database: sqlite as any,
+    database: sqlite as Database.Database,
   }),
 });
 
