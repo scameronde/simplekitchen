@@ -20,5 +20,8 @@ globalThis.window.electron = {
   },
   recipeAPI: {
     create: vi.fn(),
+    getAll: vi.fn(),
+    getById: vi.fn(),
+    filter: vi.fn(),
   },
 };

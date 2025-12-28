@@ -2,8 +2,8 @@
 
 **Plan**: thoughts/shared/plans/2025-12-28-Recipe-Collection-Phase4-Viewing-Filtering-UPDATED.md  
 **Original Plan**: thoughts/shared/plans/2025-12-27-Recipe-Collection-Phase4-Viewing-Filtering.md (OUTDATED - see updated plan)  
-**Current Task**: PLAN-420  
-**Completed Tasks**: PLAN-401, PLAN-402, PLAN-403, PLAN-404, PLAN-405, PLAN-406, PLAN-407, PLAN-408, PLAN-409, PLAN-410, PLAN-411, PLAN-412, PLAN-413, PLAN-414, PLAN-415, PLAN-416, PLAN-417, PLAN-418, PLAN-419, PLAN-422
+**Current Task**: PLAN-421  
+**Completed Tasks**: PLAN-401, PLAN-402, PLAN-403, PLAN-404, PLAN-405, PLAN-406, PLAN-407, PLAN-408, PLAN-409, PLAN-410, PLAN-411, PLAN-412, PLAN-413, PLAN-414, PLAN-415, PLAN-416, PLAN-417, PLAN-418, PLAN-419, PLAN-420, PLAN-422
 
 **IMPORTANT**: The original plan from 2025-12-27 is outdated due to architectural changes (dual-client database, UUID IDs, async DAL). Use the UPDATED plan dated 2025-12-28.
 
@@ -98,7 +98,7 @@ npm run build
 ### Tests (Priority 4 - After implementation)
 
 - [x] PLAN-419: Create unit tests for filterRecipes()
-- [ ] PLAN-420: Create integration test for RecipeListPage
+- [x] PLAN-420: Create integration test for RecipeListPage
 - [ ] PLAN-421: Create E2E test for recipe viewing workflow
 
 ### Documentation (Priority 5 - Final)
