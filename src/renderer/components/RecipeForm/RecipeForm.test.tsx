@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RecipeForm } from './RecipeForm';
@@ -6,7 +6,7 @@ import { RecipeForm } from './RecipeForm';
 describe('RecipeForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (window.electron.recipeAPI.create as any) = vi.fn();
+    (window.electron.recipeAPI.create as Mock) = vi.fn();
   });
 
   it('renders all form sections', () => {
@@ -21,7 +21,7 @@ describe('RecipeForm', () => {
 
   it('submits valid recipe successfully', async () => {
     const user = userEvent.setup();
-    (window.electron.recipeAPI.create as any).mockResolvedValue({
+    (window.electron.recipeAPI.create as Mock).mockResolvedValue({
       success: true,
       recipe: { id: '123', title: 'Test Recipe' },
     });
@@ -54,7 +54,7 @@ describe('RecipeForm', () => {
 
   it('displays validation errors on failure', async () => {
     const user = userEvent.setup();
-    (window.electron.recipeAPI.create as any).mockResolvedValue({
+    (window.electron.recipeAPI.create as Mock).mockResolvedValue({
       success: false,
       errors: [{ field: 'cookingTimeMinutes', message: 'Must be between 30-45 minutes' }],
     });
