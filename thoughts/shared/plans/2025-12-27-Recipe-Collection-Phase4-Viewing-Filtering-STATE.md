@@ -1,8 +1,11 @@
 # State: Phase 4 - Recipe Viewing & Filtering
 
-**Plan**: thoughts/shared/plans/2025-12-27-Recipe-Collection-Phase4-Viewing-Filtering.md  
+**Plan**: thoughts/shared/plans/2025-12-28-Recipe-Collection-Phase4-Viewing-Filtering-UPDATED.md  
+**Original Plan**: thoughts/shared/plans/2025-12-27-Recipe-Collection-Phase4-Viewing-Filtering.md (OUTDATED - see updated plan)  
 **Current Task**: PLAN-401  
 **Completed Tasks**: (none yet)
+
+**IMPORTANT**: The original plan from 2025-12-27 is outdated due to architectural changes (dual-client database, UUID IDs, async DAL). Use the UPDATED plan dated 2025-12-28.
 
 ## Quick Verification
 
