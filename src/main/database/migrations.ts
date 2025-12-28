@@ -113,10 +113,25 @@ function migration001_initialSchema(): void {
   console.log('Migration 001 complete');
 }
 
+// Migration 2: Add created_at index for chronological ordering
+function migration002_addCreatedAtIndex(): void {
+  const version = 2;
+  if (isMigrationApplied(version)) return;
+
+  console.log('Running migration 002: Add created_at index');
+
+  // Create index for chronological ordering (newest first)
+  rawDb.prepare('CREATE INDEX idx_recipes_created_at ON recipes(created_at DESC)').run();
+
+  recordMigration(version, 'add_created_at_index');
+  console.log('Migration 002 complete');
+}
+
 // Run all migrations
 export function runMigrations(): void {
   createMigrationsTable();
   migration001_initialSchema();
+  migration002_addCreatedAtIndex();
   // Future migrations will be added here
   console.log('All migrations applied');
 }
