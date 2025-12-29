@@ -29,6 +29,7 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
         setError(response.errors?.[0]?.message || 'Failed to load recipes'); // CORRECTED: use errors array
       }
     } catch (err) {
+      console.error('Failed to load recipes:', err);
       setError('Failed to load recipes');
     } finally {
       setLoading(false);
@@ -52,6 +53,7 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
         setError(response.errors?.[0]?.message || 'Failed to filter recipes'); // CORRECTED: use errors array
       }
     } catch (err) {
+      console.error('Failed to filter recipes:', err);
       setError('Failed to filter recipes');
     } finally {
       setLoading(false);

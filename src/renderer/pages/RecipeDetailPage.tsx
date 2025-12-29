@@ -27,6 +27,7 @@ export function RecipeDetailPage({ recipeId, onBack }: RecipeDetailPageProps) {
         setError(response.errors?.[0]?.message || 'Recipe not found');
       }
     } catch (err) {
+      console.error('Failed to load recipe:', err);
       setError('Failed to load recipe');
     } finally {
       setLoading(false);
