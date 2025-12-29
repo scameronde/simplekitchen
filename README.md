@@ -53,6 +53,40 @@ npm install
 npm run dev
 ```
 
+## AI Recipe Generation Setup (Phase 5)
+
+SimpleKitchen uses OpenAI's GPT-4o-mini to generate recipes based on your criteria.
+
+### 1. Obtain API Key
+
+1. Sign up at [OpenAI Platform](https://platform.openai.com/)
+2. Create an API key at [API Keys](https://platform.openai.com/api-keys)
+3. Copy the key (starts with `sk-proj-...`)
+
+### 2. Configure
+
+1. Copy `.env.example` to `.env`:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` and add your key:
+
+   ```
+   OPENAI_API_KEY=sk-proj-YOUR_ACTUAL_KEY
+   ```
+
+3. Restart the app
+
+**⚠️ IMPORTANT**: Never commit the `.env` file. It's already in `.gitignore`.
+
+### Cost
+
+AI generation costs ~$0.001 per recipe (less than 1/10th of a cent).
+
+For detailed usage instructions, see [User Guide: AI Recipe Generation](docs/user-guide-ai-generation.md).
+
 ### Available Scripts
 
 - `npm run dev` - Launch application in development mode with hot reload

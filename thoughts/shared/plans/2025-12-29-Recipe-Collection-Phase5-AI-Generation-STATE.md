@@ -1,8 +1,8 @@
 # State: Phase 5 - AI-Powered Recipe Generation
 
 **Plan**: thoughts/shared/plans/2025-12-29-Recipe-Collection-Phase5-AI-Generation.md  
-**Current Task**: PLAN-518  
-**Completed Tasks**: PLAN-501, PLAN-502, PLAN-503, PLAN-504, PLAN-505, PLAN-506, PLAN-507, PLAN-508, PLAN-509, PLAN-510, PLAN-511, PLAN-512, PLAN-513, PLAN-514, PLAN-515, PLAN-516, PLAN-517
+**Current Task**: VERIFY-501  
+**Completed Tasks**: PLAN-501, PLAN-502, PLAN-503, PLAN-504, PLAN-505, PLAN-506, PLAN-507, PLAN-508, PLAN-509, PLAN-510, PLAN-511, PLAN-512, PLAN-513, PLAN-514, PLAN-515, PLAN-516, PLAN-517, PLAN-518
 
 ## Quick Verification
 
@@ -52,7 +52,7 @@ npm run build
 **Completed**: (pending)  
 **Depends On**: Phase 0, 1, 2, 3, 4 MUST be complete  
 **Total Tasks**: 26 (18 implementation + 8 verification)  
-**Completed**: 17 / 26 (65%)
+**Completed**: 18 / 26 (69%)
 
 ## Task Progress
 
@@ -93,7 +93,7 @@ npm run build
 
 - [x] PLAN-516: Create user documentation
 - [x] PLAN-517: Create developer documentation
-- [ ] PLAN-518: Add README section for API key setup
+- [x] PLAN-518: Add README section for API key setup
 
 ### Verification (Priority 5 - FINAL)
 
