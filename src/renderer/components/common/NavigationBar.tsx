@@ -1,8 +1,8 @@
 import { Button } from './Button';
 
 interface NavigationBarProps {
-  currentView: 'add' | 'list' | 'detail';
-  onNavigate: (view: 'add' | 'list') => void;
+  currentView: 'add' | 'list' | 'detail' | 'ai-generation';
+  onNavigate: (view: 'add' | 'list' | 'ai-generation') => void;
 }
 
 export function NavigationBar({ currentView, onNavigate }: NavigationBarProps) {
@@ -19,6 +19,12 @@ export function NavigationBar({ currentView, onNavigate }: NavigationBarProps) {
               variant={currentView === 'add' ? 'primary' : 'secondary'}
             >
               Add Recipe
+            </Button>
+            <Button
+              onClick={() => onNavigate('ai-generation')}
+              variant={currentView === 'ai-generation' ? 'primary' : 'secondary'}
+            >
+              Generate Recipe
             </Button>
             <Button
               onClick={() => onNavigate('list')}

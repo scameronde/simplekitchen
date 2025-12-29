@@ -3,14 +3,15 @@ import { NavigationBar } from './components/common/NavigationBar';
 import { AddRecipePage } from './pages/AddRecipePage';
 import { RecipeListPage } from './pages/RecipeListPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
+import { RecipeGenerationPage } from './pages/RecipeGenerationPage';
 
-type View = 'add' | 'list' | 'detail';
+type View = 'add' | 'list' | 'detail' | 'ai-generation';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('add');
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
 
-  const handleNavigate = (view: 'add' | 'list') => {
+  const handleNavigate = (view: 'add' | 'list' | 'ai-generation') => {
     setCurrentView(view);
     setSelectedRecipeId(null);
   };
@@ -30,6 +31,7 @@ export default function App() {
       <NavigationBar currentView={currentView} onNavigate={handleNavigate} />
 
       {currentView === 'add' && <AddRecipePage />}
+      {currentView === 'ai-generation' && <RecipeGenerationPage />}
       {currentView === 'list' && <RecipeListPage onRecipeClick={handleRecipeClick} />}
       {currentView === 'detail' && selectedRecipeId !== null && (
         <RecipeDetailPage recipeId={selectedRecipeId} onBack={handleBackToList} />
