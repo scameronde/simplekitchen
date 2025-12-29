@@ -10,11 +10,25 @@ import { RecipeGenerationSchema } from './recipe-schema.js';
 import type { RecipeGenerationCriteria, RecipeGenerationResult } from '../../shared/types/ai.js';
 import type { CreateRecipeInput } from '../../shared/types/recipe.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  timeout: 30000, // 30 seconds
-  maxRetries: 2,
-});
+// Lazy-initialize OpenAI client to avoid errors when API key is not set
+// This allows the app to start even without an API key configured
+let openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openai) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error(
+        'OPENAI_API_KEY is not configured. Please add your API key to the .env file.'
+      );
+    }
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      timeout: 30000, // 30 seconds
+      maxRetries: 2,
+    });
+  }
+  return openai;
+}
 
 const SYSTEM_PROMPT = `You are a professional chef with expertise in diverse cuisines. Generate recipes that are:
 - Practical and achievable for home cooks
@@ -104,7 +118,8 @@ export async function generateRecipe(
   criteria: RecipeGenerationCriteria
 ): Promise<RecipeGenerationResult> {
   try {
-    const completion = await openai.chat.completions.parse({
+    const client = getOpenAIClient();
+    const completion = await client.chat.completions.parse({
       model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
