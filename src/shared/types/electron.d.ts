@@ -1,6 +1,7 @@
 // Type definitions for Electron APIs exposed via contextBridge
 
 import type { Recipe, CreateRecipeInput, RecipeFilter } from './recipe';
+import type { RecipeGenerationCriteria, RecipeGenerationResult } from './ai';
 
 export interface ElectronAPI {
   platform: string;
@@ -31,6 +32,7 @@ export interface ElectronAPI {
       recipe?: Recipe[];
       errors?: Array<{ field: string; message: string }>;
     }>;
+    generateRecipe: (criteria: RecipeGenerationCriteria) => Promise<RecipeGenerationResult>;
   };
 }
 
