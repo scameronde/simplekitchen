@@ -46,9 +46,13 @@ describe('RecipeListPage', () => {
     vi.clearAllMocks();
 
     // Mock window.electron.recipeAPI
-    (window as any).electron = {
+    window.electron = {
+      platform: 'test',
+      versions: { node: '', chrome: '', electron: '' },
       recipeAPI: {
+        create: vi.fn(),
         getAll: vi.fn().mockResolvedValue({ success: true, recipe: mockRecipes }),
+        getById: vi.fn(),
         filter: vi.fn().mockResolvedValue({ success: true, recipe: mockRecipes }),
       },
     };
@@ -77,7 +81,7 @@ describe('RecipeListPage', () => {
   });
 
   it('displays error state on failure', async () => {
-    (window as any).electron.recipeAPI.getAll = vi.fn().mockResolvedValue({
+    window.electron.recipeAPI.getAll = vi.fn().mockResolvedValue({
       success: false,
       errors: [{ field: 'database', message: 'Database error' }],
     });
@@ -117,7 +121,7 @@ describe('RecipeListPage', () => {
     await user.click(applyButton);
 
     await waitFor(() => {
-      expect((window as any).electron.recipeAPI.filter).toHaveBeenCalled();
+      expect(window.electron.recipeAPI.filter).toHaveBeenCalled();
     });
   });
 });
