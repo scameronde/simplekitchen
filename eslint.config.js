@@ -107,6 +107,27 @@ export default [
     },
   },
   {
+    files: ['e2e/**/*.spec.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        process: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
+    rules: {
+      ...tsPlugin.configs.recommended.rules,
+    },
+  },
+  {
     files: ['*.config.ts', 'vitest.setup.ts'],
     languageOptions: {
       parser: tsParser,
