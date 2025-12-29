@@ -88,6 +88,24 @@ export default [
     },
   },
   {
+    files: ['src/shared/types/**/*.ts', 'src/shared/constants/**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
+    rules: {
+      ...tsPlugin.configs.recommended.rules,
+      'no-unused-vars': 'off', // Use TypeScript's unused check instead
+      '@typescript-eslint/no-unused-vars': 'off', // These are type definitions
+    },
+  },
+  {
     files: ['*.config.ts', 'vitest.setup.ts'],
     languageOptions: {
       parser: tsParser,
