@@ -7,6 +7,9 @@
 import type { DietaryTag } from '../types/recipe';
 
 /**
+ * Reserved for UI display of dietary tag labels.
+ * Maps dietary tag IDs to human-readable display names.
+ *
  * Canonical list of dietary tags with display labels.
  * Must match the DietaryTag type definition in database.ts.
  */
