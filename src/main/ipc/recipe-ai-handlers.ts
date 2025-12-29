@@ -13,7 +13,7 @@ import type { RecipeGenerationCriteria } from '../../shared/types/ai.js';
  */
 function validateSender(frame: WebFrameMain): boolean {
   const url = new URL(frame.url);
-  return url.protocol === 'file:' || url.host === 'localhost';
+  return url.protocol === 'file:' || url.hostname === 'localhost';
 }
 
 /**
