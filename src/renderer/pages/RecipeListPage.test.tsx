@@ -64,11 +64,16 @@ describe('RecipeListPage', () => {
     });
   });
 
-  it('displays loading state initially', () => {
+  it('displays loading state initially', async () => {
     const onRecipeClick = vi.fn();
     render(<RecipeListPage onRecipeClick={onRecipeClick} />);
 
     expect(screen.getByText('Loading recipes...')).toBeInTheDocument();
+
+    // Wait for the loading state to resolve
+    await waitFor(() => {
+      expect(screen.queryByText('Loading recipes...')).not.toBeInTheDocument();
+    });
   });
 
   it('displays error state on failure', async () => {

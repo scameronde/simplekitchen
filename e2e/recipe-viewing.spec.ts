@@ -1,8 +1,30 @@
 import { test, expect } from '@playwright/test';
-import { _electron as electron } from 'playwright';
+import { _electron as electron, Page } from 'playwright';
+
+// Helper function to create a test recipe
+async function createTestRecipe(window: Page) {
+  // Fill recipe form
+  await window.fill('#input-recipe-title', 'E2E Test Recipe');
+  await window.fill('#input-cooking-time-\\(minutes\\)', '35');
+  await window.selectOption('#select-cookware-type', 'one-pan');
+
+  // Fill ingredient
+  await window.fill('input[placeholder="Name"]', 'rice');
+  await window.fill('input[placeholder="Qty"]', '200');
+  await window.fill('input[placeholder="Unit"]', 'g');
+
+  // Select seasonality - check "any"
+  await window.click('text=Any Season');
+
+  // Submit
+  await window.click('button:has-text("Save Recipe")');
+
+  // Wait for success message
+  await expect(window.locator('text=Recipe added successfully!')).toBeVisible({ timeout: 5000 });
+}
 
 test.describe('Recipe Viewing and Filtering', () => {
-  test.beforeEach(async ({ page }) => {
+  test('navigates to recipe list and displays recipes', async () => {
     const electronApp = await electron.launch({
       args: ['.'],
       env: {
@@ -14,33 +36,8 @@ test.describe('Recipe Viewing and Filtering', () => {
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
 
-    // Create a test recipe first
-    await window.click('text=Add Recipe');
-    await window.fill('input[name="title"]', 'E2E Test Recipe');
-    await window.fill('input[name="cookingTime"]', '35');
-    await window.selectOption('select[name="cookwareType"]', 'one-pan');
-    await window.fill('input[name="ingredients[0].name"]', 'test ingredient');
-    await window.fill('input[name="ingredients[0].quantity"]', '1');
-    await window.fill('input[name="ingredients[0].unit"]', 'cup');
-    await window.click('button:has-text("Add Recipe")');
-
-    // Wait for success message
-    await expect(window.locator('text=Recipe added successfully')).toBeVisible();
-
-    // Store window for tests
-    (page as any).electronApp = electronApp;
-    (page as any).window = window;
-  });
-
-  test.afterEach(async ({ page }) => {
-    const electronApp = (page as any).electronApp;
-    if (electronApp) {
-      await electronApp.close();
-    }
-  });
-
-  test('navigates to recipe list and displays recipes', async ({ page }) => {
-    const window = (page as any).window;
+    // Create a test recipe
+    await createTestRecipe(window);
 
     // Navigate to View Recipes
     await window.click('text=View Recipes');
@@ -48,13 +45,28 @@ test.describe('Recipe Viewing and Filtering', () => {
     // Verify recipe list page loads
     await expect(window.locator('h1:has-text("My Recipes")')).toBeVisible();
 
-    // Verify test recipe is displayed
-    await expect(window.locator('text=E2E Test Recipe')).toBeVisible();
+    // Verify test recipe is displayed (use .first() since there may be multiple recipes from previous tests)
+    await expect(window.locator('text=E2E Test Recipe').first()).toBeVisible();
+
+    await electronApp.close();
   });
 
-  test('filters recipes by cooking time', async ({ page }) => {
-    const window = (page as any).window;
+  test('filters recipes by cooking time', async () => {
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+      },
+    });
 
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
+
+    // Create a test recipe
+    await createTestRecipe(window);
+
+    // Navigate to View Recipes
     await window.click('text=View Recipes');
 
     // Adjust time range sliders
@@ -66,11 +78,26 @@ test.describe('Recipe Viewing and Filtering', () => {
 
     // Verify recipe is filtered out (cooking time 35 < 40)
     await expect(window.locator('text=E2E Test Recipe')).not.toBeVisible();
+
+    await electronApp.close();
   });
 
-  test('filters recipes by cookware type', async ({ page }) => {
-    const window = (page as any).window;
+  test('filters recipes by cookware type', async () => {
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+      },
+    });
 
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
+
+    // Create a test recipe
+    await createTestRecipe(window);
+
+    // Navigate to View Recipes
     await window.click('text=View Recipes');
 
     // Select only "oven" cookware
@@ -81,11 +108,26 @@ test.describe('Recipe Viewing and Filtering', () => {
 
     // Verify recipe is filtered out (cookware is one-pan, not oven)
     await expect(window.locator('text=E2E Test Recipe')).not.toBeVisible();
+
+    await electronApp.close();
   });
 
-  test('clears filters and shows all recipes', async ({ page }) => {
-    const window = (page as any).window;
+  test('clears filters and shows all recipes', async () => {
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+      },
+    });
 
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
+
+    // Create a test recipe
+    await createTestRecipe(window);
+
+    // Navigate to View Recipes
     await window.click('text=View Recipes');
 
     // Apply a filter
@@ -95,34 +137,66 @@ test.describe('Recipe Viewing and Filtering', () => {
     // Clear filters
     await window.click('button:has-text("Clear Filters")');
 
-    // Verify recipe is visible again
-    await expect(window.locator('text=E2E Test Recipe')).toBeVisible();
+    // Verify recipe is visible again (use .first() since there may be multiple recipes from previous tests)
+    await expect(window.locator('text=E2E Test Recipe').first()).toBeVisible();
+
+    await electronApp.close();
   });
 
-  test('navigates to recipe detail page', async ({ page }) => {
-    const window = (page as any).window;
+  test('navigates to recipe detail page', async () => {
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+      },
+    });
 
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
+
+    // Create a test recipe
+    await createTestRecipe(window);
+
+    // Navigate to View Recipes
     await window.click('text=View Recipes');
 
-    // Click on recipe card
-    await window.click('text=E2E Test Recipe');
+    // Click on recipe card (use .first() since there may be multiple recipes from previous tests)
+    await window.locator('text=E2E Test Recipe').first().click();
 
     // Verify detail page loads
     await expect(window.locator('h1:has-text("E2E Test Recipe")')).toBeVisible();
-    await expect(window.locator('text=test ingredient')).toBeVisible();
-    await expect(window.locator('text=1 cup')).toBeVisible();
+    await expect(window.locator('text=rice')).toBeVisible();
+    await expect(window.locator('text=200 g')).toBeVisible();
+
+    await electronApp.close();
   });
 
-  test('navigates back from detail page to list', async ({ page }) => {
-    const window = (page as any).window;
+  test('navigates back from detail page to list', async () => {
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+      },
+    });
 
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
+
+    // Create a test recipe
+    await createTestRecipe(window);
+
+    // Navigate to View Recipes
     await window.click('text=View Recipes');
-    await window.click('text=E2E Test Recipe');
+    await window.locator('text=E2E Test Recipe').first().click();
 
     // Click back button
     await window.click('button:has-text("Back to Recipes")');
 
     // Verify back on list page
     await expect(window.locator('h1:has-text("My Recipes")')).toBeVisible();
+
+    await electronApp.close();
   });
 });

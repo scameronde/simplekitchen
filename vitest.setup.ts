@@ -25,3 +25,6 @@ globalThis.window.electron = {
     filter: vi.fn(),
   },
 };
+
+// Mock window.scrollTo to prevent jsdom warnings
+globalThis.window.scrollTo = vi.fn();
