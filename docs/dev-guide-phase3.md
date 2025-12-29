@@ -27,7 +27,7 @@ App
         │   ├── Input (title, cooking time, prep time)
         │   └── Select (cookware type)
         ├── RecipeDietaryTags
-        │   └── Checkbox[] (7 dietary tags)
+        │   └── Checkbox[] (5 dietary tags)
         ├── RecipeSeasonality
         │   └── Checkbox[] (5 seasons)
         ├── IngredientList

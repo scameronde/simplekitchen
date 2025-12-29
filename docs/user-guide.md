@@ -17,7 +17,7 @@ Add your favorite recipes manually to SimpleKitchen through an intuitive form in
    - **Servings**: Fixed at 2 people
 
 3. **Select Dietary Tags** (optional):
-   - Check any that apply: Gluten-Free, Lactose-Free, Vegetarian, Vegan, Low-Carb, Keto, Paleo
+   - Check any that apply: Gluten-Free, Lactose-Free, Vegetarian, Vegan, Pescatarian
 
 4. **Choose Seasonality** (optional):
    - Select when the recipe is best: Spring, Summer, Fall, Winter, or Any Season
@@ -115,8 +115,6 @@ Use the filter panel on the left to narrow down your recipe collection:
   - vegetarian
   - vegan
   - pescatarian
-  - nut-free
-  - soy-free
 - Only recipes with ALL selected tags will be shown
 
 #### Applying Filters

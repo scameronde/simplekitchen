@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Checkbox } from '../common/Checkbox';
 import { Button } from '../common/Button';
 import type { CookwareType, DietaryTag } from '../../../shared/types/recipe';
+import { DIETARY_TAG_OPTIONS } from '../../../shared/constants/dietary-tags';
 
 // Local state mirrors RecipeFilter structure
 export interface FilterState {
@@ -16,13 +17,6 @@ interface FilterControlsProps {
 }
 
 const COOKWARE_OPTIONS: CookwareType[] = ['one-pot', 'one-pan', 'oven'];
-const DIETARY_OPTIONS: DietaryTag[] = [
-  'gluten-free',
-  'lactose-free',
-  'vegetarian',
-  'vegan',
-  'pescatarian',
-];
 
 export function FilterControls({ onFilterChange }: FilterControlsProps) {
   const [minTime, setMinTime] = useState(30);
@@ -114,12 +108,12 @@ export function FilterControls({ onFilterChange }: FilterControlsProps) {
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">Dietary Tags</label>
         <div className="space-y-2">
-          {DIETARY_OPTIONS.map(tag => (
+          {DIETARY_TAG_OPTIONS.map(tag => (
             <Checkbox
-              key={tag}
-              label={tag}
-              checked={selectedDietary.includes(tag)}
-              onChange={() => handleDietaryToggle(tag)}
+              key={tag.value}
+              label={tag.label}
+              checked={selectedDietary.includes(tag.value)}
+              onChange={() => handleDietaryToggle(tag.value)}
             />
           ))}
         </div>
