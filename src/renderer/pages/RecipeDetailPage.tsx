@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../components/common/Button';
 import type { Recipe } from '../../shared/types/recipe';
 
@@ -12,11 +12,7 @@ export function RecipeDetailPage({ recipeId, onBack }: RecipeDetailPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadRecipe();
-  }, [recipeId]);
-
-  const loadRecipe = async () => {
+  const loadRecipe = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -32,7 +28,11 @@ export function RecipeDetailPage({ recipeId, onBack }: RecipeDetailPageProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [recipeId]);
+
+  useEffect(() => {
+    loadRecipe();
+  }, [loadRecipe]);
 
   if (loading) {
     return (
