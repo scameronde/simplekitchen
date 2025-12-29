@@ -67,7 +67,7 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   // Aged cheese (very low lactose, often tolerated - user can add to explicit_inclusions if desired)
   { name: 'parmesan', dietaryProperties: ['contains-lactose'] }, // Conservative: still flag it
   { name: 'aged cheddar', dietaryProperties: ['contains-lactose'] }, // Conservative
-  
+
   // Dairy alternatives (lactose-free)
   { name: 'almond milk', dietaryProperties: ['none'] },
   { name: 'oat milk', dietaryProperties: ['none'] },
@@ -192,12 +192,14 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
 // Lookup ingredient by name (case-insensitive, checks aliases)
 export function lookupIngredient(name: string): IngredientData | null {
   const normalized = name.toLowerCase().trim();
-  
-  return INGREDIENT_DATABASE.find(item => {
-    if (item.name.toLowerCase() === normalized) return true;
-    if (item.aliases?.some(alias => alias.toLowerCase() === normalized)) return true;
-    return false;
-  }) || null;
+
+  return (
+    INGREDIENT_DATABASE.find(item => {
+      if (item.name.toLowerCase() === normalized) return true;
+      if (item.aliases?.some(alias => alias.toLowerCase() === normalized)) return true;
+      return false;
+    }) || null
+  );
 }
 
 // Get dietary properties for ingredient name (returns 'unknown' if not in database)
