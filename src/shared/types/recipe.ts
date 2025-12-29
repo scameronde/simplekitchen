@@ -6,7 +6,7 @@
 
 import type { CookwareType, Season, SourceType, DietaryTag, DietaryProperty } from './database';
 
-export type { CookwareType, Season, SourceType, DietaryTag, DietaryProperty } from './database';
+export type { CookwareType, Season, DietaryTag } from './database';
 
 // Application-level Recipe (JSON fields parsed)
 export interface Recipe {
