@@ -1,8 +1,8 @@
 # State: Phase 5 - AI-Powered Recipe Generation
 
 **Plan**: thoughts/shared/plans/2025-12-29-Recipe-Collection-Phase5-AI-Generation.md  
-**Current Task**: PLAN-508  
-**Completed Tasks**: PLAN-501, PLAN-502, PLAN-503, PLAN-504, PLAN-505, PLAN-506, PLAN-507
+**Current Task**: PLAN-509  
+**Completed Tasks**: PLAN-501, PLAN-502, PLAN-503, PLAN-504, PLAN-505, PLAN-506, PLAN-507, PLAN-508
 
 ## Quick Verification
 
@@ -52,7 +52,7 @@ npm run build
 **Completed**: (pending)  
 **Depends On**: Phase 0, 1, 2, 3, 4 MUST be complete  
 **Total Tasks**: 26 (18 implementation + 8 verification)  
-**Completed**: 7 / 26 (27%)
+**Completed**: 8 / 26 (31%)
 
 ## Task Progress
 
@@ -74,7 +74,7 @@ npm run build
 
 ### IPC Bridge (Priority 1 - CRITICAL PATH)
 
-- [ ] PLAN-508: Update preload.ts to expose generateRecipe
+- [x] PLAN-508: Update preload.ts to expose generateRecipe
 - [ ] PLAN-509: Update electron.d.ts with generateRecipe type
 
 ### UI (Priority 2)
