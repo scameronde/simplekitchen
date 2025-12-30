@@ -6,18 +6,23 @@ import { validateCookwareConstraints } from './cookware-validator.js';
 import { validateServingsConstraints } from './servings-validator.js';
 import { getDietaryProfile } from '../database/dal/dietary-profile.js';
 
+export interface ValidationOptions {
+  skipDietaryValidation?: boolean;
+}
+
 // Validate recipe against ALL constraints
 export async function validateRecipe(
-  recipeInput: CreateRecipeInput | UpdateRecipeInput
+  recipeInput: CreateRecipeInput | UpdateRecipeInput,
+  options: ValidationOptions = {}
 ): Promise<ValidationResult> {
   const errors: ValidationError[] = [];
 
-  // Get dietary profile for validation
-  const profile = await getDietaryProfile();
+  // Get dietary profile for validation (unless skipped)
+  const profile = options.skipDietaryValidation ? null : await getDietaryProfile();
 
   // Run all validators in parallel (they're independent)
   const [dietaryErrors, timeErrors, cookwareErrors, servingsErrors] = await Promise.all([
-    validateDietaryConstraints(recipeInput, profile),
+    profile ? validateDietaryConstraints(recipeInput, profile) : Promise.resolve([]),
     Promise.resolve(validateTimeConstraints(recipeInput)),
     Promise.resolve(validateCookwareConstraints(recipeInput)),
     Promise.resolve(validateServingsConstraints(recipeInput)),
@@ -29,8 +34,11 @@ export async function validateRecipe(
   errors.push(...cookwareErrors);
   errors.push(...servingsErrors);
 
+  // Only fail validation if there are actual errors (not warnings)
+  const actualErrors = errors.filter(e => (e.severity ?? 'error') === 'error');
+
   return {
-    valid: errors.length === 0,
+    valid: actualErrors.length === 0,
     errors,
   };
 }

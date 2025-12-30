@@ -42,6 +42,10 @@ CRITICAL CONSTRAINTS (NEVER violate):
 - Cookware: MUST use only ONE piece of cookware (one pot OR one pan OR oven)
 - Dietary restrictions: MUST comply with specified tags
 
+REQUIRED FIELDS:
+- Always provide prepTimeMinutes (0-30 minutes) or set to null if no prep needed
+- Always provide instructions (detailed step-by-step) or set to null if extremely simple
+
 When specifying ingredients:
 - Mark dietary properties accurately (contains-gluten, contains-lactose, etc.)
 - Use common units (cup, tbsp, tsp, oz, lb, g, ml)
@@ -135,15 +139,16 @@ export async function generateRecipe(
       const generated = completion.choices[0].message.parsed;
 
       // Convert to CreateRecipeInput format
+      // Note: Convert null to undefined for optional fields
       const recipe: CreateRecipeInput = {
         title: generated.title,
         cookingTimeMinutes: generated.cookingTimeMinutes,
-        prepTimeMinutes: generated.prepTimeMinutes,
+        prepTimeMinutes: generated.prepTimeMinutes ?? undefined,
         cookwareType: generated.cookwareType,
         servings: generated.servings,
         dietaryTags: generated.dietaryTags,
         seasonality: generated.seasonality,
-        instructions: generated.instructions,
+        instructions: generated.instructions ?? undefined,
         ingredients: generated.ingredients,
         sourceType: 'ai-generated',
         sourceReference: `OpenAI gpt-4o-mini (${new Date().toISOString()})`,

@@ -155,10 +155,13 @@ describe('RecipeGenerationSchema', () => {
   const validRecipe: RecipeGenerationOutput = {
     title: 'One-Pot Chicken and Rice',
     cookingTimeMinutes: 35,
+    prepTimeMinutes: 10,
     cookwareType: 'one-pot',
     servings: 2,
     dietaryTags: ['gluten-free', 'lactose-free'],
     seasonality: ['fall', 'winter'],
+    instructions:
+      'Heat oil in pot. Add chicken and cook until golden. Add rice and water. Simmer for 20 minutes.',
     ingredients: [
       {
         name: 'chicken breast',
@@ -184,30 +187,25 @@ describe('RecipeGenerationSchema', () => {
       expect(() => RecipeGenerationSchema.parse(validRecipe)).not.toThrow();
     });
 
-    it('should validate recipe without optional fields', () => {
+    it('should validate recipe with all fields', () => {
       expect(() => RecipeGenerationSchema.parse(validRecipe)).not.toThrow();
     });
 
-    it('should validate recipe with prepTimeMinutes', () => {
-      const recipe = { ...validRecipe, prepTimeMinutes: 15 };
+    it('should validate recipe with null prepTimeMinutes', () => {
+      const recipe = { ...validRecipe, prepTimeMinutes: null };
       expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
     });
 
-    it('should validate recipe with instructions', () => {
-      const recipe = {
-        ...validRecipe,
-        instructions:
-          'Heat oil in pot. Add chicken and cook until browned. Add rice and water. Simmer for 20 minutes.',
-      };
+    it('should validate recipe with null instructions', () => {
+      const recipe = { ...validRecipe, instructions: null };
       expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
     });
 
-    it('should validate recipe with all optional fields', () => {
+    it('should validate recipe with both fields as null', () => {
       const recipe = {
         ...validRecipe,
-        prepTimeMinutes: 20,
-        instructions:
-          'Detailed step-by-step instructions for preparing this delicious one-pot meal.',
+        prepTimeMinutes: null,
+        instructions: null,
       };
       expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
     });

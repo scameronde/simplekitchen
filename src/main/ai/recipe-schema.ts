@@ -21,14 +21,14 @@ export const IngredientGenerationSchema = z.object({
 export const RecipeGenerationSchema = z.object({
   title: z.string().min(1).max(200),
   cookingTimeMinutes: z.number().int().min(30).max(45),
-  prepTimeMinutes: z.number().int().min(0).max(30).optional(),
+  prepTimeMinutes: z.number().int().min(0).max(30).nullable(),
   cookwareType: z.enum(['one-pot', 'one-pan', 'oven']),
   servings: z.literal(2),
   dietaryTags: z.array(
     z.enum(['gluten-free', 'lactose-free', 'vegetarian', 'vegan', 'pescatarian'])
   ),
   seasonality: z.array(z.enum(['spring', 'summer', 'fall', 'winter', 'any'])),
-  instructions: z.string().min(50).max(5000).optional(),
+  instructions: z.string().min(50).max(5000).nullable(),
   ingredients: z.array(IngredientGenerationSchema).min(1).max(30),
 });
 

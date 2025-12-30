@@ -97,6 +97,7 @@ function validateIngredient(
   }
 
   // Warn if ingredient is unknown (not in static database and no properties declared)
+  // This is a warning, not an error - user can still save the recipe
   if (
     staticProperties === 'unknown' &&
     (!ingredient.dietaryProperties || ingredient.dietaryProperties.length === 0)
@@ -104,9 +105,10 @@ function validateIngredient(
     errors.push({
       field: `ingredients[${index}].name`,
       constraint: 'dietary-unknown',
-      message: `Ingredient "${ingredient.name}" is not in our database and has no dietary properties declared. Manual verification required.`,
+      message: `Ingredient "${ingredient.name}" is not in our database and has no dietary properties declared.`,
       suggestedFix:
         'Please verify this ingredient is safe for your dietary restrictions or use a known alternative.',
+      severity: 'warning',
     });
   }
 

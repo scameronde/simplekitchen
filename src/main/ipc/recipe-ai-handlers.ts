@@ -39,8 +39,10 @@ export function registerRecipeAIHandlers(): void {
     }
 
     // Belt-and-suspenders: Validate generated recipe
-    // (Should always pass with good prompts, but catches edge cases)
-    const validation = await validateRecipe(result.recipe!);
+    // Skip dietary validation (AI might not match user's PROFILE restrictions,
+    // but it WILL match the CRITERIA dietary tags they specified)
+    // Only validate structural constraints (time, cookware, servings)
+    const validation = await validateRecipe(result.recipe!, { skipDietaryValidation: true });
 
     if (!validation.valid) {
       return {

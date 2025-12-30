@@ -10,6 +10,7 @@ export interface ValidationError {
   constraint: string; // Constraint type identifier
   message: string; // Human-readable error message
   suggestedFix?: string; // Optional suggestion for user
+  severity?: 'error' | 'warning'; // Severity level (defaults to 'error')
 }
 
 // Validation result
