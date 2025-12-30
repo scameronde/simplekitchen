@@ -8,8 +8,8 @@ SimpleKitchen lifts the cognitive load of deciding what to cook on busy weeknigh
 
 ## Project Status
 
-**Current Phase**: Phase 3 - Manual Recipe Entry (Complete)  
-**Next Phase**: Phase 4 - Recipe Viewing & Filtering
+**Current Phase**: Phase 5 - AI-Powered Recipe Generation (Complete)  
+**Next Phase**: Phase 6 - Web Recipe Import
 
 **Completed Phases:**
 
@@ -17,6 +17,8 @@ SimpleKitchen lifts the cognitive load of deciding what to cook on busy weeknigh
 - ✅ Phase 1: Data Model & Persistence Foundation
 - ✅ Phase 2: Constraint Validation System
 - ✅ Phase 3: Manual Recipe Entry UI with E2E Tests
+- ✅ Phase 4: Recipe Viewing & Filtering
+- ✅ Phase 5: AI-Powered Recipe Generation
 
 See `thoughts/shared/plans/` for detailed implementation plans.
 
