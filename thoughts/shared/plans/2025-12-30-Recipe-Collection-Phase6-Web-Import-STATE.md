@@ -1,8 +1,8 @@
 # State: Phase 6 - Web Recipe Import
 
 **Plan**: thoughts/shared/plans/2025-12-30-Recipe-Collection-Phase6-Web-Import.md  
-**Current Task**: PLAN-614  
-**Completed Tasks**: PLAN-601, PLAN-602, PLAN-603, PLAN-604, PLAN-605, PLAN-606, PLAN-607, PLAN-608, PLAN-609, PLAN-610, PLAN-611, PLAN-612, PLAN-613
+**Current Task**: PLAN-615  
+**Completed Tasks**: PLAN-601, PLAN-602, PLAN-603, PLAN-604, PLAN-605, PLAN-606, PLAN-607, PLAN-608, PLAN-609, PLAN-610, PLAN-611, PLAN-612, PLAN-613, PLAN-614
 
 ## Quick Verification
 
@@ -27,7 +27,7 @@ npm run build
 - [x] PLAN-611: Unit tests for importer
 - [x] PLAN-612: Integration tests for IPC
 - [x] PLAN-613: E2E test for import workflow
-- [ ] PLAN-614: User guide
+- [x] PLAN-614: User guide
 - [ ] PLAN-615: Developer guide
 - [ ] PLAN-616: Update README
 - [ ] VERIFY-601: Manual import from real sites
