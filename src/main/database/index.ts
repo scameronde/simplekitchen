@@ -1,8 +1,18 @@
 /**
  * @module database
  * Public database API for recipe management.
+ *
+ * This barrel file provides a stable public interface for the database layer.
  * Many functions are exported for future phases but not yet used in Phase 3.
  * See Phase 4 plan for recipe browsing/filtering usage.
+ *
+ * NOTE: Current internal code imports directly from DAL files (e.g., './dal/recipes.js')
+ * rather than using this barrel file. These exports are intentional and provide:
+ * 1. A stable public API surface for future extension
+ * 2. A clear contract for external modules
+ * 3. Forward compatibility for planned features (Phase 4+)
+ *
+ * These exports are NOT dead code - they are part of the public API design.
  */
 
 // Database initialization and connection
