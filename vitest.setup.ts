@@ -23,6 +23,8 @@ globalThis.window.electron = {
     getAll: vi.fn(),
     getById: vi.fn(),
     filter: vi.fn(),
+    generateRecipe: vi.fn(),
+    importRecipe: vi.fn(),
   },
 };
 
