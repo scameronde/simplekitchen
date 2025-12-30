@@ -1,8 +1,8 @@
 # State: Phase 6 - Web Recipe Import
 
 **Plan**: thoughts/shared/plans/2025-12-30-Recipe-Collection-Phase6-Web-Import.md  
-**Current Task**: PLAN-602  
-**Completed Tasks**: PLAN-601
+**Current Task**: PLAN-603  
+**Completed Tasks**: PLAN-601, PLAN-602
 
 ## Quick Verification
 
