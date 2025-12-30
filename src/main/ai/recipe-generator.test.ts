@@ -7,6 +7,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { RecipeGenerationCriteria } from '../../shared/types/ai.js';
 
+// Type for mocked OpenAI constructor with error classes
+interface MockOpenAIConstructor {
+  (): {
+    chat: {
+      completions: {
+        parse: ReturnType<typeof vi.fn>;
+      };
+    };
+  };
+  RateLimitError: new (message: string) => Error & {
+    headers?: { get?: (key: string) => string | null };
+  };
+  AuthenticationError: new (message: string) => Error;
+  APIConnectionError: new (message: string) => Error;
+  APIConnectionTimeoutError: new (message: string) => Error;
+}
+
 // Hoist mock functions BEFORE vi.mock() to prevent real OpenAI SDK from being imported
 const { mockParse: hoistedMockParse, mockOpenAI } = vi.hoisted(() => {
   const mockParse = vi.fn();
@@ -53,10 +70,11 @@ vi.mock('openai', () => {
   }
 
   // Attach error classes as static properties
-  (mockOpenAI as any).RateLimitError = MockRateLimitError;
-  (mockOpenAI as any).AuthenticationError = MockAuthenticationError;
-  (mockOpenAI as any).APIConnectionError = MockAPIConnectionError;
-  (mockOpenAI as any).APIConnectionTimeoutError = MockAPIConnectionTimeoutError;
+  (mockOpenAI as unknown as MockOpenAIConstructor).RateLimitError = MockRateLimitError;
+  (mockOpenAI as unknown as MockOpenAIConstructor).AuthenticationError = MockAuthenticationError;
+  (mockOpenAI as unknown as MockOpenAIConstructor).APIConnectionError = MockAPIConnectionError;
+  (mockOpenAI as unknown as MockOpenAIConstructor).APIConnectionTimeoutError =
+    MockAPIConnectionTimeoutError;
 
   return { default: mockOpenAI };
 });
@@ -243,7 +261,9 @@ describe('Recipe Generator', () => {
 
   describe('Error Handling', () => {
     it('should handle rate limit error with retry-after header', async () => {
-      const error = new (OpenAI as any).RateLimitError('Rate limit exceeded');
+      const error = new (OpenAI as unknown as MockOpenAIConstructor).RateLimitError(
+        'Rate limit exceeded'
+      );
       error.headers = {
         get: (key: string) => (key === 'retry-after' ? '120' : null),
       };
@@ -259,7 +279,9 @@ describe('Recipe Generator', () => {
     });
 
     it('should handle rate limit error without retry-after header', async () => {
-      const error = new (OpenAI as any).RateLimitError('Rate limit exceeded');
+      const error = new (OpenAI as unknown as MockOpenAIConstructor).RateLimitError(
+        'Rate limit exceeded'
+      );
       error.headers = {
         get: () => null,
       };
@@ -274,7 +296,9 @@ describe('Recipe Generator', () => {
     });
 
     it('should handle authentication error', async () => {
-      const error = new (OpenAI as any).AuthenticationError('Invalid API key');
+      const error = new (OpenAI as unknown as MockOpenAIConstructor).AuthenticationError(
+        'Invalid API key'
+      );
       mockParse.mockRejectedValue(error);
 
       const result = await generateRecipe({ dietaryTags: ['vegan'] });
@@ -285,7 +309,9 @@ describe('Recipe Generator', () => {
     });
 
     it('should handle network error', async () => {
-      const error = new (OpenAI as any).APIConnectionError('Network unavailable');
+      const error = new (OpenAI as unknown as MockOpenAIConstructor).APIConnectionError(
+        'Network unavailable'
+      );
       mockParse.mockRejectedValue(error);
 
       const result = await generateRecipe({ dietaryTags: ['gluten-free'] });
@@ -296,7 +322,9 @@ describe('Recipe Generator', () => {
     });
 
     it('should handle timeout error', async () => {
-      const error = new (OpenAI as any).APIConnectionTimeoutError('Request timed out');
+      const error = new (OpenAI as unknown as MockOpenAIConstructor).APIConnectionTimeoutError(
+        'Request timed out'
+      );
       mockParse.mockRejectedValue(error);
 
       const result = await generateRecipe({ dietaryTags: ['lactose-free'] });
