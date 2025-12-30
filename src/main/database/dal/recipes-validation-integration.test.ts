@@ -153,7 +153,7 @@ describe('Recipe DAL with Validation Integration', () => {
     // So test a different structural constraint instead
     await expect(
       updateRecipe(recipe.id, {
-        cookwareType: 'invalid-type' as any, // Type casting to test runtime validation
+        cookwareType: 'invalid-type' as unknown as CookwareType, // Type casting to test runtime validation
       })
     ).rejects.toThrow();
   });
