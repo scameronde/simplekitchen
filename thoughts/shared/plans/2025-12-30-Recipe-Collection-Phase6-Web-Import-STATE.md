@@ -1,8 +1,8 @@
 # State: Phase 6 - Web Recipe Import
 
 **Plan**: thoughts/shared/plans/2025-12-30-Recipe-Collection-Phase6-Web-Import.md  
-**Current Task**: PLAN-613  
-**Completed Tasks**: PLAN-601, PLAN-602, PLAN-603, PLAN-604, PLAN-605, PLAN-606, PLAN-607, PLAN-608, PLAN-609, PLAN-610, PLAN-611, PLAN-612
+**Current Task**: PLAN-614  
+**Completed Tasks**: PLAN-601, PLAN-602, PLAN-603, PLAN-604, PLAN-605, PLAN-606, PLAN-607, PLAN-608, PLAN-609, PLAN-610, PLAN-611, PLAN-612, PLAN-613
 
 ## Quick Verification
 
@@ -14,19 +14,19 @@ npm run build
 
 ## Task Checklist
 
-- [ ] PLAN-601: Schema.org type definitions
-- [ ] PLAN-602: Web recipe importer
-- [ ] PLAN-603: Schema.org adapter
-- [ ] PLAN-604: IPC handler
-- [ ] PLAN-605: Register handlers in main.ts
-- [ ] PLAN-606: Update preload.ts
-- [ ] PLAN-607: Update electron.d.ts
-- [ ] PLAN-608: RecipeImportPage component
-- [ ] PLAN-609: Update App.tsx navigation
-- [ ] PLAN-610: Unit tests for adapter
-- [ ] PLAN-611: Unit tests for importer
-- [ ] PLAN-612: Integration tests for IPC
-- [ ] PLAN-613: E2E test for import workflow
+- [x] PLAN-601: Schema.org type definitions
+- [x] PLAN-602: Web recipe importer
+- [x] PLAN-603: Schema.org adapter
+- [x] PLAN-604: IPC handler
+- [x] PLAN-605: Register handlers in main.ts
+- [x] PLAN-606: Update preload.ts
+- [x] PLAN-607: Update electron.d.ts
+- [x] PLAN-608: RecipeImportPage component
+- [x] PLAN-609: Update App.tsx navigation
+- [x] PLAN-610: Unit tests for adapter
+- [x] PLAN-611: Unit tests for importer
+- [x] PLAN-612: Integration tests for IPC
+- [x] PLAN-613: E2E test for import workflow
 - [ ] PLAN-614: User guide
 - [ ] PLAN-615: Developer guide
 - [ ] PLAN-616: Update README
