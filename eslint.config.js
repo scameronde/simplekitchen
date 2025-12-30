@@ -23,6 +23,7 @@ export default [
         console: 'readonly',
         Buffer: 'readonly',
         performance: 'readonly',
+        URL: 'readonly',
       },
     },
     plugins: {
@@ -52,6 +53,8 @@ export default [
         HTMLButtonElement: 'readonly',
         HTMLInputElement: 'readonly',
         HTMLSelectElement: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
       },
     },
     plugins: {
@@ -134,6 +137,7 @@ export default [
       globals: {
         __dirname: 'readonly',
         process: 'readonly',
+        Window: 'readonly',
       },
     },
   },
