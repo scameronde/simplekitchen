@@ -4,14 +4,15 @@ import { AddRecipePage } from './pages/AddRecipePage';
 import { RecipeListPage } from './pages/RecipeListPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { RecipeGenerationPage } from './pages/RecipeGenerationPage';
+import { RecipeImportPage } from './pages/RecipeImportPage';
 
-type View = 'add' | 'list' | 'detail' | 'ai-generation';
+type View = 'add' | 'list' | 'detail' | 'ai-generation' | 'import';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('add');
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
 
-  const handleNavigate = (view: 'add' | 'list' | 'ai-generation') => {
+  const handleNavigate = (view: 'add' | 'list' | 'ai-generation' | 'import') => {
     setCurrentView(view);
     setSelectedRecipeId(null);
   };
@@ -32,6 +33,7 @@ export default function App() {
 
       {currentView === 'add' && <AddRecipePage />}
       {currentView === 'ai-generation' && <RecipeGenerationPage />}
+      {currentView === 'import' && <RecipeImportPage />}
       {currentView === 'list' && <RecipeListPage onRecipeClick={handleRecipeClick} />}
       {currentView === 'detail' && selectedRecipeId !== null && (
         <RecipeDetailPage recipeId={selectedRecipeId} onBack={handleBackToList} />
