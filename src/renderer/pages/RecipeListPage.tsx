@@ -11,6 +11,12 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentFilters, setCurrentFilters] = useState<FilterState>({
+    cookingTimeMin: 30,
+    cookingTimeMax: 45,
+    cookwareTypes: [],
+    dietaryTags: [],
+  });
 
   // Load all recipes on mount
   useEffect(() => {
@@ -37,6 +43,7 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
   };
 
   const handleFilterChange = async (filters: FilterState) => {
+    setCurrentFilters(filters); // Persist filter state
     setLoading(true);
     setError(null);
     try {
@@ -82,7 +89,7 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
-          <FilterControls onFilterChange={handleFilterChange} />
+          <FilterControls onFilterChange={handleFilterChange} initialFilters={currentFilters} />
         </div>
 
         <div className="lg:col-span-3">

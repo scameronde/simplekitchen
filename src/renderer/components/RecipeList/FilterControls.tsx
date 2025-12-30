@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Checkbox } from '../common/Checkbox';
 import { Button } from '../common/Button';
 import type { CookwareType, DietaryTag } from '../../../shared/types/recipe';
@@ -14,15 +14,30 @@ export interface FilterState {
 
 interface FilterControlsProps {
   onFilterChange: (filters: FilterState) => void;
+  initialFilters?: FilterState;
 }
 
 const COOKWARE_OPTIONS: CookwareType[] = ['one-pot', 'one-pan', 'oven'];
 
-export function FilterControls({ onFilterChange }: FilterControlsProps) {
-  const [minTime, setMinTime] = useState(30);
-  const [maxTime, setMaxTime] = useState(45);
-  const [selectedCookware, setSelectedCookware] = useState<CookwareType[]>([]);
-  const [selectedDietary, setSelectedDietary] = useState<DietaryTag[]>([]);
+export function FilterControls({ onFilterChange, initialFilters }: FilterControlsProps) {
+  const [minTime, setMinTime] = useState(initialFilters?.cookingTimeMin ?? 30);
+  const [maxTime, setMaxTime] = useState(initialFilters?.cookingTimeMax ?? 45);
+  const [selectedCookware, setSelectedCookware] = useState<CookwareType[]>(
+    initialFilters?.cookwareTypes ?? []
+  );
+  const [selectedDietary, setSelectedDietary] = useState<DietaryTag[]>(
+    initialFilters?.dietaryTags ?? []
+  );
+
+  // Sync state with initialFilters when it changes
+  useEffect(() => {
+    if (initialFilters) {
+      setMinTime(initialFilters.cookingTimeMin);
+      setMaxTime(initialFilters.cookingTimeMax);
+      setSelectedCookware(initialFilters.cookwareTypes);
+      setSelectedDietary(initialFilters.dietaryTags);
+    }
+  }, [initialFilters]);
 
   const handleCookwareToggle = (type: CookwareType) => {
     const updated = selectedCookware.includes(type)
