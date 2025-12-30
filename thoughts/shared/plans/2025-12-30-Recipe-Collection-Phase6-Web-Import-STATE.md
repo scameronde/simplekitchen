@@ -1,8 +1,8 @@
 # State: Phase 6 - Web Recipe Import
 
 **Plan**: thoughts/shared/plans/2025-12-30-Recipe-Collection-Phase6-Web-Import.md  
-**Current Task**: PLAN-616  
-**Completed Tasks**: PLAN-601, PLAN-602, PLAN-603, PLAN-604, PLAN-605, PLAN-606, PLAN-607, PLAN-608, PLAN-609, PLAN-610, PLAN-611, PLAN-612, PLAN-613, PLAN-614, PLAN-615
+**Current Task**: COMPLETE  
+**Completed Tasks**: PLAN-601, PLAN-602, PLAN-603, PLAN-604, PLAN-605, PLAN-606, PLAN-607, PLAN-608, PLAN-609, PLAN-610, PLAN-611, PLAN-612, PLAN-613, PLAN-614, PLAN-615, PLAN-616
 
 ## Quick Verification
 
@@ -29,7 +29,7 @@ npm run build
 - [x] PLAN-613: E2E test for import workflow
 - [x] PLAN-614: User guide
 - [x] PLAN-615: Developer guide
-- [ ] PLAN-616: Update README
+- [x] PLAN-616: Update README
 - [ ] VERIFY-601: Manual import from real sites
 - [ ] VERIFY-602: Error handling - invalid URL
 - [ ] VERIFY-603: Error handling - no Schema.org markup

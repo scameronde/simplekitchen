@@ -8,8 +8,7 @@ SimpleKitchen lifts the cognitive load of deciding what to cook on busy weeknigh
 
 ## Project Status
 
-**Current Phase**: Phase 5 - AI-Powered Recipe Generation (Complete)  
-**Next Phase**: Phase 6 - Web Recipe Import
+**Current Phase**: Phase 6 - Web Recipe Import (Complete)
 
 **Completed Phases:**
 
@@ -19,6 +18,7 @@ SimpleKitchen lifts the cognitive load of deciding what to cook on busy weeknigh
 - ✅ Phase 3: Manual Recipe Entry UI with E2E Tests
 - ✅ Phase 4: Recipe Viewing & Filtering
 - ✅ Phase 5: AI-Powered Recipe Generation
+- ✅ Phase 6: Web Recipe Import
 
 See `thoughts/shared/plans/` for detailed implementation plans.
 
@@ -88,6 +88,36 @@ SimpleKitchen uses OpenAI's GPT-4o-mini to generate recipes based on your criter
 AI generation costs ~$0.001 per recipe (less than 1/10th of a cent).
 
 For detailed usage instructions, see [User Guide: AI Recipe Generation](docs/user-guide-ai-generation.md).
+
+## Web Recipe Import Setup (Phase 6)
+
+SimpleKitchen can import recipes directly from web sources using Schema.org structured data, eliminating the need for manual entry.
+
+### Supported Websites
+
+SimpleKitchen works with any website that implements Schema.org Recipe markup, including:
+
+- Food blogs and recipe websites (AllRecipes, Serious Eats, Budget Bytes, etc.)
+- Cooking platforms (Food Network, Tasty, etc.)
+- Many other recipe sources that include structured recipe data
+
+See [User Guide: Web Recipe Import](docs/user-guide-web-import.md) for a complete list of tested websites.
+
+### How to Use
+
+1. Find a recipe on a supported website
+2. Copy the recipe URL
+3. In SimpleKitchen, go to **"Import Recipe"**
+4. Paste the URL and click **"Import"**
+5. Review the imported recipe details and save
+
+The import feature automatically extracts ingredients, cooking times, servings, and dietary information from the recipe page.
+
+### Schema.org Compatibility
+
+Web import relies on Schema.org Recipe markup embedded in web pages. Most modern recipe websites include this data, enabling reliable automated recipe extraction.
+
+For detailed setup and troubleshooting, see [User Guide: Web Recipe Import](docs/user-guide-web-import.md).
 
 ### Available Scripts
 
