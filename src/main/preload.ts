@@ -20,5 +20,6 @@ contextBridge.exposeInMainWorld('electron', {
     filter: (filter: RecipeFilter) => ipcRenderer.invoke('recipe:filter', filter),
     generateRecipe: (criteria: RecipeGenerationCriteria) =>
       ipcRenderer.invoke('recipe:generate', criteria),
+    importRecipe: (url: string) => ipcRenderer.invoke('recipe:import', url),
   },
 });
