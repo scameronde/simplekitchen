@@ -85,7 +85,7 @@ function migration001_initialSchema(): void {
       `
     CREATE TABLE dietary_profile (
       id INTEGER PRIMARY KEY CHECK(id = 1),
-      hard_restrictions TEXT NOT NULL DEFAULT '["gluten-free", "lactose-free"]',
+      hard_restrictions TEXT NOT NULL DEFAULT '[]',
       preferences TEXT NOT NULL DEFAULT '[]',
       explicit_inclusions TEXT NOT NULL DEFAULT '[]',
       explicit_exclusions TEXT NOT NULL DEFAULT '[]',
@@ -101,13 +101,13 @@ function migration001_initialSchema(): void {
   rawDb.prepare('CREATE INDEX idx_recipes_source_type ON recipes(source_type)').run();
   rawDb.prepare('CREATE INDEX idx_ingredients_recipe_id ON ingredients(recipe_id)').run();
 
-  // Initialize default dietary profile
+  // Initialize default dietary profile with NO restrictions
   rawDb
     .prepare(
       `INSERT INTO dietary_profile (id, hard_restrictions, updated_at) 
        VALUES (?, ?, ?)`
     )
-    .run(1, '["gluten-free", "lactose-free"]', new Date().toISOString());
+    .run(1, '[]', new Date().toISOString());
 
   recordMigration(version, 'initial_schema');
   console.log('Migration 001 complete');
@@ -127,11 +127,32 @@ function migration002_addCreatedAtIndex(): void {
   console.log('Migration 002 complete');
 }
 
+// Migration 3: Reset dietary profile to have no default restrictions
+function migration003_resetDietaryProfile(): void {
+  const version = 3;
+  if (isMigrationApplied(version)) return;
+
+  console.log('Running migration 003: Reset dietary profile defaults');
+
+  // Clear hard restrictions for existing users (they can re-add if needed)
+  rawDb
+    .prepare(
+      `UPDATE dietary_profile 
+       SET hard_restrictions = '[]', updated_at = ? 
+       WHERE id = 1`
+    )
+    .run(new Date().toISOString());
+
+  recordMigration(version, 'reset_dietary_profile');
+  console.log('Migration 003 complete');
+}
+
 // Run all migrations
 export function runMigrations(): void {
   createMigrationsTable();
   migration001_initialSchema();
   migration002_addCreatedAtIndex();
+  migration003_resetDietaryProfile();
   // Future migrations will be added here
   console.log('All migrations applied');
 }

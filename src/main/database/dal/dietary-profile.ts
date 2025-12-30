@@ -49,21 +49,17 @@ export async function updateDietaryProfile(updates: {
     dbUpdates.explicit_exclusions = JSON.stringify(updates.explicitExclusions);
   }
 
-  await db
-    .updateTable('dietary_profile')
-    .set(dbUpdates)
-    .where('id', '=', 1)
-    .execute();
+  await db.updateTable('dietary_profile').set(dbUpdates).where('id', '=', 1).execute();
 
   return getDietaryProfile();
 }
 
-// Reset dietary profile to defaults
+// Reset dietary profile to defaults (no restrictions)
 export async function resetDietaryProfile(): Promise<DietaryProfile> {
   await db
     .updateTable('dietary_profile')
     .set({
-      hard_restrictions: JSON.stringify(['gluten-free', 'lactose-free']),
+      hard_restrictions: JSON.stringify([]),
       preferences: JSON.stringify([]),
       explicit_inclusions: JSON.stringify([]),
       explicit_exclusions: JSON.stringify([]),

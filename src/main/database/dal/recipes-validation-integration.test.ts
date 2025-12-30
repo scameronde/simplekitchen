@@ -55,8 +55,9 @@ describe('Recipe DAL with Validation Integration', () => {
     expect(recipe.ingredients).toHaveLength(2);
   });
 
-  it('should reject recipe with gluten ingredient (wheat flour)', async () => {
-    const invalidRecipe: CreateRecipeInput = {
+  it('should accept recipe with gluten ingredient when no restrictions set', async () => {
+    // Default profile has NO restrictions, so gluten is allowed
+    const recipeWithGluten: CreateRecipeInput = {
       ...validRecipe,
       title: 'Gluten Recipe',
       ingredients: [
@@ -71,11 +72,14 @@ describe('Recipe DAL with Validation Integration', () => {
       ],
     };
 
-    await expect(createRecipe(invalidRecipe)).rejects.toThrow('Recipe validation failed');
+    // Should succeed because no dietary restrictions by default
+    const created = await createRecipe(recipeWithGluten);
+    expect(created.title).toBe('Gluten Recipe');
   });
 
-  it('should reject recipe with lactose ingredient (butter)', async () => {
-    const invalidRecipe: CreateRecipeInput = {
+  it('should accept recipe with lactose ingredient when no restrictions set', async () => {
+    // Default profile has NO restrictions, so lactose is allowed
+    const recipeWithLactose: CreateRecipeInput = {
       ...validRecipe,
       title: 'Lactose Recipe',
       ingredients: [
@@ -90,7 +94,9 @@ describe('Recipe DAL with Validation Integration', () => {
       ],
     };
 
-    await expect(createRecipe(invalidRecipe)).rejects.toThrow('Recipe validation failed');
+    // Should succeed because no dietary restrictions by default
+    const created = await createRecipe(recipeWithLactose);
+    expect(created.title).toBe('Lactose Recipe');
   });
 
   it('should reject recipe with cooking time below 30 minutes', async () => {
@@ -143,21 +149,13 @@ describe('Recipe DAL with Validation Integration', () => {
       'Recipe validation failed'
     );
 
-    // Try to update with gluten ingredient
+    // Gluten ingredient is now allowed (no default restrictions)
+    // So test a different structural constraint instead
     await expect(
       updateRecipe(recipe.id, {
-        ingredients: [
-          {
-            name: 'wheat flour',
-            quantity: 2,
-            unit: 'cup',
-            dietaryProperties: ['contains-gluten'],
-            optional: false,
-            orderIndex: 1,
-          },
-        ],
+        cookwareType: 'invalid-type' as any, // Type casting to test runtime validation
       })
-    ).rejects.toThrow('Recipe validation failed');
+    ).rejects.toThrow();
   });
 
   it('should allow update that maintains validity', async () => {

@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import {
-  getDietaryProfile,
-  updateDietaryProfile,
-  resetDietaryProfile,
-} from './dietary-profile';
+import { getDietaryProfile, updateDietaryProfile, resetDietaryProfile } from './dietary-profile';
 import { runMigrations, closeDatabase } from '../index';
 
 beforeEach(() => {
@@ -19,8 +15,11 @@ describe('Dietary Profile Operations', () => {
     const profile = await getDietaryProfile();
 
     expect(profile.id).toBe(1);
-    expect(profile.hardRestrictions).toContain('gluten-free');
-    expect(profile.hardRestrictions).toContain('lactose-free');
+    // Default profile now has NO restrictions (empty array)
+    expect(profile.hardRestrictions).toEqual([]);
+    expect(profile.preferences).toEqual([]);
+    expect(profile.explicitInclusions).toEqual([]);
+    expect(profile.explicitExclusions).toEqual([]);
   });
 
   it('should update hard restrictions', async () => {
@@ -63,10 +62,10 @@ describe('Dietary Profile Operations', () => {
       preferences: ['pescatarian'],
     });
 
-    // Then reset
+    // Then reset (defaults to no restrictions)
     const reset = await resetDietaryProfile();
 
-    expect(reset.hardRestrictions).toEqual(['gluten-free', 'lactose-free']);
+    expect(reset.hardRestrictions).toEqual([]);
     expect(reset.preferences).toEqual([]);
     expect(reset.explicitInclusions).toEqual([]);
     expect(reset.explicitExclusions).toEqual([]);

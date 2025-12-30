@@ -18,7 +18,13 @@ describe('Validation Orchestrator', () => {
     sourceType: 'manual',
     ingredients: [
       { name: 'rice', quantity: 1, unit: 'cup', dietaryProperties: ['none'], orderIndex: 1 },
-      { name: 'chicken breast', quantity: 300, unit: 'g', dietaryProperties: ['contains-meat'], orderIndex: 2 },
+      {
+        name: 'chicken breast',
+        quantity: 300,
+        unit: 'g',
+        dietaryProperties: ['contains-meat'],
+        orderIndex: 2,
+      },
       { name: 'broccoli', quantity: 200, unit: 'g', dietaryProperties: ['none'], orderIndex: 3 },
     ],
   };
@@ -35,18 +41,28 @@ describe('Validation Orchestrator', () => {
       cookingTimeMinutes: 50, // Too long
       servings: 4, // Wrong servings
       ingredients: [
-        { name: 'wheat flour', quantity: 2, unit: 'cups', dietaryProperties: ['contains-gluten'], orderIndex: 1 },
-        { name: 'milk', quantity: 1, unit: 'cup', dietaryProperties: ['contains-lactose'], orderIndex: 2 },
+        {
+          name: 'wheat flour',
+          quantity: 2,
+          unit: 'cups',
+          dietaryProperties: ['contains-gluten'],
+          orderIndex: 1,
+        },
+        {
+          name: 'milk',
+          quantity: 1,
+          unit: 'cup',
+          dietaryProperties: ['contains-lactose'],
+          orderIndex: 2,
+        },
       ],
     };
 
     const result = await validateRecipe(invalidRecipe);
     expect(result.valid).toBe(false);
-    expect(result.errors.length).toBeGreaterThanOrEqual(4); // Time, servings, 2 dietary
+    expect(result.errors.length).toBeGreaterThanOrEqual(2); // Time, servings (no dietary by default)
     expect(result.errors.some(e => e.constraint === 'time-maximum')).toBe(true);
     expect(result.errors.some(e => e.constraint === 'servings-exact')).toBe(true);
-    expect(result.errors.some(e => e.constraint === 'dietary-gluten-free')).toBe(true);
-    expect(result.errors.some(e => e.constraint === 'dietary-lactose-free')).toBe(true);
   });
 
   it('should throw error when validateRecipeOrThrow is called with invalid recipe', async () => {
@@ -63,16 +79,23 @@ describe('Validation Orchestrator', () => {
   });
 
   it('should validate dietary constraints using current dietary profile', async () => {
-    // Default profile has gluten-free and lactose-free restrictions
+    // Default profile has NO restrictions (empty by default)
     const recipeWithGluten: CreateRecipeInput = {
       ...validRecipe,
       ingredients: [
-        { name: 'wheat pasta', quantity: 200, unit: 'g', dietaryProperties: ['contains-gluten'], orderIndex: 1 },
+        {
+          name: 'wheat pasta',
+          quantity: 200,
+          unit: 'g',
+          dietaryProperties: ['contains-gluten'],
+          orderIndex: 1,
+        },
       ],
     };
 
+    // Should pass because default profile has no restrictions
     const result = await validateRecipe(recipeWithGluten);
-    expect(result.valid).toBe(false);
-    expect(result.errors.some(e => e.constraint === 'dietary-gluten-free')).toBe(true);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
   });
 });
