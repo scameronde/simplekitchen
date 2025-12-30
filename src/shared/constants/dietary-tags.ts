@@ -7,10 +7,14 @@
 import type { DietaryTag } from '../types/recipe';
 
 /**
- * Reserved for UI display of dietary tag labels.
- * Maps dietary tag IDs to human-readable display names.
+ * Canonical mapping of dietary tag IDs to human-readable display labels.
+ * Used internally to generate DIETARY_TAG_OPTIONS and exported for direct UI use.
  *
- * Canonical list of dietary tags with display labels.
+ * This constant is intentionally exported for:
+ * - Internal use: Generates DIETARY_TAG_OPTIONS array below
+ * - Future UI use: Direct label lookup (e.g., DIETARY_TAG_LABELS['vegan'] → 'Vegan')
+ * - Type safety: Record<DietaryTag, string> ensures all tags have labels
+ *
  * Must match the DietaryTag type definition in database.ts.
  */
 export const DIETARY_TAG_LABELS: Record<DietaryTag, string> = {
