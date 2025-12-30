@@ -18,17 +18,3 @@ export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
 }
-
-/**
- * Constraint type identifiers for categorization.
- * @future Phase 4 - Used in validation error display and filtering
- * @future Phase 5 - Used in AI recipe generation validation feedback
- */
-export type ConstraintType =
-  | 'dietary-gluten-free'
-  | 'dietary-lactose-free'
-  | 'dietary-explicit-exclusion'
-  | 'time-minimum'
-  | 'time-maximum'
-  | 'cookware-single'
-  | 'servings-exact';

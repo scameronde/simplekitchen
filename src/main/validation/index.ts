@@ -104,6 +104,7 @@ export { INGREDIENT_DATABASE } from './ingredient-database.js';
 
 /**
  * Ingredient data type definition.
+ * Public type for ingredient database entries. Required for consumers of lookupIngredient().
  * @future Phase 5 - AI recipe generation validation
  * @future Phase 6 - Web recipe import validation
  */
