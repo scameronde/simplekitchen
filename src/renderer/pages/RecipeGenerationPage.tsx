@@ -33,9 +33,6 @@ export function RecipeGenerationPage() {
     skillLevel: undefined,
   });
 
-  // Generated recipe state (stored for potential future use)
-  const [_generatedRecipe, setGeneratedRecipe] = useState<CreateRecipeInput | null>(null);
-
   // Review form state (for editing generated recipe)
   const [reviewFormData, setReviewFormData] = useState({
     title: '',
@@ -106,7 +103,6 @@ export function RecipeGenerationPage() {
     setLoading(false);
 
     if (result.success && result.recipe) {
-      setGeneratedRecipe(result.recipe);
       // Populate review form with generated data
       setReviewFormData({
         title: result.recipe.title,
@@ -174,7 +170,6 @@ export function RecipeGenerationPage() {
       setTimeout(() => {
         setMode('criteria');
         setSaveSuccess(false);
-        setGeneratedRecipe(null);
         // Optionally reset criteria
         setCriteria({
           cuisine: '',
@@ -195,7 +190,6 @@ export function RecipeGenerationPage() {
   // Regenerate handler
   const handleRegenerate = () => {
     setMode('criteria');
-    setGeneratedRecipe(null);
     setError(null);
     setSaveErrors([]);
     setSaveSuccess(false);
