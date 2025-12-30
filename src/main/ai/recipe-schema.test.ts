@@ -66,7 +66,7 @@ describe('IngredientGenerationSchema', () => {
     });
 
     it('should reject missing name', () => {
-      const { name, ...ingredient } = validIngredient;
+      const { name: _name, ...ingredient } = validIngredient;
       expect(() => IngredientGenerationSchema.parse(ingredient)).toThrow();
     });
   });
@@ -83,7 +83,7 @@ describe('IngredientGenerationSchema', () => {
     });
 
     it('should reject missing quantity', () => {
-      const { quantity, ...ingredient } = validIngredient;
+      const { quantity: _quantity, ...ingredient } = validIngredient;
       expect(() => IngredientGenerationSchema.parse(ingredient)).toThrow();
     });
 
@@ -105,7 +105,7 @@ describe('IngredientGenerationSchema', () => {
     });
 
     it('should reject missing unit', () => {
-      const { unit, ...ingredient } = validIngredient;
+      const { unit: _unit, ...ingredient } = validIngredient;
       expect(() => IngredientGenerationSchema.parse(ingredient)).toThrow();
     });
   });
@@ -128,7 +128,7 @@ describe('IngredientGenerationSchema', () => {
     });
 
     it('should reject missing dietary properties', () => {
-      const { dietaryProperties, ...ingredient } = validIngredient;
+      const { dietaryProperties: _dietaryProperties, ...ingredient } = validIngredient;
       expect(() => IngredientGenerationSchema.parse(ingredient)).toThrow();
     });
   });
@@ -145,7 +145,7 @@ describe('IngredientGenerationSchema', () => {
     });
 
     it('should reject missing order index', () => {
-      const { orderIndex, ...ingredient } = validIngredient;
+      const { orderIndex: _orderIndex, ...ingredient } = validIngredient;
       expect(() => IngredientGenerationSchema.parse(ingredient)).toThrow();
     });
   });
@@ -253,7 +253,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing title', () => {
-      const { title, ...recipe } = validRecipe;
+      const { title: _title, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
   });
@@ -295,7 +295,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing cooking time', () => {
-      const { cookingTimeMinutes, ...recipe } = validRecipe;
+      const { cookingTimeMinutes: _cookingTimeMinutes, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
@@ -344,7 +344,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing cookware type', () => {
-      const { cookwareType, ...recipe } = validRecipe;
+      const { cookwareType: _cookwareType, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
@@ -391,7 +391,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing servings', () => {
-      const { servings, ...recipe } = validRecipe;
+      const { servings: _servings, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
@@ -413,7 +413,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing dietary tags', () => {
-      const { dietaryTags, ...recipe } = validRecipe;
+      const { dietaryTags: _dietaryTags, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
@@ -443,7 +443,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing seasonality', () => {
-      const { seasonality, ...recipe } = validRecipe;
+      const { seasonality: _seasonality, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
@@ -508,7 +508,7 @@ describe('RecipeGenerationSchema', () => {
     });
 
     it('should reject missing ingredients', () => {
-      const { ingredients, ...recipe } = validRecipe;
+      const { ingredients: _ingredients, ...recipe } = validRecipe;
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
