@@ -7,7 +7,14 @@ export interface IngredientData {
   aliases?: string[]; // Alternative names (e.g., "courgette" for "zucchini")
 }
 
-// Static ingredient database (curated, 100% accurate for included items)
+/**
+ * Static ingredient database (curated, 100% accurate for included items)
+ *
+ * NOTE: This is the source of truth for the ingredient database.
+ * Re-exported through the public API in src/main/validation/index.ts.
+ * The export here is intentional - it allows direct imports for internal use
+ * and provides the data source for the barrel file's public API.
+ */
 export const INGREDIENT_DATABASE: IngredientData[] = [
   // Gluten-containing grains
   { name: 'wheat flour', dietaryProperties: ['contains-gluten'] },
