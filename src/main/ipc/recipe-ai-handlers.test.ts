@@ -32,7 +32,7 @@ vi.mock('openai', () => {
     }
   }
 
-  (mockOpenAI as any).RateLimitError = MockRateLimitError;
+  (mockOpenAI as unknown as Record<string, unknown>).RateLimitError = MockRateLimitError;
 
   return { default: mockOpenAI };
 });
@@ -362,7 +362,13 @@ describe('Recipe AI IPC Handlers', () => {
   describe('OpenAI Error Handling', () => {
     it('propagates rate limit errors from OpenAI', async () => {
       const OpenAI = (await import('openai')).default;
-      const error = new (OpenAI as any).RateLimitError('Rate limit exceeded');
+      const error = new (
+        OpenAI as unknown as {
+          RateLimitError: new (message: string) => Error & {
+            headers?: { get?: (key: string) => string | null };
+          };
+        }
+      ).RateLimitError('Rate limit exceeded');
       error.headers = {
         get: (key: string) => (key === 'retry-after' ? '120' : null),
       };
