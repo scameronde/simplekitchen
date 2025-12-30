@@ -55,6 +55,7 @@ describe('RecipeListPage', () => {
         getById: vi.fn(),
         filter: vi.fn().mockResolvedValue({ success: true, recipe: mockRecipes }),
         generateRecipe: vi.fn(),
+        importRecipe: vi.fn(),
       },
     };
   });

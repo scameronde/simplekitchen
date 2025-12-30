@@ -33,6 +33,11 @@ export interface ElectronAPI {
       errors?: Array<{ field: string; message: string }>;
     }>;
     generateRecipe: (criteria: RecipeGenerationCriteria) => Promise<RecipeGenerationResult>;
+    importRecipe: (url: string) => Promise<{
+      success: boolean;
+      recipe?: CreateRecipeInput;
+      errors?: Array<{ field: string; message: string }>;
+    }>;
   };
 }
 
