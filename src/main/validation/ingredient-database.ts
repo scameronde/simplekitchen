@@ -32,6 +32,9 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'rice', dietaryProperties: ['none'] },
   { name: 'brown rice', dietaryProperties: ['none'] },
   { name: 'white rice', dietaryProperties: ['none'] },
+  { name: 'arborio rice', dietaryProperties: ['none'] },
+  { name: 'basmati rice', dietaryProperties: ['none'] },
+  { name: 'jasmine rice', dietaryProperties: ['none'] },
   { name: 'rice flour', dietaryProperties: ['none'] },
   { name: 'quinoa', dietaryProperties: ['none'] },
   { name: 'gluten-free pasta', dietaryProperties: ['none'] },
@@ -65,8 +68,18 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'ice cream', dietaryProperties: ['contains-lactose'] },
 
   // Aged cheese (very low lactose, often tolerated - user can add to explicit_inclusions if desired)
-  { name: 'parmesan', dietaryProperties: ['contains-lactose'] }, // Conservative: still flag it
+  {
+    name: 'parmesan',
+    dietaryProperties: ['contains-lactose'],
+    aliases: ['parmesan cheese', 'parmigiano-reggiano', 'parmigiano'],
+  }, // Conservative: still flag it
   { name: 'aged cheddar', dietaryProperties: ['contains-lactose'] }, // Conservative
+  { name: 'feta', dietaryProperties: ['contains-lactose'], aliases: ['feta cheese'] },
+  { name: 'goat cheese', dietaryProperties: ['contains-lactose'], aliases: ['chevre'] },
+  { name: 'blue cheese', dietaryProperties: ['contains-lactose'] },
+  { name: 'brie', dietaryProperties: ['contains-lactose'] },
+  { name: 'swiss cheese', dietaryProperties: ['contains-lactose'], aliases: ['swiss'] },
+  { name: 'provolone', dietaryProperties: ['contains-lactose'] },
 
   // Dairy alternatives (lactose-free)
   { name: 'almond milk', dietaryProperties: ['none'] },
@@ -137,9 +150,13 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'green beans', dietaryProperties: ['none'] },
 
   // Legumes (no gluten or lactose)
-  { name: 'chickpeas', dietaryProperties: ['none'] },
-  { name: 'black beans', dietaryProperties: ['none'] },
-  { name: 'kidney beans', dietaryProperties: ['none'] },
+  {
+    name: 'chickpeas',
+    dietaryProperties: ['none'],
+    aliases: ['garbanzo beans', 'canned chickpeas'],
+  },
+  { name: 'black beans', dietaryProperties: ['none'], aliases: ['canned black beans'] },
+  { name: 'kidney beans', dietaryProperties: ['none'], aliases: ['canned kidney beans'] },
   { name: 'lentils', dietaryProperties: ['none'] },
   { name: 'red lentils', dietaryProperties: ['none'] },
   { name: 'green lentils', dietaryProperties: ['none'] },
@@ -148,23 +165,29 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
 
   // Herbs and spices (no restrictions)
   { name: 'basil', dietaryProperties: ['none'] },
+  { name: 'fresh basil', dietaryProperties: ['none'] },
   { name: 'oregano', dietaryProperties: ['none'] },
   { name: 'parsley', dietaryProperties: ['none'] },
-  { name: 'cilantro', dietaryProperties: ['none'], aliases: ['coriander'] },
+  { name: 'fresh parsley', dietaryProperties: ['none'] },
+  { name: 'cilantro', dietaryProperties: ['none'], aliases: ['coriander', 'fresh cilantro'] },
   { name: 'thyme', dietaryProperties: ['none'] },
+  { name: 'fresh thyme', dietaryProperties: ['none'] },
   { name: 'rosemary', dietaryProperties: ['none'] },
+  { name: 'fresh rosemary', dietaryProperties: ['none'] },
   { name: 'paprika', dietaryProperties: ['none'] },
   { name: 'cumin', dietaryProperties: ['none'] },
   { name: 'chili powder', dietaryProperties: ['none'] },
   { name: 'black pepper', dietaryProperties: ['none'] },
   { name: 'salt', dietaryProperties: ['none'] },
   { name: 'ginger', dietaryProperties: ['none'] },
+  { name: 'fresh ginger', dietaryProperties: ['none'] },
   { name: 'turmeric', dietaryProperties: ['none'] },
 
   // Condiments and sauces
   { name: 'vinegar', dietaryProperties: ['none'] },
   { name: 'balsamic vinegar', dietaryProperties: ['none'] },
   { name: 'red wine vinegar', dietaryProperties: ['none'] },
+  { name: 'white wine vinegar', dietaryProperties: ['none'] },
   { name: 'apple cider vinegar', dietaryProperties: ['none'] },
   { name: 'lemon juice', dietaryProperties: ['none'] },
   { name: 'lime juice', dietaryProperties: ['none'] },
@@ -187,6 +210,25 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'sesame seeds', dietaryProperties: ['none'] },
   { name: 'chia seeds', dietaryProperties: ['none'] },
   { name: 'flaxseed', dietaryProperties: ['none'] },
+
+  // Broths and stocks (no gluten or lactose)
+  { name: 'chicken broth', dietaryProperties: ['none'] },
+  { name: 'chicken stock', dietaryProperties: ['none'] },
+  { name: 'beef broth', dietaryProperties: ['none'] },
+  { name: 'beef stock', dietaryProperties: ['none'] },
+  { name: 'vegetable broth', dietaryProperties: ['none'] },
+  { name: 'vegetable stock', dietaryProperties: ['none'] },
+  { name: 'fish stock', dietaryProperties: ['contains-fish'] },
+
+  // Wine and alcohol (for cooking)
+  { name: 'white wine', dietaryProperties: ['none'] },
+  { name: 'dry white wine', dietaryProperties: ['none'] },
+  { name: 'red wine', dietaryProperties: ['none'] },
+  { name: 'dry red wine', dietaryProperties: ['none'] },
+  { name: 'cooking wine', dietaryProperties: ['none'] },
+  { name: 'sherry', dietaryProperties: ['none'] },
+  { name: 'marsala', dietaryProperties: ['none'] },
+  { name: 'sake', dietaryProperties: ['none'] },
 ];
 
 // Lookup ingredient by name (case-insensitive, checks aliases)
