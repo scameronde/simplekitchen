@@ -1,3 +1,7 @@
+// Load environment variables from .env file
+import { config } from 'dotenv';
+config();
+
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
