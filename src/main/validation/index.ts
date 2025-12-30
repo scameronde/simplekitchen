@@ -1,11 +1,18 @@
 /**
  * @module validation
- * Validation Layer - Barrel Export
+ * Public validation API for recipe constraint checking.
  *
- * Central export point for all recipe validation functionality.
- * Provides both high-level orchestration and granular validators.
- * Many validators are exported for future phases but not yet used in Phase 3.
+ * This barrel file provides a stable public interface for the validation layer.
+ * Many functions are exported for future phases but not yet used in Phase 3.
  * See Phase 4-6 plans for usage in recipe browsing, AI generation, and import features.
+ *
+ * NOTE: Current internal code imports directly from validator files (e.g., './validator.js')
+ * rather than using this barrel file. These exports are intentional and provide:
+ * 1. A stable public API surface for future extension
+ * 2. A clear contract for external modules
+ * 3. Forward compatibility for planned features (Phase 4+)
+ *
+ * These exports are NOT dead code - they are part of the public API design.
  */
 
 // Main validation orchestrator
