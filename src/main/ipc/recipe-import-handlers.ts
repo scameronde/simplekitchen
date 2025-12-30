@@ -3,6 +3,8 @@ import type { WebFrameMain } from 'electron/main';
 import type { CreateRecipeInput } from '../../shared/types/recipe.js';
 import { extractSchemaOrgRecipe } from '../web/recipe-importer.js';
 import { schemaOrgToRecipeInput } from '../web/schema-org-adapter.js';
+import { isTestEnvironment } from '../utils/test-env.js';
+import { mockImportRecipe } from './recipe-import-handlers.mock.js';
 
 /**
  * Validates the sender of an IPC message for security.
@@ -88,6 +90,11 @@ export function registerRecipeImportHandlers(): void {
 
     const importPromise = (async () => {
       try {
+        // Use mock handler in test environment, otherwise fetch from URL
+        if (isTestEnvironment()) {
+          return await mockImportRecipe(url);
+        }
+
         // Extract Schema.org recipe from URL
         let schemaRecipe;
         try {

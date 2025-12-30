@@ -3,6 +3,8 @@ import type { WebFrameMain } from 'electron/main';
 import { generateRecipe } from '../ai/recipe-generator.js';
 import { validateRecipe } from '../validation/validator.js';
 import type { RecipeGenerationCriteria } from '../../shared/types/ai.js';
+import { isTestEnvironment } from '../utils/test-env.js';
+import { mockGenerateRecipe } from './recipe-ai-handlers.mock.js';
 
 /**
  * Validates the sender of an IPC message for security.
@@ -31,8 +33,10 @@ export function registerRecipeAIHandlers(): void {
       };
     }
 
-    // Generate recipe via OpenAI
-    const result = await generateRecipe(criteria);
+    // Generate recipe via OpenAI or use mock in test environment
+    const result = isTestEnvironment()
+      ? await mockGenerateRecipe(criteria)
+      : await generateRecipe(criteria);
 
     if (!result.success) {
       return result; // Return error as-is
