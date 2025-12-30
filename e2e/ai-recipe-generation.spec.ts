@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { _electron as electron } from 'playwright';
+import type { ElectronAPI } from '../src/shared/types/electron';
+
+// Type definition for window with Electron API in evaluate context
+interface ElectronWindow extends Window {
+  electron: ElectronAPI;
+}
 
 test.describe('AI Recipe Generation Workflow', () => {
   test('successfully generates and saves a recipe', async () => {
@@ -16,36 +22,42 @@ test.describe('AI Recipe Generation Workflow', () => {
 
     // Mock the generateRecipe API to avoid real API calls
     await window.evaluate(() => {
-      (window as any).electron.recipeAPI.generateRecipe = async () => {
+      (window as unknown as ElectronWindow).electron.recipeAPI.generateRecipe = async () => {
         return {
           success: true,
           recipe: {
             title: 'AI Generated Thai Basil Chicken',
             cookingTimeMinutes: 25,
             prepTimeMinutes: 10,
-            cookwareType: 'one-pan',
+            cookwareType: 'one-pan' as const,
             servings: 2,
-            dietaryTags: ['gluten-free', 'dairy-free'],
-            seasonality: ['any'],
-            sourceType: 'ai-generated',
+            dietaryTags: ['gluten-free' as const, 'lactose-free' as const],
+            seasonality: ['any' as const],
+            sourceType: 'ai-generated' as const,
             ingredients: [
               {
                 name: 'chicken breast',
                 quantity: 300,
                 unit: 'g',
+                dietaryProperties: ['contains-meat' as const],
                 optional: false,
+                orderIndex: 1,
               },
               {
                 name: 'thai basil',
                 quantity: 1,
                 unit: 'cup',
+                dietaryProperties: ['none' as const],
                 optional: false,
+                orderIndex: 2,
               },
               {
                 name: 'soy sauce',
                 quantity: 2,
                 unit: 'tbsp',
+                dietaryProperties: ['contains-gluten' as const],
                 optional: false,
+                orderIndex: 3,
               },
             ],
             instructions: 'Stir-fry chicken, add basil and sauce, serve hot.',
@@ -122,11 +134,11 @@ test.describe('AI Recipe Generation Workflow', () => {
 
     // Mock rate limit error
     await window.evaluate(() => {
-      (window as any).electron.recipeAPI.generateRecipe = async () => {
+      (window as unknown as ElectronWindow).electron.recipeAPI.generateRecipe = async () => {
         return {
           success: false,
           error: {
-            type: 'rate-limit',
+            type: 'rate-limit' as const,
             message: 'Rate limit exceeded',
             details: 'You have exceeded your API quota',
             retryAfter: 60,
@@ -168,11 +180,11 @@ test.describe('AI Recipe Generation Workflow', () => {
 
     // Mock network error
     await window.evaluate(() => {
-      (window as any).electron.recipeAPI.generateRecipe = async () => {
+      (window as unknown as ElectronWindow).electron.recipeAPI.generateRecipe = async () => {
         return {
           success: false,
           error: {
-            type: 'network',
+            type: 'network' as const,
             message: 'Network connection failed',
             details: 'Could not reach the API server',
           },
@@ -208,24 +220,26 @@ test.describe('AI Recipe Generation Workflow', () => {
 
     // Mock successful generation
     await window.evaluate(() => {
-      (window as any).electron.recipeAPI.generateRecipe = async () => {
+      (window as unknown as ElectronWindow).electron.recipeAPI.generateRecipe = async () => {
         return {
           success: true,
           recipe: {
             title: 'Generated Recipe',
             cookingTimeMinutes: 30,
             prepTimeMinutes: 15,
-            cookwareType: 'one-pot',
+            cookwareType: 'one-pot' as const,
             servings: 2,
-            dietaryTags: ['vegetarian'],
-            seasonality: ['any'],
-            sourceType: 'ai-generated',
+            dietaryTags: ['vegetarian' as const],
+            seasonality: ['any' as const],
+            sourceType: 'ai-generated' as const,
             ingredients: [
               {
                 name: 'vegetables',
                 quantity: 200,
                 unit: 'g',
+                dietaryProperties: ['none' as const],
                 optional: false,
+                orderIndex: 1,
               },
             ],
             instructions: 'Cook vegetables.',
