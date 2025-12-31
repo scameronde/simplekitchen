@@ -7,7 +7,7 @@ test.describe('AI Recipe Generation Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -76,7 +76,7 @@ test.describe('AI Recipe Generation Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -109,7 +109,7 @@ test.describe('AI Recipe Generation Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -137,7 +137,7 @@ test.describe('AI Recipe Generation Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });

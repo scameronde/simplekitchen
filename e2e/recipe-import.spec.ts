@@ -7,7 +7,7 @@ test.describe('Recipe Import Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -63,7 +63,7 @@ test.describe('Recipe Import Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -96,7 +96,7 @@ test.describe('Recipe Import Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -150,7 +150,7 @@ test.describe('Recipe Import Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
@@ -194,7 +194,7 @@ test.describe('Recipe Import Workflow', () => {
       args: ['.'],
       env: {
         ...process.env,
-        NODE_ENV: 'development',
+        NODE_ENV: 'test',
         E2E_TEST: 'true',
       },
     });
