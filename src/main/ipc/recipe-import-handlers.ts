@@ -92,8 +92,11 @@ export function registerRecipeImportHandlers(): void {
       try {
         // Use mock handler in E2E test environment, otherwise fetch from URL
         if (isE2ETest()) {
+          console.log('Import handler using: MOCK');
           return await mockImportRecipe(url);
         }
+
+        console.log('Import handler using: REAL');
 
         // Extract Schema.org recipe from URL
         let schemaRecipe;

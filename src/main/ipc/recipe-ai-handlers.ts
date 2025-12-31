@@ -38,6 +38,9 @@ export function registerRecipeAIHandlers(): void {
       ? await mockGenerateRecipe(criteria)
       : await generateRecipe(criteria);
 
+    // TEMP: Verify which path was taken
+    console.log('AI handler using:', isE2ETest() ? 'MOCK' : 'REAL');
+
     if (!result.success) {
       return result; // Return error as-is
     }

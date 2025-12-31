@@ -1,6 +1,18 @@
 // Load environment variables from .env file
+// Skip in test mode - Playwright sets env vars directly
 import { config } from 'dotenv';
-config();
+if (process.env.NODE_ENV !== 'test' && process.env.E2E_TEST !== 'true') {
+  config();
+}
+
+// Log environment variables in test mode for debugging
+if (process.env.NODE_ENV === 'test' || process.env.E2E_TEST === 'true') {
+  console.log('=== E2E TEST MODE DETECTED ===');
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('E2E_TEST:', process.env.E2E_TEST);
+  console.log('PLAYWRIGHT_TEST:', process.env.PLAYWRIGHT_TEST);
+  console.log('==============================');
+}
 
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
@@ -25,7 +37,8 @@ function createWindow() {
     },
   });
 
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+  const isDev =
+    process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' || !app.isPackaged;
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173');
