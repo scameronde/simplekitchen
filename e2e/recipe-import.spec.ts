@@ -26,8 +26,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('https://example.com/recipe/pasta');
 
-    // Click Import Recipe button
-    await window.click('button:has-text("Import Recipe")');
+    // Click Import Recipe button (submit button, not navigation button)
+    await window.click('button[type="submit"]:has-text("Import Recipe")');
 
     // Verify review page appears
     await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({
@@ -82,8 +82,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('not-a-url');
 
-    // Click Import Recipe button
-    await window.click('button:has-text("Import Recipe")');
+    // Click Import Recipe button (submit button, not navigation button)
+    await window.click('button[type="submit"]:has-text("Import Recipe")');
 
     // Verify error message displays
     await expect(window.locator('text=/Invalid URL|URL must/')).toBeVisible({ timeout: 5000 });
@@ -115,8 +115,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('https://example.com/recipe/test');
 
-    // Click Import Recipe button
-    await window.click('button:has-text("Import Recipe")');
+    // Click Import Recipe button (submit button, not navigation button)
+    await window.click('button[type="submit"]:has-text("Import Recipe")');
 
     // Wait for review page
     await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({

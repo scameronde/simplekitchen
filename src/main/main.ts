@@ -37,10 +37,15 @@ function createWindow() {
     },
   });
 
-  const isDev =
-    process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' || !app.isPackaged;
+  // Determine whether to use Vite dev server or built files
+  // E2E tests should use built files, not dev server
+  const useDevServer =
+    (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') &&
+    process.env.E2E_TEST !== 'true' &&
+    process.env.PLAYWRIGHT_TEST !== 'true' &&
+    !app.isPackaged;
 
-  if (isDev) {
+  if (useDevServer) {
     mainWindow.loadURL('http://localhost:5173');
     // DevTools can be opened manually with Ctrl+Shift+I (Cmd+Option+I on Mac)
     // mainWindow.webContents.openDevTools();

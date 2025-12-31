@@ -27,8 +27,8 @@ test.describe('AI Recipe Generation Workflow', () => {
     await window.fill('input[placeholder="e.g., chicken, tofu, pasta"]', 'chicken');
 
     // Select dietary tags
-    await window.click('text=Gluten Free');
-    await window.click('text=Dairy Free');
+    await window.click('text=Gluten-Free');
+    await window.click('text=Lactose-Free');
 
     // Select seasonality - check "any"
     await window.click('text=Any Season');
@@ -42,8 +42,8 @@ test.describe('AI Recipe Generation Workflow', () => {
     // Select skill level
     await window.selectOption('select', 'beginner');
 
-    // Click Generate Recipe button
-    await window.click('button:has-text("Generate Recipe")');
+    // Click Generate Recipe button (submit button, not navigation button)
+    await window.click('button[type="submit"]:has-text("Generate Recipe")');
 
     // Verify loading state briefly appears (may be too fast to catch in test)
 
@@ -90,7 +90,7 @@ test.describe('AI Recipe Generation Workflow', () => {
     // Fill criteria with test signal to trigger rate limit error
     // Using mainIngredient 'rate-limit-test' triggers the mock handler's rate limit error
     await window.fill('input[placeholder="e.g., chicken, tofu, pasta"]', 'rate-limit-test');
-    await window.click('button:has-text("Generate Recipe")');
+    await window.click('button[type="submit"]:has-text("Generate Recipe")');
 
     // Verify error message displays
     await expect(window.locator('text=/Rate limit/')).toBeVisible({ timeout: 5000 });
@@ -124,7 +124,7 @@ test.describe('AI Recipe Generation Workflow', () => {
     // Using mainIngredient 'failure-test' triggers the mock handler's unknown error
     await window.fill('input[placeholder="e.g., Italian, Thai, Mexican"]', 'Italian');
     await window.fill('input[placeholder="e.g., chicken, tofu, pasta"]', 'failure-test');
-    await window.click('button:has-text("Generate Recipe")');
+    await window.click('button[type="submit"]:has-text("Generate Recipe")');
 
     // Verify error message displays
     await expect(window.locator('text=/error occurred/')).toBeVisible({ timeout: 5000 });
@@ -150,7 +150,7 @@ test.describe('AI Recipe Generation Workflow', () => {
 
     // Fill minimal criteria and generate with normal valid inputs
     await window.fill('input[placeholder="e.g., chicken, tofu, pasta"]', 'vegetables');
-    await window.click('button:has-text("Generate Recipe")');
+    await window.click('button[type="submit"]:has-text("Generate Recipe")');
 
     // Wait for review mode
     await expect(window.locator('h1:has-text("Review Generated Recipe")')).toBeVisible({
@@ -163,8 +163,8 @@ test.describe('AI Recipe Generation Workflow', () => {
     // Verify back to criteria mode
     await expect(window.locator('h1:has-text("Generate Recipe with AI")')).toBeVisible();
 
-    // Verify criteria form is empty or resetted
-    await expect(window.locator('button:has-text("Generate Recipe")')).toBeVisible();
+    // Verify criteria form is empty or resetted (check for submit button specifically)
+    await expect(window.locator('button[type="submit"]:has-text("Generate Recipe")')).toBeVisible();
 
     await electronApp.close();
   });
