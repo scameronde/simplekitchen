@@ -163,8 +163,8 @@ test.describe('AI Recipe Generation Workflow', () => {
     // Verify back to criteria mode
     await expect(window.locator('h1:has-text("Generate Recipe with AI")')).toBeVisible();
 
-    // Verify criteria form is empty or resetted (check for submit button specifically)
-    await expect(window.locator('button[type="submit"]:has-text("Generate Recipe")')).toBeVisible();
+    // Verify criteria form is available (check for main ingredient input field)
+    await expect(window.locator('input[placeholder="e.g., chicken, tofu, pasta"]')).toBeVisible();
 
     await electronApp.close();
   });
