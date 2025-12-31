@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { CreateRecipeInput, RecipeFilter } from '../shared/types/recipe.js';
 import type { RecipeGenerationCriteria } from '../shared/types/ai.js';
-import { isTestEnvironment } from './utils/test-env.js';
+import { isUnitTest } from './utils/test-env.js';
 
 /**
  * Store original IPC handlers for reference when mocks are reset.
@@ -32,7 +32,7 @@ const __mockAPI__ = {
 };
 
 // Determine which API to expose based on environment
-const recipeAPI = isTestEnvironment() ? __mockAPI__ : __originalAPI__;
+const recipeAPI = isUnitTest() ? __mockAPI__ : __originalAPI__;
 
 // Expose safe APIs to renderer process
 // NEVER expose entire ipcRenderer or Node.js APIs directly
@@ -54,7 +54,7 @@ contextBridge.exposeInMainWorld('electron', electronAPI);
  * In test environment, also expose test infrastructure APIs to allow test harness
  * to override mock functions and access original IPC handlers for verification.
  */
-if (isTestEnvironment()) {
+if (isUnitTest()) {
   contextBridge.exposeInMainWorld('__testAPI__', {
     /**
      * Original IPC API for reference during test setup.

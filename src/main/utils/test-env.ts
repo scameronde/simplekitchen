@@ -13,7 +13,7 @@
  * @returns {boolean} True if running in unit test environment, false otherwise
  */
 export function isUnitTest(): boolean {
-  return process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
+  return process.env.VITEST === 'true';
 }
 
 /**
