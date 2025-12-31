@@ -149,7 +149,7 @@ function getBaseRecipes(
       },
       {
         title: 'Vegetarian Pasta Primavera',
-        cookingTimeMinutes: 25,
+        cookingTimeMinutes: 30,
         prepTimeMinutes: 10,
         instructions:
           'Cook pasta according to package directions. Toss with sautéed vegetables, olive oil, and fresh herbs. Serve warm.',
@@ -193,7 +193,7 @@ function getBaseRecipes(
       },
       {
         title: 'Tofu Stir-Fry',
-        cookingTimeMinutes: 25,
+        cookingTimeMinutes: 30,
         prepTimeMinutes: 10,
         instructions:
           'Press tofu and cube. Stir-fry with vegetables in sesame oil. Add soy sauce and serve over rice.',
@@ -209,7 +209,7 @@ function getBaseRecipes(
     'gluten-free': [
       {
         title: 'Gluten-Free Rice Bowl',
-        cookingTimeMinutes: 25,
+        cookingTimeMinutes: 30,
         prepTimeMinutes: 10,
         instructions:
           'Cook rice according to package directions. Top with roasted vegetables and protein of choice. Drizzle with sauce.',
@@ -225,7 +225,7 @@ function getBaseRecipes(
     'lactose-free': [
       {
         title: 'Lactose-Free Pasta',
-        cookingTimeMinutes: 25,
+        cookingTimeMinutes: 30,
         prepTimeMinutes: 10,
         instructions:
           'Cook pasta. Make sauce with olive oil, garlic, and tomatoes. Toss pasta with sauce and fresh herbs.',
@@ -255,7 +255,7 @@ function getBaseRecipes(
       },
       {
         title: 'Shrimp Pasta',
-        cookingTimeMinutes: 20,
+        cookingTimeMinutes: 30,
         prepTimeMinutes: 10,
         instructions:
           'Cook pasta. Sauté shrimp with garlic and white wine. Toss with cooked pasta and fresh herbs.',
