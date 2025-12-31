@@ -21,9 +21,9 @@ describe('Environment Detection Utility', () => {
       expect(isUnitTest()).toBe(true);
     });
 
-    it('should return true when NODE_ENV is set to "test"', () => {
+    it('should return false when only NODE_ENV is set to "test" (requires VITEST)', () => {
       vi.stubEnv('NODE_ENV', 'test');
-      expect(isUnitTest()).toBe(true);
+      expect(isUnitTest()).toBe(false);
     });
 
     it('should return false when neither VITEST nor NODE_ENV are set to test values', () => {
@@ -53,9 +53,9 @@ describe('Environment Detection Utility', () => {
       expect(isTestEnvironment()).toBe(true);
     });
 
-    it('should return true when NODE_ENV is set to "test"', () => {
+    it('should return false when only NODE_ENV is set to "test" (no longer triggers test mode)', () => {
       vi.stubEnv('NODE_ENV', 'test');
-      expect(isTestEnvironment()).toBe(true);
+      expect(isTestEnvironment()).toBe(false);
     });
 
     it('should return true when PLAYWRIGHT_TEST is set to "true"', () => {
