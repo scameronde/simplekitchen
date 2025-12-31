@@ -101,7 +101,7 @@ npm run build
 - [x] VERIFY-502: Verify error handling for rate limits (requires API key) ✅ PASSED
 - [x] VERIFY-503: Verify error handling for invalid API key (manual test) ✅ PASSED
 - [x] VERIFY-504: Verify error handling for network failure (manual test) ✅ PASSED
-- [x] VERIFY-505: Verify all unit tests pass (246 tests passed)
+- [x] VERIFY-505: Verify all unit tests pass (381 tests passed - updated 2025-12-30) ✅
 - [x] VERIFY-506: Verify all integration tests pass (15 tests passed)
 - [x] VERIFY-507: Verify all E2E tests pass (8/12 tests passing - manual & viewing work, AI tests need mock fixes)
 - [x] VERIFY-508: Verify documentation accuracy (all docs present and correct)
@@ -115,12 +115,17 @@ npm run build
 
 ### Test Results (2025-12-29)
 
-**Unit Tests**: ✅ PASSED (246/246 tests)
+**Unit Tests**: ✅ PASSED (381/381 tests - updated 2025-12-30)
 
 - All AI generation tests use mocked OpenAI SDK (zero API cost)
-- Recipe generator tests: 23 tests covering all error scenarios
-- Zod schema tests: 82 tests validating all constraints
-- IPC handler tests: 11 tests with security validation
+- Recipe generator tests: 23 tests covering all error scenarios ✅
+- Zod schema tests: 82 tests validating all constraints ✅
+- IPC handler tests: 11 tests with security validation ✅
+- **FIX APPLIED (2025-12-30)**: Added `process.env.OPENAI_API_KEY = 'test-api-key'` to test setup
+  - Previously failing: 30 tests in recipe-generator.test.ts + 7 tests in recipe-ai-handlers.test.ts
+  - Root cause: Tests couldn't reach mocked OpenAI client without API key set
+  - Solution: Set dummy API key in beforeEach to pass environment check
+  - Result: All Phase 5 tests now passing (116/116 Phase 5 tests)
 
 **Integration Tests**: ✅ PASSED (15/15 tests)
 
@@ -152,6 +157,17 @@ npm run build
 ## Blockers
 
 **RESOLVED** - All blockers cleared ✅
+
+**Test Fix Applied (2025-12-30)**:
+
+- **Issue**: 37 Phase 5 unit tests failing (30 in recipe-generator + 7 in recipe-ai-handlers)
+- **Root Cause**: `process.env.OPENAI_API_KEY` not set in test environment
+- **Impact**: Code threw error before reaching mocked OpenAI client
+- **Fix**: Added `process.env.OPENAI_API_KEY = 'test-api-key'` to test setup
+- **Result**: All 116 Phase 5 tests now passing ✅
+- **Files Modified**:
+  - `src/main/ai/recipe-generator.test.ts`
+  - `src/main/ipc/recipe-ai-handlers.test.ts`
 
 **E2E Test Status**:
 
@@ -405,6 +421,12 @@ After completing Phase 5, verify:
 
 **Cause**: Mock not set up correctly in tests  
 **Solution**: Verify `vi.mock('openai')` includes `parse` method
+
+### "OPENAI_API_KEY is not configured" error in tests
+
+**Cause**: Tests don't set `process.env.OPENAI_API_KEY`, code throws before reaching mocks  
+**Solution**: Add `process.env.OPENAI_API_KEY = 'test-api-key';` in test `beforeEach`  
+**Fixed**: 2025-12-30 ✅
 
 ### Generated recipes fail validation
 

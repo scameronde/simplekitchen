@@ -3,7 +3,7 @@ import type { WebFrameMain } from 'electron/main';
 import { generateRecipe } from '../ai/recipe-generator.js';
 import { validateRecipe } from '../validation/validator.js';
 import type { RecipeGenerationCriteria } from '../../shared/types/ai.js';
-import { isTestEnvironment } from '../utils/test-env.js';
+import { isE2ETest } from '../utils/test-env.js';
 import { mockGenerateRecipe } from './recipe-ai-handlers.mock.js';
 
 /**
@@ -33,8 +33,8 @@ export function registerRecipeAIHandlers(): void {
       };
     }
 
-    // Generate recipe via OpenAI or use mock in test environment
-    const result = isTestEnvironment()
+    // Generate recipe via OpenAI or use mock in E2E test environment
+    const result = isE2ETest()
       ? await mockGenerateRecipe(criteria)
       : await generateRecipe(criteria);
 

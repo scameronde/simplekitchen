@@ -5,20 +5,37 @@
  */
 
 /**
- * Checks if the application is running in a test environment.
+ * Checks if the application is running in a unit test environment (Vitest).
  * Returns true if any of the following conditions are met:
- * - NODE_ENV is set to 'test'
+ * - VITEST is set to 'true'
+ * - NODE_ENV is set to 'test' (fallback for older configurations)
+ *
+ * @returns {boolean} True if running in unit test environment, false otherwise
+ */
+export function isUnitTest(): boolean {
+  return process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
+}
+
+/**
+ * Checks if the application is running in an E2E test environment (Playwright).
+ * Returns true if any of the following conditions are met:
  * - PLAYWRIGHT_TEST is set to 'true'
  * - E2E_TEST is set to 'true'
+ *
+ * @returns {boolean} True if running in E2E test environment, false otherwise
+ */
+export function isE2ETest(): boolean {
+  return process.env.PLAYWRIGHT_TEST === 'true' || process.env.E2E_TEST === 'true';
+}
+
+/**
+ * Checks if the application is running in any test environment.
+ * Returns true if either unit tests or E2E tests are running.
  *
  * @returns {boolean} True if running in any test environment, false otherwise
  */
 export function isTestEnvironment(): boolean {
-  return (
-    process.env.NODE_ENV === 'test' ||
-    process.env.PLAYWRIGHT_TEST === 'true' ||
-    process.env.E2E_TEST === 'true'
-  );
+  return isUnitTest() || isE2ETest();
 }
 
 /**

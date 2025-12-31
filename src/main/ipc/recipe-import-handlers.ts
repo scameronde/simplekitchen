@@ -3,7 +3,7 @@ import type { WebFrameMain } from 'electron/main';
 import type { CreateRecipeInput } from '../../shared/types/recipe.js';
 import { extractSchemaOrgRecipe } from '../web/recipe-importer.js';
 import { schemaOrgToRecipeInput } from '../web/schema-org-adapter.js';
-import { isTestEnvironment } from '../utils/test-env.js';
+import { isE2ETest } from '../utils/test-env.js';
 import { mockImportRecipe } from './recipe-import-handlers.mock.js';
 
 /**
@@ -90,8 +90,8 @@ export function registerRecipeImportHandlers(): void {
 
     const importPromise = (async () => {
       try {
-        // Use mock handler in test environment, otherwise fetch from URL
-        if (isTestEnvironment()) {
+        // Use mock handler in E2E test environment, otherwise fetch from URL
+        if (isE2ETest()) {
           return await mockImportRecipe(url);
         }
 

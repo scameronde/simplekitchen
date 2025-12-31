@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { isTestEnvironment, getTestMockData } from './test-env.js';
+import { isTestEnvironment, isUnitTest, isE2ETest, getTestMockData } from './test-env.js';
 
 describe('Environment Detection Utility', () => {
   beforeEach(() => {
     // Reset environment to a clean state before each test
     vi.stubEnv('NODE_ENV', '');
+    vi.stubEnv('VITEST', '');
     vi.stubEnv('PLAYWRIGHT_TEST', '');
     vi.stubEnv('E2E_TEST', '');
   });
@@ -14,7 +15,44 @@ describe('Environment Detection Utility', () => {
     vi.unstubAllEnvs();
   });
 
+  describe('isUnitTest()', () => {
+    it('should return true when VITEST is set to "true"', () => {
+      vi.stubEnv('VITEST', 'true');
+      expect(isUnitTest()).toBe(true);
+    });
+
+    it('should return true when NODE_ENV is set to "test"', () => {
+      vi.stubEnv('NODE_ENV', 'test');
+      expect(isUnitTest()).toBe(true);
+    });
+
+    it('should return false when neither VITEST nor NODE_ENV are set to test values', () => {
+      expect(isUnitTest()).toBe(false);
+    });
+  });
+
+  describe('isE2ETest()', () => {
+    it('should return true when PLAYWRIGHT_TEST is set to "true"', () => {
+      vi.stubEnv('PLAYWRIGHT_TEST', 'true');
+      expect(isE2ETest()).toBe(true);
+    });
+
+    it('should return true when E2E_TEST is set to "true"', () => {
+      vi.stubEnv('E2E_TEST', 'true');
+      expect(isE2ETest()).toBe(true);
+    });
+
+    it('should return false when neither PLAYWRIGHT_TEST nor E2E_TEST are set', () => {
+      expect(isE2ETest()).toBe(false);
+    });
+  });
+
   describe('isTestEnvironment()', () => {
+    it('should return true when VITEST is set to "true"', () => {
+      vi.stubEnv('VITEST', 'true');
+      expect(isTestEnvironment()).toBe(true);
+    });
+
     it('should return true when NODE_ENV is set to "test"', () => {
       vi.stubEnv('NODE_ENV', 'test');
       expect(isTestEnvironment()).toBe(true);

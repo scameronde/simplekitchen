@@ -7,6 +7,9 @@ export default defineConfig({
     environment: 'jsdom', // Changed to jsdom for React component testing
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     setupFiles: './vitest.setup.ts',
+    env: {
+      VITEST: 'true',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

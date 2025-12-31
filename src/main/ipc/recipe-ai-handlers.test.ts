@@ -86,6 +86,9 @@ describe('Recipe AI IPC Handlers', () => {
     // Reset mocks
     vi.clearAllMocks();
 
+    // Set dummy API key to allow tests to reach mocked OpenAI client
+    process.env.OPENAI_API_KEY = 'test-api-key';
+
     // Import electron to get the mocked ipcMain
     const { ipcMain } = await import('electron');
 

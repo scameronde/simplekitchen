@@ -97,6 +97,8 @@ describe('Recipe Generator', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Set dummy API key to allow tests to reach mocked OpenAI client
+    process.env.OPENAI_API_KEY = 'test-api-key';
   });
 
   describe('Successful Generation', () => {

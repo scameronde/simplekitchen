@@ -150,6 +150,7 @@ export function RecipeGenerationPage() {
       dietaryTags: reviewFormData.dietaryTags,
       seasonality: reviewFormData.seasonality.length > 0 ? reviewFormData.seasonality : ['any'],
       sourceType: 'ai-generated',
+      sourceReference: 'OpenAI gpt-4o-mini',
       instructions: reviewFormData.instructions || undefined,
       ingredients: reviewIngredients.map((ing, i) => ({
         name: ing.name,
