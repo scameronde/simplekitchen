@@ -40,6 +40,8 @@
     "npm": ">=10.0.0"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "better-sqlite3": "12.5.0",
     "dotenv": "^17.2.3",
     "electron": "^39.2.7",
@@ -81,6 +83,7 @@
     "typescript": "^5.9.3",
     "vite": "^6.4.1",
     "vitest": "^2.1.9",
-    "wait-on": "^8.0.5"
+    "wait-on": "^8.0.5",
+    "xstate": "^5.18.2"
   }
 }
