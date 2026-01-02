@@ -4,6 +4,8 @@
  * Defines table structures and type enums for SQLite database.
  */
 
+import type { CookingSessionTable } from './conversation.js';
+
 // Database schema types (will be used by Kysely)
 
 export type CookwareType = 'one-pot' | 'one-pan' | 'oven';
@@ -73,4 +75,5 @@ export interface Database {
   recipes: RecipeTable;
   ingredients: IngredientTable;
   dietary_profile: DietaryProfileTable;
+  cooking_sessions: CookingSessionTable;
 }
