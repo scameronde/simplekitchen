@@ -31,8 +31,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('https://example.com/recipe/pasta');
 
-    // Submit form by pressing Enter in the input field (workaround for Playwright/Electron button click issue)
-    await urlInput.press('Enter');
+    // Submit form by clicking the submit button inside the form
+    await window.locator('form button[type="submit"]').click();
 
     // Verify review page appears
     await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({
@@ -96,8 +96,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('not-a-url');
 
-    // Submit form by pressing Enter in the input field (workaround for Playwright/Electron button click issue)
-    await urlInput.press('Enter');
+    // Submit form by clicking the submit button inside the form
+    await window.locator('form button[type="submit"]').click();
 
     // Verify error message displays
     await expect(window.locator('text=/Invalid URL|URL must/')).toBeVisible({ timeout: 5000 });
@@ -129,8 +129,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('https://example.com/recipe/test');
 
-    // Submit form by pressing Enter in the input field (workaround for Playwright/Electron button click issue)
-    await urlInput.press('Enter');
+    // Submit form by clicking the submit button inside the form
+    await window.locator('form button[type="submit"]').click();
 
     // Wait for review page
     await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({
@@ -183,8 +183,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('https://example.com/recipe/test');
 
-    // Submit form by pressing Enter in the input field (workaround for Playwright/Electron button click issue)
-    await urlInput.press('Enter');
+    // Submit form by clicking the submit button inside the form
+    await window.locator('form button[type="submit"]').click();
 
     // Wait for review page
     await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({
@@ -229,8 +229,8 @@ test.describe('Recipe Import Workflow', () => {
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
     await urlInput.fill('https://example.com/recipe/original');
 
-    // Submit form by pressing Enter in the input field (workaround for Playwright/Electron button click issue)
-    await urlInput.press('Enter');
+    // Submit form by clicking the submit button inside the form
+    await window.locator('form button[type="submit"]').click();
 
     // Wait for review page
     await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({

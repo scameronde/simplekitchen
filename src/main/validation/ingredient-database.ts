@@ -80,6 +80,11 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
     dietaryProperties: ['contains-lactose'],
     aliases: ['parmesan cheese', 'parmigiano-reggiano', 'parmigiano'],
   }, // Conservative: still flag it
+  {
+    name: 'pecorino',
+    dietaryProperties: ['contains-lactose'],
+    aliases: ['pecorino cheese', 'pecorino romano'],
+  },
   { name: 'aged cheddar', dietaryProperties: ['contains-lactose'] }, // Conservative
   { name: 'feta', dietaryProperties: ['contains-lactose'], aliases: ['feta cheese'] },
   { name: 'goat cheese', dietaryProperties: ['contains-lactose'], aliases: ['chevre'] },
@@ -102,6 +107,7 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'vegetable oil', dietaryProperties: ['none'] },
   { name: 'canola oil', dietaryProperties: ['none'] },
   { name: 'avocado oil', dietaryProperties: ['none'] },
+  { name: 'sesame oil', dietaryProperties: ['none'] },
 
   // Meats and fish (no gluten or lactose)
   { name: 'chicken', dietaryProperties: ['contains-meat'] },
@@ -114,6 +120,7 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'pork', dietaryProperties: ['contains-meat'] },
   { name: 'pork chop', dietaryProperties: ['contains-meat'] },
   { name: 'bacon', dietaryProperties: ['contains-meat'] },
+  { name: 'pancetta', dietaryProperties: ['contains-meat'] },
   { name: 'sausage', dietaryProperties: ['contains-meat'] },
   { name: 'turkey', dietaryProperties: ['contains-meat'] },
   { name: 'ground turkey', dietaryProperties: ['contains-meat'] },
@@ -122,6 +129,7 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'cod', dietaryProperties: ['contains-fish'] },
   { name: 'shrimp', dietaryProperties: ['contains-fish'] },
   { name: 'fish', dietaryProperties: ['contains-fish'] },
+  { name: 'fish sauce', dietaryProperties: ['contains-fish'] },
 
   // Eggs
   { name: 'egg', dietaryProperties: ['contains-eggs'] },
@@ -129,12 +137,14 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'egg whites', dietaryProperties: ['contains-eggs'] },
   { name: 'egg yolks', dietaryProperties: ['contains-eggs'] },
 
-  // Vegetables (no restrictions)
+  // Vegetables and fruits (no restrictions)
   { name: 'tomato', dietaryProperties: ['none'] },
   { name: 'tomatoes', dietaryProperties: ['none'] },
   { name: 'onion', dietaryProperties: ['none'] },
   { name: 'onions', dietaryProperties: ['none'] },
   { name: 'garlic', dietaryProperties: ['none'] },
+  { name: 'lemon', dietaryProperties: ['none'] },
+  { name: 'lime', dietaryProperties: ['none'] },
   { name: 'bell pepper', dietaryProperties: ['none'] },
   { name: 'red bell pepper', dietaryProperties: ['none'] },
   { name: 'green bell pepper', dietaryProperties: ['none'] },
@@ -155,6 +165,7 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'cauliflower', dietaryProperties: ['none'] },
   { name: 'asparagus', dietaryProperties: ['none'] },
   { name: 'green beans', dietaryProperties: ['none'] },
+  { name: 'snap peas', dietaryProperties: ['none'], aliases: ['sugar snap peas'] },
 
   // Legumes (no gluten or lactose)
   {
@@ -181,9 +192,13 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'fresh thyme', dietaryProperties: ['none'] },
   { name: 'rosemary', dietaryProperties: ['none'] },
   { name: 'fresh rosemary', dietaryProperties: ['none'] },
+  { name: 'dill', dietaryProperties: ['none'] },
+  { name: 'fresh dill', dietaryProperties: ['none'] },
   { name: 'paprika', dietaryProperties: ['none'] },
   { name: 'cumin', dietaryProperties: ['none'] },
   { name: 'chili powder', dietaryProperties: ['none'] },
+  { name: 'curry powder', dietaryProperties: ['none'] },
+  { name: 'curry paste', dietaryProperties: ['none'] },
   { name: 'black pepper', dietaryProperties: ['none'] },
   { name: 'salt', dietaryProperties: ['none'] },
   { name: 'ginger', dietaryProperties: ['none'] },
@@ -206,6 +221,7 @@ export const INGREDIENT_DATABASE: IngredientData[] = [
   { name: 'mustard', dietaryProperties: ['none'] },
   { name: 'honey', dietaryProperties: ['none'] },
   { name: 'maple syrup', dietaryProperties: ['none'] },
+  { name: 'cornstarch', dietaryProperties: ['none'], aliases: ['corn starch'] },
 
   // Nuts and seeds (no gluten or lactose)
   { name: 'almonds', dietaryProperties: ['none'] },
