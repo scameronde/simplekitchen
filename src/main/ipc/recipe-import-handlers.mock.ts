@@ -153,6 +153,11 @@ function selectMockRecipe(url: string): CreateRecipeInput {
     return schemaOrgToRecipeInput(getMockFishRecipe(), url);
   }
 
+  // Long recipe for testing validation failures (60 minute cooking time)
+  if (lowerUrl.includes('long-recipe')) {
+    return schemaOrgToRecipeInput(getMockLongRecipe(), url);
+  }
+
   // Default recipe
   return schemaOrgToRecipeInput(getMockDefaultRecipe(), url);
 }
@@ -514,5 +519,41 @@ function getMockDefaultRecipe(): SchemaOrgRecipe {
 5. Add soy sauce and sesame oil, stirring constantly.
 6. Cook for 2-3 minutes until sauce thickens.
 7. Serve hot, optionally over rice.`,
+  };
+}
+
+/**
+ * Returns a mock recipe with 60-minute cooking time for validation testing.
+ * Used to test validation failure and correction workflows.
+ *
+ * @returns Mock Schema.org recipe object with long cooking time
+ */
+function getMockLongRecipe(): SchemaOrgRecipe {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    name: 'Imported Recipe',
+    description: 'A recipe with cooking time that violates the 60-minute maximum constraint',
+    prepTime: 'PT15M',
+    cookTime: 'PT75M',
+    totalTime: 'PT90M',
+    recipeYield: '2',
+    recipeIngredient: [
+      '500g pasta',
+      '2 tbsp olive oil',
+      '1 onion, diced',
+      '3 cloves garlic, minced',
+      '400ml vegetable broth',
+      '200g tomatoes, diced',
+      '1 tsp basil',
+      'Salt and pepper to taste',
+    ],
+    recipeInstructions: `1. Heat olive oil in a large pot over medium heat.
+2. Add diced onion and cook until softened, about 5 minutes.
+3. Add garlic and cook for 1 minute until fragrant.
+4. Add tomatoes and cook for 5 minutes.
+5. Pour in vegetable broth and bring to a boil.
+6. Add pasta and basil, cook for 12-15 minutes until pasta is al dente.
+7. Season with salt and pepper, then serve hot.`,
   };
 }

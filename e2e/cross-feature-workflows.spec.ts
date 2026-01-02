@@ -182,4 +182,69 @@ test.describe('Cross-Feature Workflows', () => {
 
     await electronApp.close();
   });
+
+  test('web import → validation failure → fix → save workflow', async () => {
+    // This test verifies the workflow where a web-imported recipe fails validation
+    // and the user fixes the errors before saving.
+
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        E2E_TEST: 'true',
+      },
+    });
+
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
+
+    // Step 1: Navigate to web import page
+    await window.click('text=Import Recipe');
+    await expect(window.locator('h1:has-text("Import Recipe from Web")')).toBeVisible();
+
+    // Step 2: Import a recipe with valid URL (mock handler will return a standard recipe)
+    const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
+    await urlInput.fill('https://example.com/recipe/pasta');
+    await window.locator('form button[type="submit"]').click();
+
+    // Wait for review page
+    await expect(window.locator('h1:has-text("Review Imported Recipe")')).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Step 3: Manually create a validation error by setting cooking time beyond 60-minute limit
+    // This simulates the scenario where imported data violates constraints
+    const cookingTimeField = window.locator('#input-cooking-time-\\(minutes\\)');
+    await cookingTimeField.fill('75');
+
+    // Step 4: Try to save - this will trigger validation error
+    await window.click('button:has-text("Save Recipe")');
+
+    // Step 5: Observe validation error displayed
+    await expect(window.locator('text=/Please fix the following/')).toBeVisible({ timeout: 5000 });
+
+    // Step 6: Fix the validation error by setting cooking time to valid value
+    await cookingTimeField.fill('40');
+
+    // Step 7: Save again - should succeed now
+    await window.click('button:has-text("Save Recipe")');
+
+    // Verify success message
+    await expect(window.locator('text=Recipe saved successfully!')).toBeVisible({ timeout: 5000 });
+
+    // Step 8: Navigate to recipe list and verify recipe appears with corrected data
+    await window.click('text=View Recipes');
+    await expect(window.locator('h1:has-text("My Recipes")')).toBeVisible();
+
+    // Step 9: Verify recipe appears in filtered results (default filter is 30-45 minutes)
+    // Our corrected recipe is 40 minutes, so it should be visible
+    await expect(window.locator('[data-testid="recipe-card"]').first()).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Test complete - recipe was imported, failed validation, was fixed, saved, and appears in list
+
+    await electronApp.close();
+  });
 });
