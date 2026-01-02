@@ -48,7 +48,7 @@ test.describe('Recipe Import Workflow', () => {
 
     // WORKAROUND: Direct button click doesn't work due to Playwright/Electron/React event issue
     // Need to trigger validation error first to "activate" the form
-    await window.fill('#input-cooking-time-\\(minutes\\)', '50'); // Violates 45min limit
+    await window.fill('#input-cooking-time-\\(minutes\\)', '70'); // Violates 60min limit
     await window.click('button:has-text("Save Recipe")');
 
     // Wait for validation error
@@ -92,9 +92,10 @@ test.describe('Recipe Import Workflow', () => {
     await expect(window.locator('h1:has-text("Import Recipe from Web")')).toBeVisible();
 
     // Enter invalid URL format (not http:// or https://)
-    // The mock handler validates URL format and returns an error for invalid formats
+    // Use ftp:// which passes browser validation but fails application validation
+    // The mock handler validates URL format and returns an error for non-http(s) URLs
     const urlInput = window.locator('input[placeholder="https://www.example.com/recipe/..."]');
-    await urlInput.fill('not-a-url');
+    await urlInput.fill('ftp://example.com/recipe');
 
     // Submit form by clicking the submit button inside the form
     await window.locator('form button[type="submit"]').click();
@@ -137,9 +138,9 @@ test.describe('Recipe Import Workflow', () => {
       timeout: 5000,
     });
 
-    // Manually create a violation by setting cooking time beyond the 45-minute limit
+    // Manually create a violation by setting cooking time beyond the 60-minute limit
     // to test the validation error handling
-    await window.fill('#input-cooking-time-\\(minutes\\)', '50');
+    await window.fill('#input-cooking-time-\\(minutes\\)', '70');
 
     // Try to save without fixing violations
     await window.click('button:has-text("Save Recipe")');
