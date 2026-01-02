@@ -8,6 +8,7 @@ interface RecipeCardProps {
 export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
   return (
     <div
+      data-testid="recipe-card"
       onClick={() => onClick(recipe.id)}
       className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-6 border border-gray-200"
     >
