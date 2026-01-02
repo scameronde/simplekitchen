@@ -246,20 +246,43 @@ function parseServings(yield_: string | number | undefined): number {
  * @returns CreateIngredientInput object
  */
 function parseIngredient(ingredientString: string, index: number): CreateIngredientInput {
+  // Defensive check for invalid input
+  if (!ingredientString || typeof ingredientString !== 'string') {
+    console.warn('[parseIngredient] Invalid ingredient string:', ingredientString);
+    return {
+      name: 'Unknown ingredient',
+      quantity: 1,
+      unit: '',
+      dietaryProperties: [],
+      optional: false,
+      orderIndex: index,
+    };
+  }
+
   const match = ingredientString.match(/^(?:(\d+(?:\.\d+)?)\s*([a-zA-Z]+))?\s*(.+)$/);
 
   let quantity = 1;
   let unit = '';
-  let name = ingredientString;
+  let name = ingredientString.trim();
 
   if (match && match[3]) {
     if (match[1]) {
-      quantity = parseFloat(match[1]);
+      const parsedQuantity = parseFloat(match[1]);
+      // Validate quantity is a positive number
+      if (!isNaN(parsedQuantity) && parsedQuantity > 0) {
+        quantity = parsedQuantity;
+      }
     }
     if (match[2]) {
       unit = match[2].toLowerCase();
     }
     name = match[3].trim();
+  }
+
+  // Validate name is not empty after parsing
+  if (!name) {
+    console.warn('[parseIngredient] Empty ingredient name after parsing:', ingredientString);
+    name = ingredientString.trim() || 'Unknown ingredient';
   }
 
   return {
@@ -351,11 +374,12 @@ function getMockPastaRecipe(): SchemaOrgRecipe {
     recipeYield: '2',
     recipeIngredient: [
       '250g spaghetti',
-      '150g pancetta or guanciale, diced',
+      '150g pancetta',
       '2 large eggs',
-      '100g Pecorino Romano cheese, grated',
-      '2 cloves garlic, minced',
-      'Salt and black pepper to taste',
+      '100g pecorino cheese',
+      '2 cloves garlic',
+      '1 tsp salt',
+      '1 tsp black pepper',
     ],
     recipeInstructions: `1. Bring a large pot of salted water to a boil and cook spaghetti until al dente.
 2. Meanwhile, cook pancetta in a large pan over medium heat until crispy, about 5 minutes.

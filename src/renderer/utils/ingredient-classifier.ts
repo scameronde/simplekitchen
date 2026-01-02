@@ -19,6 +19,30 @@ const INGREDIENT_DATABASE: Record<string, DietaryProperty[]> = {
 };
 
 export function determineDietaryProperties(ingredientName: string): DietaryProperty[] {
-  const normalized = ingredientName.toLowerCase().trim();
-  return INGREDIENT_DATABASE[normalized] || [];
+  // Defensive checks for edge cases
+  if (!ingredientName || typeof ingredientName !== 'string') {
+    console.warn('[determineDietaryProperties] Invalid ingredient name:', ingredientName);
+    return [];
+  }
+
+  // Normalize by removing special characters and extra whitespace
+  const normalized = ingredientName
+    .toLowerCase()
+    .trim()
+    .replace(/[,;:()]/g, '') // Remove common punctuation
+    .replace(/\s+/g, ' '); // Normalize whitespace
+
+  // Try exact match first
+  if (INGREDIENT_DATABASE[normalized]) {
+    return INGREDIENT_DATABASE[normalized];
+  }
+
+  // Try to match the first word (e.g., "cheese, grated" → "cheese")
+  const firstWord = normalized.split(' ')[0];
+  if (firstWord && INGREDIENT_DATABASE[firstWord]) {
+    return INGREDIENT_DATABASE[firstWord];
+  }
+
+  // Return empty array if no match found
+  return [];
 }
