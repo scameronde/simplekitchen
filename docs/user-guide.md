@@ -11,7 +11,7 @@ Add your favorite recipes manually to SimpleKitchen through an intuitive form in
 1. **Launch SimpleKitchen** - The recipe entry form displays on app launch
 2. **Fill in Basic Information**:
    - **Recipe Title** (required): Give your recipe a descriptive name
-   - **Cooking Time** (required): Enter time in minutes (must be 30-45 minutes)
+   - **Cooking Time** (required): Enter time in minutes (0-60 minutes)
    - **Prep Time** (optional): Time needed for preparation
    - **Cookware Type** (required): Choose One-Pot, One-Pan, or Oven
    - **Servings**: Fixed at 2 people
@@ -40,7 +40,7 @@ Add your favorite recipes manually to SimpleKitchen through an intuitive form in
 
 Your recipes must meet these requirements:
 
-- **Cooking Time**: 30-45 minutes
+- **Cooking Time**: 0-60 minutes
 - **Cookware**: Only one-pot, one-pan, or oven recipes
 - **Servings**: Exactly 2 people
 - **Dietary Compliance**: Must be gluten-free and lactose-free (system enforces)
@@ -48,9 +48,9 @@ Your recipes must meet these requirements:
 
 ### Common Errors and Solutions
 
-**Error: "Cooking time must be between 30-45 minutes"**
+**Error: "Cooking time must be between 0-60 minutes"**
 
-- Adjust your cooking time to fit within the range
+- Adjust your cooking time to fit within the range (minimum 0 minutes, maximum 60 minutes)
 
 **Error: "Recipe contains [ingredient] which has lactose"**
 
@@ -96,8 +96,8 @@ Use the filter panel on the left to narrow down your recipe collection:
 #### Cooking Time Filter
 
 - Adjust the two sliders to set minimum and maximum cooking time
-- Range: 15-60 minutes
-- Default: 30-45 minutes
+- Range: 0-60 minutes
+- Default: 0-60 minutes
 
 #### Cookware Type Filter
 

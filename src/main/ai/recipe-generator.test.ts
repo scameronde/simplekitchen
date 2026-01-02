@@ -661,7 +661,7 @@ describe('Recipe Generator', () => {
       expect(systemMessage).toBeDefined();
       expect(systemMessage.content).toContain('You are a professional chef');
       expect(systemMessage.content).toContain('CRITICAL CONSTRAINTS');
-      expect(systemMessage.content).toContain('30-45 minutes');
+      expect(systemMessage.content).toContain('0-60 minutes');
       expect(systemMessage.content).toContain('exactly 2 portions');
     });
   });

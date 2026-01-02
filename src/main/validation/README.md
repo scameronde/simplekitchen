@@ -14,15 +14,18 @@ SimpleKitchen implements **zero-false-negative** constraint validation through a
 ### Dietary Constraints
 
 **Hard Restrictions (Default):**
+
 - Gluten-free
 - Lactose-free
 
 **Additional Restrictions (User-Configurable):**
+
 - Vegetarian
 - Vegan
 - Pescatarian
 
 **Multi-Layer Validation:**
+
 1. **Layer 1**: Static ingredient database lookup (80% coverage)
 2. **Layer 2**: Ingredient `dietary_properties` field
 3. **Layer 3**: Check against `hard_restrictions` in dietary profile
@@ -31,9 +34,9 @@ SimpleKitchen implements **zero-false-negative** constraint validation through a
 
 ### Time Constraints
 
-- **Minimum**: 30 minutes
-- **Maximum**: 45 minutes
-- **Rationale**: Spec requirement for weeknight cooking feasibility
+- **Minimum**: 0 minutes
+- **Maximum**: 60 minutes
+- **Rationale**: Flexible time range to accommodate quick snacks to full meals
 
 ### Cookware Constraints
 
@@ -82,7 +85,7 @@ await saveToDatabase(recipeInput);
 ### Check Individual Constraints
 
 ```typescript
-import { 
+import {
   validateDietaryConstraints,
   validateTimeConstraints,
   getTimeConstraints,
@@ -92,7 +95,7 @@ const profile = await getDietaryProfile();
 const dietaryErrors = await validateDietaryConstraints(recipeInput, profile);
 const timeErrors = validateTimeConstraints(recipeInput);
 
-const { min, max } = getTimeConstraints(); // { min: 30, max: 45 }
+const { min, max } = getTimeConstraints(); // { min: 0, max: 60 }
 ```
 
 ### Lookup Ingredient Properties
@@ -114,10 +117,10 @@ const unknown = getIngredientProperties('exotic-spice');
 
 ```typescript
 interface ValidationError {
-  field: string;           // "ingredients[0].name", "cookingTimeMinutes"
-  constraint: string;      // "dietary-gluten-free", "time-maximum"
-  message: string;         // Human-readable error
-  suggestedFix?: string;   // Optional suggestion for user
+  field: string; // "ingredients[0].name", "cookingTimeMinutes"
+  constraint: string; // "dietary-gluten-free", "time-maximum"
+  message: string; // Human-readable error
+  suggestedFix?: string; // Optional suggestion for user
 }
 ```
 
@@ -126,6 +129,7 @@ interface ValidationError {
 **Coverage**: ~150 common ingredients
 
 **Categories:**
+
 - Gluten-containing grains (wheat, barley, rye, pasta, bread, etc.)
 - Gluten-free grains (rice, quinoa, GF pasta, corn, oats, etc.)
 - Dairy (milk, butter, cream, cheese, yogurt, etc.)
@@ -139,11 +143,13 @@ interface ValidationError {
 - Nuts and seeds (almonds, cashews, peanut butter, etc.)
 
 **Aliases Supported:**
+
 - courgette → zucchini
 - aubergine → eggplant
 - coriander → cilantro
 
 **Conservative Approach:**
+
 - Aged cheese (parmesan, aged cheddar) flagged as contains-lactose (user can add to explicit_inclusions if tolerated)
 - Soy sauce flagged as contains-gluten (most brands use wheat; recommend tamari)
 
@@ -154,15 +160,16 @@ To add new ingredients, update `ingredient-database.ts`:
 ```typescript
 export const INGREDIENT_DATABASE: IngredientData[] = [
   // ... existing ingredients ...
-  { 
-    name: 'new-ingredient', 
-    dietaryProperties: ['contains-gluten'], 
-    aliases: ['alternative-name'] 
+  {
+    name: 'new-ingredient',
+    dietaryProperties: ['contains-gluten'],
+    aliases: ['alternative-name'],
   },
 ];
 ```
 
 **Guidelines:**
+
 - Use lowercase for all names and aliases
 - Be conservative: if unsure, flag as potential restriction
 - Add common aliases (British vs American English, etc.)
@@ -180,11 +187,13 @@ npm run test -- src/main/validation
 ## Limitations & Future Enhancements
 
 **Current Limitations:**
+
 - Static database requires manual curation
 - No support for Spoonacular API (optional, planned for Phase 5+)
 - Unknown ingredients require manual user verification
 
 **Future Enhancements (Post-MVP):**
+
 - Spoonacular API integration for secondary validation
 - User-contributed ingredient database
 - Substitution suggestions (AI-powered)
@@ -195,6 +204,7 @@ npm run test -- src/main/validation
 **Why it matters**: For users with celiac disease or lactose intolerance, false negatives (suggesting unsafe recipes) are dangerous.
 
 **How we achieve it**:
+
 1. **Conservative defaults**: Unknown ingredients flagged, not auto-approved
 2. **Explicit user review**: All errors shown before storage
 3. **Multi-layer checks**: Static database + ingredient properties + profile

@@ -1,8 +1,8 @@
 import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
 import type { ValidationError } from '../../shared/types/validation.js';
 
-const MIN_COOKING_TIME = 30;
-const MAX_COOKING_TIME = 45;
+const MIN_COOKING_TIME = 0;
+const MAX_COOKING_TIME = 60;
 
 // Validate cooking time constraint
 export function validateTimeConstraints(
@@ -17,17 +17,17 @@ export function validateTimeConstraints(
 
   const cookingTime = recipeInput.cookingTimeMinutes;
 
-  // Validate minimum cooking time (30 minutes)
+  // Validate minimum cooking time (0 minutes or positive)
   if (cookingTime < MIN_COOKING_TIME) {
     errors.push({
       field: 'cookingTimeMinutes',
       constraint: 'time-minimum',
-      message: `Cooking time must be at least ${MIN_COOKING_TIME} minutes. Current: ${cookingTime} minutes.`,
-      suggestedFix: `Increase cooking time to ${MIN_COOKING_TIME} minutes or more.`,
+      message: `Cooking time must be at least ${MIN_COOKING_TIME} minutes (zero or positive). Current: ${cookingTime} minutes.`,
+      suggestedFix: `Set cooking time to ${MIN_COOKING_TIME} minutes or more.`,
     });
   }
 
-  // Validate maximum cooking time (45 minutes)
+  // Validate maximum cooking time (60 minutes)
   if (cookingTime > MAX_COOKING_TIME) {
     errors.push({
       field: 'cookingTimeMinutes',

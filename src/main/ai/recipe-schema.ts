@@ -20,7 +20,7 @@ export const IngredientGenerationSchema = z.object({
 
 export const RecipeGenerationSchema = z.object({
   title: z.string().min(1).max(200),
-  cookingTimeMinutes: z.number().int().min(30).max(45),
+  cookingTimeMinutes: z.number().int().min(0).max(60),
   prepTimeMinutes: z.number().int().min(0).max(30).nullable(),
   cookwareType: z.enum(['one-pot', 'one-pan', 'oven']),
   servings: z.literal(2),

@@ -38,7 +38,7 @@ describe('Validation Orchestrator', () => {
   it('should aggregate errors from multiple validators', async () => {
     const invalidRecipe: CreateRecipeInput = {
       ...validRecipe,
-      cookingTimeMinutes: 50, // Too long
+      cookingTimeMinutes: 70, // Too long (over 60 minutes)
       servings: 4, // Wrong servings
       ingredients: [
         {
@@ -68,7 +68,7 @@ describe('Validation Orchestrator', () => {
   it('should throw error when validateRecipeOrThrow is called with invalid recipe', async () => {
     const invalidRecipe: CreateRecipeInput = {
       ...validRecipe,
-      cookingTimeMinutes: 20, // Too short
+      cookingTimeMinutes: -5, // Negative (invalid)
     };
 
     await expect(validateRecipeOrThrow(invalidRecipe)).rejects.toThrow('Recipe validation failed');

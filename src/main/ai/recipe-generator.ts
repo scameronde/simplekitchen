@@ -37,7 +37,7 @@ const SYSTEM_PROMPT = `You are a professional chef with expertise in diverse cui
 - STRICTLY compliant with the provided constraints
 
 CRITICAL CONSTRAINTS (NEVER violate):
-- Cooking time: MUST be between 30-45 minutes (active cooking only)
+- Cooking time: MUST be between 0-60 minutes (active cooking only)
 - Servings: MUST be exactly 2 portions
 - Cookware: MUST use only ONE piece of cookware (one pot OR one pan OR oven)
 - Dietary restrictions: MUST comply with specified tags
@@ -97,7 +97,7 @@ function buildUserPrompt(criteria: RecipeGenerationCriteria): string {
   // Add requirements summary
   parts.push('');
   parts.push('The recipe must:');
-  parts.push('- Take 30-45 minutes of active cooking time');
+  parts.push('- Take 0-60 minutes of active cooking time');
   parts.push('- Serve exactly 2 people');
   if (criteria.cookwareType) {
     parts.push(`- Use only ${criteria.cookwareType}`);

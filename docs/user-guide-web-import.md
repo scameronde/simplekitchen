@@ -151,13 +151,12 @@ Most major recipe websites will work. If you're unsure, try importing! The app w
 
 ### "Recipe failed validation" or Constraint Error
 
-**Cause**: The imported recipe doesn't meet SimpleKitchen's requirements (e.g., cooking time outside 30-45 minutes, or contains ingredients with gluten/lactose).
+**Cause**: The imported recipe doesn't meet SimpleKitchen's requirements (e.g., cooking time outside 0-60 minutes, or contains ingredients with gluten/lactose).
 
 **Solutions**:
 
-- **Cooking Time**: Adjust the cooking time to fit between 30-45 minutes
-  - If the recipe is too quick, you may not be looking at the complete cooking time
-  - If it's too slow, try searching for a quicker version of the recipe
+- **Cooking Time**: Adjust the cooking time to fit between 0-60 minutes
+  - If the recipe is too slow (over 60 minutes), try searching for a quicker version of the recipe
 - **Cookware Type**: Change the cookware type to one-pot, one-pan, or oven
   - If the recipe requires other cookware, use manual entry instead
 - **Ingredients with Allergens**:
@@ -196,7 +195,7 @@ If the recipe requires too many changes, manual entry or AI generation might be 
 
 - You found a recipe online and want to add it quickly
 - The website is a major recipe site (AllRecipes, Food Network, etc.)
-- The recipe fits SimpleKitchen's requirements (30-45 min, appropriate cookware)
+- The recipe fits SimpleKitchen's requirements (0-60 min, appropriate cookware)
 
 ### Use Manual Entry When:
 

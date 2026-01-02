@@ -259,24 +259,24 @@ describe('RecipeGenerationSchema', () => {
   });
 
   describe('Invalid Recipe - Cooking Time', () => {
-    it('should reject cooking time less than 30 minutes', () => {
-      const recipe = { ...validRecipe, cookingTimeMinutes: 29 };
+    it('should reject negative cooking time', () => {
+      const recipe = { ...validRecipe, cookingTimeMinutes: -1 };
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
-    it('should reject cooking time greater than 45 minutes', () => {
-      const recipe = { ...validRecipe, cookingTimeMinutes: 46 };
+    it('should reject cooking time greater than 60 minutes', () => {
+      const recipe = { ...validRecipe, cookingTimeMinutes: 61 };
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
-    it('should reject cooking time of 20 minutes', () => {
-      const recipe = { ...validRecipe, cookingTimeMinutes: 20 };
+    it('should reject cooking time of 75 minutes', () => {
+      const recipe = { ...validRecipe, cookingTimeMinutes: 75 };
       expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
     });
 
-    it('should reject cooking time of 60 minutes', () => {
-      const recipe = { ...validRecipe, cookingTimeMinutes: 60 };
-      expect(() => RecipeGenerationSchema.parse(recipe)).toThrow();
+    it('should accept cooking time of 0 minutes', () => {
+      const recipe = { ...validRecipe, cookingTimeMinutes: 0 };
+      expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
     });
 
     it('should accept cooking time of exactly 30 minutes', () => {
@@ -286,6 +286,16 @@ describe('RecipeGenerationSchema', () => {
 
     it('should accept cooking time of exactly 45 minutes', () => {
       const recipe = { ...validRecipe, cookingTimeMinutes: 45 };
+      expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
+    });
+
+    it('should accept cooking time of exactly 60 minutes', () => {
+      const recipe = { ...validRecipe, cookingTimeMinutes: 60 };
+      expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
+    });
+
+    it('should accept cooking time of 15 minutes', () => {
+      const recipe = { ...validRecipe, cookingTimeMinutes: 15 };
       expect(() => RecipeGenerationSchema.parse(recipe)).not.toThrow();
     });
 

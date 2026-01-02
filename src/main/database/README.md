@@ -35,7 +35,7 @@ Stores recipe metadata (title, times, cookware, dietary tags, source).
 
 **Constraints:**
 
-- `cooking_time_minutes`: Must be 30-45 (spec requirement)
+- `cooking_time_minutes`: Must be 0-60 (spec requirement)
 - `servings`: Must be exactly 2 (spec requirement)
 - `cookware_type`: One of 'one-pot', 'one-pan', 'oven'
 - `source_type`: One of 'manual', 'ai-generated', 'web-imported'

@@ -43,7 +43,7 @@ function migration001_initialSchema(): void {
     CREATE TABLE recipes (
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
-      cooking_time_minutes INTEGER NOT NULL CHECK(cooking_time_minutes >= 30 AND cooking_time_minutes <= 45),
+      cooking_time_minutes INTEGER NOT NULL CHECK(cooking_time_minutes >= 0 AND cooking_time_minutes <= 60),
       prep_time_minutes INTEGER,
       total_time_minutes INTEGER NOT NULL,
       cookware_type TEXT NOT NULL CHECK(cookware_type IN ('one-pot', 'one-pan', 'oven')),

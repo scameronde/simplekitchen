@@ -99,19 +99,19 @@ describe('Recipe DAL with Validation Integration', () => {
     expect(created.title).toBe('Lactose Recipe');
   });
 
-  it('should reject recipe with cooking time below 30 minutes', async () => {
+  it('should reject recipe with negative cooking time', async () => {
     const invalidRecipe: CreateRecipeInput = {
       ...validRecipe,
-      cookingTimeMinutes: 25,
+      cookingTimeMinutes: -1,
     };
 
     await expect(createRecipe(invalidRecipe)).rejects.toThrow('Recipe validation failed');
   });
 
-  it('should reject recipe with cooking time above 45 minutes', async () => {
+  it('should reject recipe with cooking time above 60 minutes', async () => {
     const invalidRecipe: CreateRecipeInput = {
       ...validRecipe,
-      cookingTimeMinutes: 50,
+      cookingTimeMinutes: 65,
     };
 
     await expect(createRecipe(invalidRecipe)).rejects.toThrow('Recipe validation failed');
@@ -139,8 +139,8 @@ describe('Recipe DAL with Validation Integration', () => {
     // First create a valid recipe
     const recipe = await createRecipe(validRecipe);
 
-    // Try to update with invalid cooking time
-    await expect(updateRecipe(recipe.id, { cookingTimeMinutes: 60 })).rejects.toThrow(
+    // Try to update with invalid cooking time (over 60 minutes)
+    await expect(updateRecipe(recipe.id, { cookingTimeMinutes: 70 })).rejects.toThrow(
       'Recipe validation failed'
     );
 
@@ -165,7 +165,7 @@ describe('Recipe DAL with Validation Integration', () => {
     // Update with valid changes
     const updated = await updateRecipe(recipe.id, {
       title: 'Updated Rice and Chicken',
-      cookingTimeMinutes: 40, // Still within 30-45 range
+      cookingTimeMinutes: 40, // Still within 0-60 range
       ingredients: [
         {
           name: 'brown rice',

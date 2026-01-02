@@ -22,22 +22,16 @@ describe('Database Schema Constraints', () => {
     ingredients: [],
   };
 
-  it('should reject cooking time below 30 minutes', async () => {
-    await expect(
-      createRecipe({ ...validRecipe, cookingTimeMinutes: 25 })
-    ).rejects.toThrow();
+  it('should reject negative cooking time', async () => {
+    await expect(createRecipe({ ...validRecipe, cookingTimeMinutes: -1 })).rejects.toThrow();
   });
 
-  it('should reject cooking time above 45 minutes', async () => {
-    await expect(
-      createRecipe({ ...validRecipe, cookingTimeMinutes: 50 })
-    ).rejects.toThrow();
+  it('should reject cooking time above 60 minutes', async () => {
+    await expect(createRecipe({ ...validRecipe, cookingTimeMinutes: 65 })).rejects.toThrow();
   });
 
   it('should reject servings not equal to 2', async () => {
-    await expect(
-      createRecipe({ ...validRecipe, servings: 4 })
-    ).rejects.toThrow();
+    await expect(createRecipe({ ...validRecipe, servings: 4 })).rejects.toThrow();
   });
 
   it('should reject invalid cookware type', async () => {
