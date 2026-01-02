@@ -2,19 +2,19 @@
 
 **Plan**: `thoughts/shared/plans/2026-01-02-Conversational-Decision-Support-Phase0-Data-Foundation.md`  
 **Epic**: EPIC-002 Conversational Decision Support  
-**Current Task**: PLAN-001  
-**Completed Tasks**: (none yet)
+**Current Task**: PLAN-002  
+**Completed Tasks**: PLAN-001
 
 ## Progress Tracking
 
-| Task ID  | Description                                 | Status  |
-| -------- | ------------------------------------------- | ------- |
-| PLAN-001 | Add database migration for cooking_sessions | pending |
-| PLAN-002 | Create conversation.ts type file            | pending |
-| PLAN-003 | Update Database interface                   | pending |
-| PLAN-004 | Install npm dependencies                    | pending |
-| PLAN-005 | Add migration test                          | pending |
-| PLAN-006 | Verify type compilation                     | pending |
+| Task ID  | Description                                 | Status    |
+| -------- | ------------------------------------------- | --------- |
+| PLAN-001 | Add database migration for cooking_sessions | completed |
+| PLAN-002 | Create conversation.ts type file            | pending   |
+| PLAN-003 | Update Database interface                   | pending   |
+| PLAN-004 | Install npm dependencies                    | pending   |
+| PLAN-005 | Add migration test                          | pending   |
+| PLAN-006 | Verify type compilation                     | pending   |
 
 ## Quick Verification Commands
 

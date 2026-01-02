@@ -147,12 +147,45 @@ function migration003_resetDietaryProfile(): void {
   console.log('Migration 003 complete');
 }
 
+// Migration 4: Add cooking_sessions table
+function migration004_addCookingSessions(): void {
+  const version = 4;
+  if (isMigrationApplied(version)) return;
+
+  console.log('Running migration 004: Add cooking_sessions table');
+
+  // Create cooking_sessions table
+  rawDb
+    .prepare(
+      `
+    CREATE TABLE cooking_sessions (
+      id TEXT PRIMARY KEY,
+      recipe_id TEXT NOT NULL,
+      timestamp TEXT NOT NULL,
+      user_context TEXT NOT NULL DEFAULT '{}',
+      conversation_summary TEXT,
+      FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+    )
+  `
+    )
+    .run();
+
+  // Create index for chronological queries
+  rawDb
+    .prepare('CREATE INDEX idx_cooking_sessions_timestamp ON cooking_sessions(timestamp DESC)')
+    .run();
+
+  recordMigration(version, 'add_cooking_sessions');
+  console.log('Migration 004 complete');
+}
+
 // Run all migrations
 export function runMigrations(): void {
   createMigrationsTable();
   migration001_initialSchema();
   migration002_addCreatedAtIndex();
   migration003_resetDietaryProfile();
+  migration004_addCookingSessions();
   // Future migrations will be added here
   console.log('All migrations applied');
 }
