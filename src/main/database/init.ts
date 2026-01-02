@@ -20,6 +20,7 @@ const sqlite = createDatabaseClient(dbPath);
 // CRITICAL: Configure crash-safe durability
 sqlite.pragma('journal_mode = WAL');
 sqlite.pragma('synchronous = FULL');
+sqlite.pragma('foreign_keys = ON');
 
 // macOS specific (uncomment if running on macOS for maximum durability)
 // if (process.platform === 'darwin') {
