@@ -15,6 +15,11 @@ test.describe('Recipe Import Workflow', () => {
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
 
+    // Listen to console messages from the app
+    window.on('console', msg => {
+      console.log('[APP]', msg.text());
+    });
+
     // Navigate to Import Recipe page
     await window.click('text=Import Recipe');
 
@@ -41,12 +46,17 @@ test.describe('Recipe Import Workflow', () => {
     // Verify ingredients are populated
     await expect(window.locator('text=/[a-zA-Z]+/').first()).toBeVisible();
 
-    // Submit form using requestSubmit() workaround for Playwright/Electron
-    await window.evaluate(() => {
-      const forms = document.querySelectorAll('form');
-      // The review form is the only form on the page
-      forms[0]?.requestSubmit();
-    });
+    // WORKAROUND: Direct button click doesn't work due to Playwright/Electron/React event issue
+    // Need to trigger validation error first to "activate" the form
+    await window.fill('#input-cooking-time-\\(minutes\\)', '50'); // Violates 45min limit
+    await window.click('button:has-text("Save Recipe")');
+
+    // Wait for validation error
+    await expect(window.locator('text=/Please fix the following/')).toBeVisible({ timeout: 5000 });
+
+    // Fix the error
+    await window.fill('#input-cooking-time-\\(minutes\\)', '15'); // Back to original
+    await window.click('button:has-text("Save Recipe")');
 
     // Verify success message
     await expect(window.locator('text=Recipe saved successfully!')).toBeVisible({ timeout: 5000 });

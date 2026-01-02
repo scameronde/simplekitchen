@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { Button } from '../components/common/Button';
-import { Input } from '../components/common/Input';
-import { RecipeBasicInfo } from '../components/RecipeForm/RecipeBasicInfo';
-import { RecipeDietaryTags } from '../components/RecipeForm/RecipeDietaryTags';
-import { RecipeSeasonality } from '../components/RecipeForm/RecipeSeasonality';
-import { IngredientList } from '../components/RecipeForm/IngredientList';
-import { ValidationErrors } from '../components/RecipeForm/ValidationErrors';
-import { determineDietaryProperties } from '../utils/ingredient-classifier';
+import React, { useState, useEffect } from 'react';
 import type {
   CreateRecipeInput,
   CookwareType,
   DietaryTag,
   Season,
 } from '../../shared/types/recipe';
+import { Button } from '../components/common/Button';
+import { Input } from '../components/common/Input';
+import { ErrorBoundary } from '../components/common/ErrorBoundary';
+import { RecipeBasicInfo } from '../components/RecipeForm/RecipeBasicInfo';
+import { RecipeDietaryTags } from '../components/RecipeForm/RecipeDietaryTags';
+import { RecipeSeasonality } from '../components/RecipeForm/RecipeSeasonality';
+import { IngredientList } from '../components/RecipeForm/IngredientList';
+import { ValidationErrors } from '../components/RecipeForm/ValidationErrors';
+import { determineDietaryProperties } from '../utils/ingredient-classifier';
 
 type Mode = 'import' | 'review';
 
@@ -46,89 +47,137 @@ export function RecipeImportPage() {
 
   // Import handler
   const handleImport = async (e: React.FormEvent) => {
+    console.log('[RecipeImportPage] handleImport called');
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const result = await window.electron.recipeAPI.importRecipe(url);
-    setLoading(false);
+    try {
+      const result = await window.electron.recipeAPI.importRecipe(url);
+      setLoading(false);
 
-    if (result.success && result.recipe) {
-      // Populate review form with imported data
-      setReviewFormData({
-        title: result.recipe.title,
-        cookingTimeMinutes: result.recipe.cookingTimeMinutes.toString(),
-        prepTimeMinutes: result.recipe.prepTimeMinutes?.toString() || '',
-        cookwareType: result.recipe.cookwareType,
-        dietaryTags: result.recipe.dietaryTags,
-        seasonality: result.recipe.seasonality,
-        instructions: result.recipe.instructions || '',
-      });
-      setReviewIngredients(
-        result.recipe.ingredients.map(ing => ({
-          name: ing.name,
-          quantity: ing.quantity.toString(),
-          unit: ing.unit,
-          optional: ing.optional || false,
-        }))
-      );
-      setMode('review');
-    } else if (result.errors && result.errors.length > 0) {
-      setError(result.errors.map(e => `${e.field}: ${e.message}`).join('; '));
-    } else {
-      setError('Failed to import recipe. Please check the URL and try again.');
+      if (result.success && result.recipe) {
+        console.log('[RecipeImportPage] Import successful, recipe:', result.recipe.title);
+        console.log('[RecipeImportPage] Ingredients:', result.recipe.ingredients);
+
+        // Populate review form with imported data
+        setReviewFormData({
+          title: result.recipe.title,
+          cookingTimeMinutes: result.recipe.cookingTimeMinutes.toString(),
+          prepTimeMinutes: result.recipe.prepTimeMinutes?.toString() || '',
+          cookwareType: result.recipe.cookwareType,
+          dietaryTags: result.recipe.dietaryTags,
+          seasonality: result.recipe.seasonality,
+          instructions: result.recipe.instructions || '',
+        });
+        setReviewIngredients(
+          result.recipe.ingredients.map(ing => ({
+            name: ing.name,
+            quantity: ing.quantity.toString(),
+            unit: ing.unit,
+            optional: ing.optional || false,
+          }))
+        );
+        setMode('review');
+        console.log('[RecipeImportPage] Switched to review mode');
+        console.log('[RecipeImportPage] Review form data set:', {
+          title: result.recipe.title,
+          cookingTimeMinutes: result.recipe.cookingTimeMinutes,
+          ingredientsCount: result.recipe.ingredients.length,
+        });
+      } else if (result.errors && result.errors.length > 0) {
+        console.error('[RecipeImportPage] Import failed with errors:', result.errors);
+        setError(result.errors.map(e => `${e.field}: ${e.message}`).join('; '));
+      } else {
+        console.error('[RecipeImportPage] Import failed with no specific errors');
+        setError('Failed to import recipe. Please check the URL and try again.');
+      }
+    } catch (error) {
+      console.error('[RecipeImportPage] Exception during import:', error);
+      setLoading(false);
+      setError('An unexpected error occurred during import.');
     }
   };
 
   // Review form handlers
   const handleReviewFieldChange = (field: string, value: string | string[]) => {
+    console.log('[RecipeImportPage] Field change:', field, value);
     setReviewFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Log when mode changes
+  useEffect(() => {
+    console.log('[RecipeImportPage] Mode changed to:', mode);
+    if (mode === 'review') {
+      console.log('[RecipeImportPage] Review mode - form data:', reviewFormData);
+      console.log('[RecipeImportPage] Review mode - ingredients:', reviewIngredients);
+    }
+  }, [mode]);
+
   // Save recipe handler
   const handleSaveRecipe = async (e: React.FormEvent) => {
+    console.log('[RecipeImportPage] handleSaveRecipe called');
     e.preventDefault();
     setSaving(true);
     setSaveErrors([]);
     setSaveSuccess(false);
 
-    const input: CreateRecipeInput = {
-      title: reviewFormData.title,
-      cookingTimeMinutes: parseInt(reviewFormData.cookingTimeMinutes),
-      prepTimeMinutes: reviewFormData.prepTimeMinutes
-        ? parseInt(reviewFormData.prepTimeMinutes)
-        : undefined,
-      cookwareType: reviewFormData.cookwareType as CookwareType,
-      servings: 2,
-      dietaryTags: reviewFormData.dietaryTags,
-      seasonality: reviewFormData.seasonality.length > 0 ? reviewFormData.seasonality : ['any'],
-      sourceType: 'web-imported',
-      sourceReference: url,
-      instructions: reviewFormData.instructions || undefined,
-      ingredients: reviewIngredients.map((ing, i) => ({
-        name: ing.name,
-        quantity: parseFloat(ing.quantity),
-        unit: ing.unit,
-        dietaryProperties: determineDietaryProperties(ing.name),
-        optional: ing.optional,
-        orderIndex: i + 1,
-      })),
-    };
+    try {
+      const input: CreateRecipeInput = {
+        title: reviewFormData.title,
+        cookingTimeMinutes: parseInt(reviewFormData.cookingTimeMinutes),
+        prepTimeMinutes: reviewFormData.prepTimeMinutes
+          ? parseInt(reviewFormData.prepTimeMinutes)
+          : undefined,
+        cookwareType: reviewFormData.cookwareType as CookwareType,
+        servings: 2,
+        dietaryTags: reviewFormData.dietaryTags,
+        seasonality: reviewFormData.seasonality.length > 0 ? reviewFormData.seasonality : ['any'],
+        sourceType: 'web-imported',
+        sourceReference: url,
+        instructions: reviewFormData.instructions || undefined,
+        ingredients: reviewIngredients.map((ing, i) => {
+          console.log('[RecipeImportPage] Processing ingredient:', ing.name);
+          const dietaryProps = determineDietaryProperties(ing.name);
+          return {
+            name: ing.name,
+            quantity: parseFloat(ing.quantity),
+            unit: ing.unit,
+            dietaryProperties: dietaryProps,
+            optional: ing.optional,
+            orderIndex: i + 1,
+          };
+        }),
+      };
 
-    const result = await window.electron.recipeAPI.create(input);
-    setSaving(false);
+      console.log('[RecipeImportPage] Calling recipe API create with input:', {
+        title: input.title,
+        ingredientsCount: input.ingredients.length,
+      });
 
-    if (result.success) {
-      setSaveSuccess(true);
-      // Reset to import mode after successful save
-      setTimeout(() => {
-        setMode('import');
-        setSaveSuccess(false);
-        setUrl('');
-      }, 2000);
-    } else {
-      setSaveErrors(result.errors || []);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const result = await window.electron.recipeAPI.create(input);
+      setSaving(false);
+
+      console.log('[RecipeImportPage] Recipe API result:', result);
+
+      if (result.success) {
+        console.log('[RecipeImportPage] Recipe saved successfully');
+        setSaveSuccess(true);
+        // Reset to import mode after successful save
+        setTimeout(() => {
+          setMode('import');
+          setSaveSuccess(false);
+          setUrl('');
+        }, 2000);
+      } else {
+        console.error('[RecipeImportPage] Recipe save failed with errors:', result.errors);
+        setSaveErrors(result.errors || []);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error('[RecipeImportPage] Exception during recipe save:', error);
+      setSaving(false);
+      setSaveErrors([{ field: 'general', message: 'An unexpected error occurred' }]);
     }
   };
 
@@ -211,71 +260,76 @@ export function RecipeImportPage() {
   }
 
   // Render review mode
+  console.log('[RecipeImportPage] Rendering review mode, formData:', reviewFormData.title);
   return (
-    <div className="container mx-auto px-4 py-8">
-      <form
-        onSubmit={handleSaveRecipe}
-        className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg"
-      >
-        <h1 className="text-3xl font-bold mb-6 text-gray-900">Review Imported Recipe</h1>
+    <ErrorBoundary
+      onError={error => console.error('[RecipeImportPage] Error in review form:', error)}
+    >
+      <div className="container mx-auto px-4 py-8">
+        <form
+          onSubmit={handleSaveRecipe}
+          className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg"
+        >
+          <h1 className="text-3xl font-bold mb-6 text-gray-900">Review Imported Recipe</h1>
 
-        {saveSuccess && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-800">Recipe saved successfully!</p>
+          {saveSuccess && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-green-800">Recipe saved successfully!</p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <ValidationErrors errors={saveErrors} />
+          <ValidationErrors errors={saveErrors} />
 
-        <RecipeBasicInfo formData={reviewFormData} onChange={handleReviewFieldChange} />
+          <RecipeBasicInfo formData={reviewFormData} onChange={handleReviewFieldChange} />
 
-        <RecipeDietaryTags
-          selectedTags={reviewFormData.dietaryTags}
-          onChange={tags => handleReviewFieldChange('dietaryTags', tags)}
-        />
-
-        <RecipeSeasonality
-          selectedSeasons={reviewFormData.seasonality}
-          onChange={seasons => handleReviewFieldChange('seasonality', seasons)}
-        />
-
-        <IngredientList ingredients={reviewIngredients} setIngredients={setReviewIngredients} />
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Instructions (optional)
-          </label>
-          <textarea
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={5}
-            placeholder="Enter cooking instructions..."
-            value={reviewFormData.instructions}
-            onChange={e => handleReviewFieldChange('instructions', e.target.value)}
+          <RecipeDietaryTags
+            selectedTags={reviewFormData.dietaryTags}
+            onChange={tags => handleReviewFieldChange('dietaryTags', tags)}
           />
-        </div>
 
-        <div className="flex justify-between">
-          <Button type="button" variant="secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" loading={saving}>
-            Save Recipe
-          </Button>
-        </div>
-      </form>
-    </div>
+          <RecipeSeasonality
+            selectedSeasons={reviewFormData.seasonality}
+            onChange={seasons => handleReviewFieldChange('seasonality', seasons)}
+          />
+
+          <IngredientList ingredients={reviewIngredients} setIngredients={setReviewIngredients} />
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Instructions (optional)
+            </label>
+            <textarea
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={5}
+              placeholder="Enter cooking instructions..."
+              value={reviewFormData.instructions}
+              onChange={e => handleReviewFieldChange('instructions', e.target.value)}
+            />
+          </div>
+
+          <div className="flex justify-between">
+            <Button type="button" variant="secondary" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" loading={saving}>
+              Save Recipe
+            </Button>
+          </div>
+        </form>
+      </div>
+    </ErrorBoundary>
   );
 }
