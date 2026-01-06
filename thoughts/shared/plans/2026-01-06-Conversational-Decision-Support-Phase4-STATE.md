@@ -10,16 +10,16 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-002
+**Current Task**: PLAN-003
 
-**Completed Tasks**: PLAN-001
+**Completed Tasks**: PLAN-001, PLAN-002
 
 ---
 
 ## Task Checklist
 
 - [x] PLAN-001: Extend ConversationSession type with refinementCount and turnsInCurrentState
-- [ ] PLAN-002: Add rejection tracking to session-manager
+- [x] PLAN-002: Add rejection tracking to session-manager
 - [ ] PLAN-003: Add buildRefinementContext to prompts.ts
 - [ ] PLAN-004: Extend recipe-ranker to exclude rejected recipes
 - [ ] PLAN-005: Add processRefinement to conversation-service
@@ -121,6 +121,15 @@ npm run dev
 - Added `refinementCount` and `turnsInCurrentState` fields to ConversationSession interface
 - Note: This temporarily breaks type checking in session-manager.ts and test files
 - PLAN-002 will fix these errors by initializing the new fields
+
+### PLAN-002 (Complete)
+
+- Added `addRejectedRecipe()` function to session-manager.ts
+- Initialized `refinementCount: 0` and `turnsInCurrentState: 0` in createSession()
+- Updated updateSessionMessages() to increment turnsInCurrentState
+- Updated updateSessionState() to reset turnsInCurrentState on state transitions
+- Fixed all test files: conversation-service.test.ts, recipe-ranker.test.ts, conversation-handlers.test.ts
+- All type errors resolved - typecheck and lint pass ✅
 
 ---
 

@@ -76,6 +76,8 @@ describe('processConversationTurn', () => {
       rejectedRecipes: [],
       state: 'gathering',
       turnCount: 0,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
       createdAt: new Date(),
       lastActivity: new Date(),
     };
@@ -148,6 +150,8 @@ describe('processConversationTurn', () => {
       rejectedRecipes: [],
       state: 'gathering',
       turnCount: 2,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
       createdAt: new Date(),
       lastActivity: new Date(),
     };
@@ -199,6 +203,8 @@ describe('processConversationTurn', () => {
       rejectedRecipes: [],
       state: 'gathering',
       turnCount: 0,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
       createdAt: new Date(),
       lastActivity: new Date(),
     };
@@ -249,6 +255,8 @@ describe('buildConversationPrompt', () => {
       rejectedRecipes: [],
       state: 'gathering',
       turnCount: 0,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
       createdAt: new Date(),
       lastActivity: new Date(),
     };
@@ -287,6 +295,8 @@ describe('buildConversationPrompt', () => {
       rejectedRecipes: [],
       state: 'gathering',
       turnCount: 7,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
       createdAt: new Date(),
       lastActivity: new Date(),
     };

@@ -142,6 +142,8 @@ describe('Recipe Ranker', () => {
     rejectedRecipes: [],
     state: 'suggesting',
     turnCount: 2,
+    refinementCount: 0,
+    turnsInCurrentState: 0,
     createdAt: new Date(),
     lastActivity: new Date(),
   };

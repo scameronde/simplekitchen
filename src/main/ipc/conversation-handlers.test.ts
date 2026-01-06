@@ -113,6 +113,8 @@ describe('Conversation IPC Handlers', () => {
         rejectedRecipes: [],
         state: 'gathering',
         turnCount: 0,
+        refinementCount: 0,
+        turnsInCurrentState: 0,
         createdAt: new Date(),
         lastActivity: new Date(),
       });
@@ -161,6 +163,8 @@ describe('Conversation IPC Handlers', () => {
         rejectedRecipes: [],
         state: 'gathering',
         turnCount: 0,
+        refinementCount: 0,
+        turnsInCurrentState: 0,
         createdAt: new Date(),
         lastActivity: new Date(),
       });
@@ -263,6 +267,8 @@ describe('Conversation IPC Handlers', () => {
         rejectedRecipes: [],
         state: 'gathering',
         turnCount: 0,
+        refinementCount: 0,
+        turnsInCurrentState: 0,
         createdAt: new Date(),
         lastActivity: new Date(),
       });
@@ -346,6 +352,8 @@ describe('Conversation IPC Handlers', () => {
         rejectedRecipes: [],
         state: 'gathering',
         turnCount: 0,
+        refinementCount: 0,
+        turnsInCurrentState: 0,
         createdAt: new Date(),
         lastActivity: new Date(),
       });

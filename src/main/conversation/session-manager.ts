@@ -30,6 +30,8 @@ export async function createSession(): Promise<string> {
     rejectedRecipes: [],
     state: 'gathering',
     turnCount: 0,
+    refinementCount: 0,
+    turnsInCurrentState: 0,
     createdAt: new Date(),
     lastActivity: new Date(),
   };
@@ -59,6 +61,7 @@ export function updateSessionMessages(sessionId: string, message: ConversationMe
 
   session.messages.push(message);
   session.turnCount += 1;
+  session.turnsInCurrentState += 1;
   session.lastActivity = new Date();
 }
 
@@ -74,6 +77,7 @@ export function updateSessionState(sessionId: string, newState: ConversationStat
   if (!session) throw new Error(`Session ${sessionId} not found`);
 
   session.state = newState;
+  session.turnsInCurrentState = 0;
   session.lastActivity = new Date();
 }
 
@@ -106,6 +110,24 @@ export function updateSessionSuggestedRecipes(sessionId: string, recipeIds: stri
   // Append and deduplicate
   const combined = [...session.suggestedRecipes, ...recipeIds];
   session.suggestedRecipes = Array.from(new Set(combined));
+  session.lastActivity = new Date();
+}
+
+/**
+ * Adds a rejected recipe to the session's rejection list.
+ * Records recipe ID and optional reason for rejection.
+ * Increments refinement count to track refinement cycles.
+ * @param sessionId - The session ID to update
+ * @param recipeId - The recipe ID that was rejected
+ * @param reason - Optional reason for rejection (e.g., "Missing ingredient")
+ * @throws Error if session not found
+ */
+export function addRejectedRecipe(sessionId: string, recipeId: string, reason?: string): void {
+  const session = activeSessions.get(sessionId);
+  if (!session) throw new Error(`Session ${sessionId} not found`);
+
+  session.rejectedRecipes.push({ recipeId, reason });
+  session.refinementCount += 1;
   session.lastActivity = new Date();
 }
 
