@@ -3,10 +3,11 @@ import type { WebFrameMain } from 'electron/main';
 import {
   createSession,
   getSession,
-  updateSessionMessages,
+  updateSessionState,
+  updateUserContext,
   abandonSession,
 } from '../conversation/session-manager.js';
-import type { ConversationMessage } from '../../shared/types/conversation.js';
+import { processConversationTurn } from '../conversation/conversation-service.js';
 
 /**
  * Validates the sender of an IPC message for security.
@@ -45,27 +46,31 @@ export function registerConversationHandlers(): void {
       return { success: false, error: 'Session not found' };
     }
 
-    // Add user message to session
-    const userMessage: ConversationMessage = {
-      role: 'user',
-      content: message,
-      timestamp: new Date(),
-    };
-    updateSessionMessages(sessionId, userMessage);
+    try {
+      // Phase 2: AI-powered conversation
+      const turnResult = await processConversationTurn(sessionId, message);
 
-    // Phase 1: Echo back (NO AI)
-    const aiMessage: ConversationMessage = {
-      role: 'assistant',
-      content: `Echo: ${message}`,
-      timestamp: new Date(),
-    };
-    updateSessionMessages(sessionId, aiMessage);
+      // Update session context if AI extracted new information
+      if (Object.keys(turnResult.extractedContext).length > 0) {
+        updateUserContext(sessionId, turnResult.extractedContext);
+      }
 
-    return {
-      success: true,
-      aiMessage: aiMessage.content,
-      timestamp: aiMessage.timestamp,
-    };
+      // Transition state if AI indicates readiness
+      if (turnResult.shouldTransition) {
+        updateSessionState(sessionId, 'suggesting');
+      }
+
+      return {
+        success: true,
+        aiMessage: turnResult.aiMessage,
+        timestamp: new Date(),
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+      };
+    }
   });
 
   ipcMain.handle('conversation:abandon', async (event, sessionId: string) => {

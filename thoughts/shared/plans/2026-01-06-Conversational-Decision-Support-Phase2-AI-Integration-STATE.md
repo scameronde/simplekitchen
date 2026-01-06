@@ -1,8 +1,8 @@
 # State: Conversational Decision Support - Phase 2
 
 **Plan**: thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase2-AI-Integration.md  
-**Current Task**: PLAN-005  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
+**Current Task**: PLAN-006  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005
 
 ---
 
@@ -24,7 +24,7 @@
 - [x] PLAN-002: Create Prompts Module
 - [x] PLAN-003: Create Conversation Service
 - [x] PLAN-004: Update Session Manager with State and Context Updates
-- [ ] PLAN-005: Update IPC Handlers to Use Conversation Service
+- [x] PLAN-005: Update IPC Handlers to Use Conversation Service
 
 ### Testing
 

@@ -18,7 +18,14 @@ vi.mock('../conversation/session-manager.js', () => ({
   createSession: vi.fn(),
   getSession: vi.fn(),
   updateSessionMessages: vi.fn(),
+  updateSessionState: vi.fn(),
+  updateUserContext: vi.fn(),
   abandonSession: vi.fn(),
+}));
+
+// Mock conversation service module
+vi.mock('../conversation/conversation-service.js', () => ({
+  processConversationTurn: vi.fn(),
 }));
 
 type ConversationStartResult = { success: boolean; sessionId?: string; error?: string };
@@ -95,7 +102,7 @@ describe('Conversation IPC Handlers', () => {
   });
 
   describe('conversation:sendMessage', () => {
-    it('echoes message back when session is valid', async () => {
+    it('processes AI conversation when session is valid', async () => {
       // Mock getSession to return a valid session
       const { getSession } = await import('../conversation/session-manager.js');
       vi.mocked(getSession).mockReturnValue({
@@ -110,38 +117,77 @@ describe('Conversation IPC Handlers', () => {
         lastActivity: new Date(),
       });
 
+      // Mock processConversationTurn to return AI response
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
+      vi.mocked(processConversationTurn).mockResolvedValue({
+        aiMessage: 'How are you feeling today?',
+        extractedContext: { energyLevel: 'medium' },
+        shouldTransition: false,
+      });
+
       const event = { senderFrame: { url: 'file://test' } };
       if (!messageHandlerFn) throw new Error('messageHandlerFn not initialized');
       const result = await messageHandlerFn(event, 'test-session-123', 'Hello');
 
       expect(result.success).toBe(true);
-      expect(result.aiMessage).toBe('Echo: Hello');
+      expect(result.aiMessage).toBe('How are you feeling today?');
       expect(result.timestamp).toBeInstanceOf(Date);
 
       // Verify session was retrieved
       expect(getSession).toHaveBeenCalledWith('test-session-123');
 
-      // Verify messages were updated (2 calls: user message + AI message)
-      const { updateSessionMessages } = await import('../conversation/session-manager.js');
-      expect(updateSessionMessages).toHaveBeenCalledTimes(2);
+      // Verify conversation service was called
+      expect(processConversationTurn).toHaveBeenCalledWith('test-session-123', 'Hello');
 
-      // Verify first call was user message
-      const firstCall = vi.mocked(updateSessionMessages).mock.calls[0];
-      expect(firstCall).toBeDefined();
-      expect(firstCall?.[0]).toBe('test-session-123');
-      expect(firstCall?.[1]).toMatchObject({
-        role: 'user',
-        content: 'Hello',
+      // Verify user context was updated
+      const { updateUserContext } = await import('../conversation/session-manager.js');
+      expect(updateUserContext).toHaveBeenCalledWith('test-session-123', {
+        energyLevel: 'medium',
       });
 
-      // Verify second call was AI message
-      const secondCall = vi.mocked(updateSessionMessages).mock.calls[1];
-      expect(secondCall).toBeDefined();
-      expect(secondCall?.[0]).toBe('test-session-123');
-      expect(secondCall?.[1]).toMatchObject({
-        role: 'assistant',
-        content: 'Echo: Hello',
+      // Verify state was NOT transitioned (shouldTransition=false)
+      const { updateSessionState } = await import('../conversation/session-manager.js');
+      expect(updateSessionState).not.toHaveBeenCalled();
+    });
+
+    it('transitions state when AI signals readiness', async () => {
+      // Mock getSession to return a valid session
+      const { getSession } = await import('../conversation/session-manager.js');
+      vi.mocked(getSession).mockReturnValue({
+        sessionId: 'test-session-123',
+        messages: [],
+        userContext: { energyLevel: 'low' },
+        suggestedRecipes: [],
+        rejectedRecipes: [],
+        state: 'gathering',
+        turnCount: 0,
+        createdAt: new Date(),
+        lastActivity: new Date(),
       });
+
+      // Mock processConversationTurn to return AI response with transition
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
+      vi.mocked(processConversationTurn).mockResolvedValue({
+        aiMessage: 'Perfect! Let me find some recipes for you.',
+        extractedContext: { availableTime: 30 },
+        shouldTransition: true,
+      });
+
+      const event = { senderFrame: { url: 'file://test' } };
+      if (!messageHandlerFn) throw new Error('messageHandlerFn not initialized');
+      const result = await messageHandlerFn(event, 'test-session-123', 'About 30 minutes');
+
+      expect(result.success).toBe(true);
+
+      // Verify user context was updated
+      const { updateUserContext } = await import('../conversation/session-manager.js');
+      expect(updateUserContext).toHaveBeenCalledWith('test-session-123', {
+        availableTime: 30,
+      });
+
+      // Verify state WAS transitioned (shouldTransition=true)
+      const { updateSessionState } = await import('../conversation/session-manager.js');
+      expect(updateSessionState).toHaveBeenCalledWith('test-session-123', 'suggesting');
     });
 
     it('rejects invalid sessionId', async () => {
@@ -156,9 +202,9 @@ describe('Conversation IPC Handlers', () => {
       expect(result.success).toBe(false);
       expect(result.error).toBe('Session not found');
 
-      // Verify updateSessionMessages was not called
-      const { updateSessionMessages } = await import('../conversation/session-manager.js');
-      expect(updateSessionMessages).not.toHaveBeenCalled();
+      // Verify conversation service was not called
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
+      expect(processConversationTurn).not.toHaveBeenCalled();
     });
 
     it('rejects unauthorized sender', async () => {
@@ -169,11 +215,11 @@ describe('Conversation IPC Handlers', () => {
       expect(result.success).toBe(false);
       expect(result.error).toBe('Unauthorized IPC sender');
 
-      // Verify getSession and updateSessionMessages were not called
-      const { getSession, updateSessionMessages } =
-        await import('../conversation/session-manager.js');
+      // Verify getSession and conversation service were not called
+      const { getSession } = await import('../conversation/session-manager.js');
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
       expect(getSession).not.toHaveBeenCalled();
-      expect(updateSessionMessages).not.toHaveBeenCalled();
+      expect(processConversationTurn).not.toHaveBeenCalled();
     });
   });
 
