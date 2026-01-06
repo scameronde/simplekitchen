@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-004
+**Current Task**: PLAN-005
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
 
 ---
 
@@ -21,7 +21,7 @@ current-task: PLAN-001
 - [x] PLAN-001: Extend ConversationSession type with refinementCount and turnsInCurrentState
 - [x] PLAN-002: Add rejection tracking to session-manager
 - [x] PLAN-003: Add buildRefinementContext to prompts.ts
-- [ ] PLAN-004: Extend recipe-ranker to exclude rejected recipes
+- [x] PLAN-004: Extend recipe-ranker to exclude rejected recipes
 - [ ] PLAN-005: Add processRefinement to conversation-service
 - [ ] PLAN-006: Add IPC handlers for rejection and refinement
 - [ ] PLAN-007: Extend electron.d.ts with new API methods
@@ -138,6 +138,15 @@ npm run dev
 - Implemented intelligent rejection pattern detection for common ingredients
 - Added strategy text based on refinementCount (1st, 2nd, 3rd+ refinement)
 - Refinement context automatically injected when session has rejected recipes
+- All type checking and linting passes ✅
+
+### PLAN-004 (Complete)
+
+- Extended `getRankedSuggestions()` to extract rejectedRecipes from session
+- Added rejection filtering logic (Step 5.5) before candidate validation
+- Updated validation error message to mention rejection filtering
+- Changed candidate limiting to use filtered list (candidatesWithoutRejected)
+- Passed session to buildRankingPrompt for refinement context injection
 - All type checking and linting passes ✅
 
 ---

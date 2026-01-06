@@ -51,7 +51,7 @@ export async function getRankedSuggestions(sessionId: string): Promise<RecipeSug
   }
 
   // Step 2: Extract context and already suggested recipes
-  const { userContext, suggestedRecipes } = session;
+  const { userContext, suggestedRecipes, rejectedRecipes } = session;
 
   // Step 3: Fetch dietary profile
   const dietaryProfile = await getDietaryProfile();
@@ -67,23 +67,29 @@ export async function getRankedSuggestions(sessionId: string): Promise<RecipeSug
   // Step 5: Query recipes with filter
   const candidates = await getRecipes(filter);
 
+  // Step 5.5: Filter out rejected recipes
+  const rejectedIds = rejectedRecipes.map(r => r.recipeId);
+  const candidatesWithoutRejected = candidates.filter(recipe => !rejectedIds.includes(recipe.id));
+
   // Step 6: Validate candidate count
-  if (candidates.length < 2) {
+  if (candidatesWithoutRejected.length < 2) {
     throw new Error(
-      `Insufficient recipes found. Need at least 2 recipes but found ${candidates.length}. Consider relaxing dietary restrictions or time constraints.`
+      `Insufficient recipes found after filtering rejections. Need at least 2 recipes but found ${candidatesWithoutRejected.length}. Consider relaxing constraints or restarting conversation.`
     );
   }
 
   // Step 7: Limit to 20 candidates max
-  const limitedCandidates = candidates.slice(0, 20);
+  const limitedCandidates = candidatesWithoutRejected.slice(0, 20);
 
   // Step 8: Call OpenAI with ranking prompt
   const client = getOpenAIClient();
+  // Pass session for refinement context
   const prompt = buildRankingPrompt(
     userContext,
     limitedCandidates,
     dietaryProfile,
-    suggestedRecipes
+    suggestedRecipes,
+    session
   );
 
   const completion = await client.chat.completions.parse({
