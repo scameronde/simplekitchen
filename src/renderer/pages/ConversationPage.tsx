@@ -2,6 +2,7 @@ import React, { useReducer, useEffect, useRef } from 'react';
 import type { ConversationMessage } from '../../shared/types/conversation';
 import type { Recipe } from '../../shared/types/recipe';
 import { RecipeSuggestionCard } from '../components/Conversation/RecipeSuggestionCard';
+import { FeedbackDialog } from '../components/Conversation/FeedbackDialog';
 
 // Recipe suggestion structure based on ranking-schema.ts
 interface RecipeSuggestion {
@@ -23,6 +24,11 @@ interface ConversationState {
   error: string | null;
   inputValue: string;
   fetchedRecipes: Record<string, Recipe>; // Cache for fetched recipe data
+  feedbackDialog: {
+    isOpen: boolean;
+    recipeId: string | null;
+    recipeName: string | null;
+  };
 }
 
 type ConversationAction =
@@ -38,7 +44,9 @@ type ConversationAction =
   | { type: 'set_loading'; isLoading: boolean }
   | { type: 'set_error'; error: string }
   | { type: 'set_input'; value: string }
-  | { type: 'set_fetched_recipe'; recipeId: string; recipe: Recipe };
+  | { type: 'set_fetched_recipe'; recipeId: string; recipe: Recipe }
+  | { type: 'open_feedback_dialog'; recipeId: string; recipeName: string }
+  | { type: 'close_feedback_dialog' };
 
 function conversationReducer(
   state: ConversationState,
@@ -94,6 +102,24 @@ function conversationReducer(
       return { ...state, error: action.error, isLoading: false };
     case 'set_input':
       return { ...state, inputValue: action.value };
+    case 'open_feedback_dialog':
+      return {
+        ...state,
+        feedbackDialog: {
+          isOpen: true,
+          recipeId: action.recipeId,
+          recipeName: action.recipeName,
+        },
+      };
+    case 'close_feedback_dialog':
+      return {
+        ...state,
+        feedbackDialog: {
+          isOpen: false,
+          recipeId: null,
+          recipeName: null,
+        },
+      };
     default:
       return state;
   }
@@ -107,6 +133,7 @@ export function ConversationPage() {
     error: null,
     inputValue: '',
     fetchedRecipes: {},
+    feedbackDialog: { isOpen: false, recipeId: null, recipeName: null },
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -188,6 +215,58 @@ export function ConversationPage() {
     }
   };
 
+  const handleReject = (recipeId: string, recipeName: string) => {
+    dispatch({ type: 'open_feedback_dialog', recipeId, recipeName });
+  };
+
+  const handleFeedbackSubmit = async (reason?: string) => {
+    if (!state.sessionId || !state.feedbackDialog.recipeId) return;
+
+    dispatch({ type: 'close_feedback_dialog' });
+
+    // Step 1: Record rejection
+    const rejectResult = await window.electron.conversationAPI.rejectRecipe(
+      state.sessionId,
+      state.feedbackDialog.recipeId,
+      reason
+    );
+
+    if (!rejectResult.success) {
+      dispatch({ type: 'set_error', error: rejectResult.error || 'Failed to record rejection' });
+      return;
+    }
+
+    // Step 2: Trigger refinement
+    dispatch({ type: 'set_loading', isLoading: true });
+
+    const refineResult = await window.electron.conversationAPI.refine(state.sessionId);
+
+    if (refineResult.success) {
+      if (refineResult.suggestions) {
+        // New suggestions available
+        dispatch({
+          type: 'add_ai_message_with_suggestions',
+          content: refineResult.aiMessage || 'Here are some other options:',
+          timestamp: new Date(),
+          suggestions: refineResult.suggestions,
+        });
+      } else {
+        // Escalation message (no new suggestions)
+        dispatch({
+          type: 'add_ai_message',
+          content: refineResult.aiMessage || 'Let me help you find a different approach.',
+          timestamp: new Date(),
+        });
+      }
+    } else {
+      dispatch({ type: 'set_error', error: refineResult.error || 'Failed to refine suggestions' });
+    }
+  };
+
+  const handleFeedbackCancel = () => {
+    dispatch({ type: 'close_feedback_dialog' });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="bg-white rounded-lg shadow-lg p-6 h-[600px] flex flex-col">
@@ -244,8 +323,7 @@ export function ConversationPage() {
                           console.log('Recipe selected:', recipe.id, recipe.title);
                         }}
                         onReject={() => {
-                          // TODO: Phase 4/5 - Implement recipe rejection
-                          console.log('Recipe rejected:', recipe.id, recipe.title);
+                          handleReject(recipe.id, recipe.title);
                         }}
                       />
                     );
@@ -281,6 +359,14 @@ export function ConversationPage() {
             Send
           </button>
         </form>
+
+        {/* Feedback Dialog */}
+        <FeedbackDialog
+          isOpen={state.feedbackDialog.isOpen}
+          recipeName={state.feedbackDialog.recipeName || ''}
+          onClose={handleFeedbackCancel}
+          onSubmit={handleFeedbackSubmit}
+        />
       </div>
     </div>
   );

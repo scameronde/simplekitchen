@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-010
+**Current Task**: PLAN-011
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009, PLAN-010
 
 ---
 
@@ -27,7 +27,7 @@ current-task: PLAN-001
 - [x] PLAN-007: Extend electron.d.ts with new API methods
 - [x] PLAN-008: Update preload.ts with IPC bindings
 - [x] PLAN-009: Create FeedbackDialog component
-- [ ] PLAN-010: Update ConversationPage for refinement workflow
+- [x] PLAN-010: Update ConversationPage for refinement workflow
 - [ ] PLAN-011: Write unit tests for session-manager rejection tracking
 - [ ] PLAN-012: Write unit tests for buildRefinementContext
 - [ ] PLAN-013: Write integration tests for processRefinement
@@ -201,6 +201,23 @@ npm run dev
 - Selected button styling with blue highlight, disabled state for empty custom reason
 - handleClose resets state, handleSubmit chooses customReason or selectedReason
 - Follows Tailwind CSS patterns and semantic HTML with accessibility attributes
+- All type checking and linting passes ✅
+
+### PLAN-010 (Complete)
+
+- Imported FeedbackDialog component
+- Added feedbackDialog state to ConversationState interface (isOpen, recipeId, recipeName)
+- Added action types: open_feedback_dialog and close_feedback_dialog
+- Implemented reducer cases to handle dialog open/close actions
+- Initialized feedbackDialog in initial state
+- Added handleReject(recipeId, recipeName): opens feedback dialog with recipe info
+- Added handleFeedbackSubmit(reason?): calls rejectRecipe IPC then refine IPC sequentially
+  - Dispatches add_ai_message_with_suggestions if new suggestions available
+  - Dispatches add_ai_message for escalation message if no suggestions
+- Added handleFeedbackCancel(): closes dialog
+- Updated onReject handler in RecipeSuggestionCard to call handleReject
+- Added FeedbackDialog component to JSX with proper props
+- Fixed type mismatch: refineResult.suggestions is already RecipeSuggestion[]
 - All type checking and linting passes ✅
 
 ---
