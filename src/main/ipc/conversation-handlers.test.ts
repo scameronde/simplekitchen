@@ -249,4 +249,145 @@ describe('Conversation IPC Handlers', () => {
       expect(abandonSession).not.toHaveBeenCalled();
     });
   });
+
+  describe('Conversation Flow (Phase 2)', () => {
+    it('should gather context through multi-turn conversation', async () => {
+      // Setup: Mock getSession to return a valid session
+      const { getSession, updateUserContext, updateSessionState } =
+        await import('../conversation/session-manager.js');
+      vi.mocked(getSession).mockReturnValue({
+        sessionId: 'test-session-123',
+        messages: [],
+        userContext: {},
+        suggestedRecipes: [],
+        rejectedRecipes: [],
+        state: 'gathering',
+        turnCount: 0,
+        createdAt: new Date(),
+        lastActivity: new Date(),
+      });
+
+      // Setup: Mock OpenAI responses for 3 turns
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
+
+      // Turn 1: Extract energyLevel='low', shouldTransition=false
+      vi.mocked(processConversationTurn).mockResolvedValueOnce({
+        aiMessage: "I understand you're feeling tired. How much time do you have to cook?",
+        extractedContext: { energyLevel: 'low' },
+        shouldTransition: false,
+      });
+
+      // Turn 2: Extract availableTime=30, shouldTransition=false
+      vi.mocked(processConversationTurn).mockResolvedValueOnce({
+        aiMessage: 'Great, 30 minutes is perfect. What kind of food are you in the mood for?',
+        extractedContext: { availableTime: 30 },
+        shouldTransition: false,
+      });
+
+      // Turn 3: Extract mood="comfort food", shouldTransition=true
+      vi.mocked(processConversationTurn).mockResolvedValueOnce({
+        aiMessage: 'Perfect! Let me find some comforting recipes for you.',
+        extractedContext: { mood: 'comfort food' },
+        shouldTransition: true,
+      });
+
+      const event = { senderFrame: { url: 'file://test' } };
+      if (!messageHandlerFn) throw new Error('messageHandlerFn not initialized');
+
+      // Execute Turn 1: "I'm tired"
+      const result1 = await messageHandlerFn(event, 'test-session-123', "I'm tired");
+
+      // Verify Turn 1
+      expect(result1.success).toBe(true);
+      expect(result1.aiMessage).toBe(
+        "I understand you're feeling tired. How much time do you have to cook?"
+      );
+      expect(updateUserContext).toHaveBeenCalledWith('test-session-123', { energyLevel: 'low' });
+      expect(updateSessionState).not.toHaveBeenCalled();
+
+      // Execute Turn 2: "30 minutes"
+      const result2 = await messageHandlerFn(event, 'test-session-123', '30 minutes');
+
+      // Verify Turn 2
+      expect(result2.success).toBe(true);
+      expect(result2.aiMessage).toBe(
+        'Great, 30 minutes is perfect. What kind of food are you in the mood for?'
+      );
+      expect(updateUserContext).toHaveBeenCalledWith('test-session-123', { availableTime: 30 });
+      expect(updateSessionState).not.toHaveBeenCalled();
+
+      // Execute Turn 3: "Want something comforting"
+      const result3 = await messageHandlerFn(
+        event,
+        'test-session-123',
+        'Want something comforting'
+      );
+
+      // Verify Turn 3
+      expect(result3.success).toBe(true);
+      expect(result3.aiMessage).toBe('Perfect! Let me find some comforting recipes for you.');
+      expect(updateUserContext).toHaveBeenCalledWith('test-session-123', { mood: 'comfort food' });
+      expect(updateSessionState).toHaveBeenCalledWith('test-session-123', 'suggesting');
+
+      // Assert: All three turns completed successfully
+      expect(processConversationTurn).toHaveBeenCalledTimes(3);
+      expect(updateUserContext).toHaveBeenCalledTimes(3);
+      expect(updateSessionState).toHaveBeenCalledTimes(1); // Only on turn 3
+    });
+
+    it('should handle AI failure mid-conversation', async () => {
+      // Setup: Mock getSession to return a valid session
+      const { getSession, updateUserContext } = await import('../conversation/session-manager.js');
+      vi.mocked(getSession).mockReturnValue({
+        sessionId: 'test-session-123',
+        messages: [],
+        userContext: {},
+        suggestedRecipes: [],
+        rejectedRecipes: [],
+        state: 'gathering',
+        turnCount: 0,
+        createdAt: new Date(),
+        lastActivity: new Date(),
+      });
+
+      // Setup: Mock processConversationTurn
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
+
+      // Turn 1: Successful
+      vi.mocked(processConversationTurn).mockResolvedValueOnce({
+        aiMessage: 'Tell me more about your preferences.',
+        extractedContext: { energyLevel: 'medium' },
+        shouldTransition: false,
+      });
+
+      // Turn 2: AI failure - throw error
+      vi.mocked(processConversationTurn).mockRejectedValueOnce(new Error('OpenAI API failure'));
+
+      const event = { senderFrame: { url: 'file://test' } };
+      if (!messageHandlerFn) throw new Error('messageHandlerFn not initialized');
+
+      // Execute Turn 1: Successful turn
+      const result1 = await messageHandlerFn(event, 'test-session-123', 'I have some preferences');
+
+      // Verify Turn 1 succeeded
+      expect(result1.success).toBe(true);
+      expect(result1.aiMessage).toBe('Tell me more about your preferences.');
+      expect(updateUserContext).toHaveBeenCalledWith('test-session-123', {
+        energyLevel: 'medium',
+      });
+
+      // Execute Turn 2: AI failure
+      const result2 = await messageHandlerFn(event, 'test-session-123', 'More details here');
+
+      // Verify: Error is caught, fallback response returned
+      expect(result2.success).toBe(false);
+      expect(result2.error).toContain('OpenAI API failure');
+
+      // Verify: No crash occurred (we got a response)
+      expect(result2).toBeDefined();
+
+      // Verify: processConversationTurn was called twice
+      expect(processConversationTurn).toHaveBeenCalledTimes(2);
+    });
+  });
 });
