@@ -2,6 +2,7 @@
 
 import type { Recipe, CreateRecipeInput, RecipeFilter } from './recipe';
 import type { RecipeGenerationCriteria, RecipeGenerationResult } from './ai';
+import type { SuggestionResult } from './conversation';
 
 // Conversation API types
 export interface ConversationAPI {
@@ -11,6 +12,13 @@ export interface ConversationAPI {
     message: string
   ) => Promise<{ success: boolean; aiMessage?: string; timestamp?: Date; error?: string }>;
   abandonSession: (sessionId: string) => Promise<{ success: boolean; error?: string }>;
+  getSuggestions: (sessionId: string) => Promise<SuggestionResult>;
+  rejectRecipe: (
+    sessionId: string,
+    recipeId: string,
+    reason?: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  refine: (sessionId: string) => Promise<SuggestionResult>;
 }
 
 export interface ElectronAPI {

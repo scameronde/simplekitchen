@@ -103,3 +103,15 @@ export interface ConversationSession {
   createdAt: Date;
   lastActivity: Date;
 }
+
+/**
+ * Result type for suggestion operations (transition to suggesting state and refinement).
+ * Used when transitioning from gathering to suggesting, or when refining suggestions.
+ * @future Phase 4 - Used in IPC contract for getSuggestions, rejectRecipe, and refine methods
+ */
+export interface SuggestionResult {
+  success: boolean;
+  suggestions?: RecipeSuggestion[];
+  aiMessage?: string;
+  error?: string;
+}

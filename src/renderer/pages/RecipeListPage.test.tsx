@@ -60,6 +60,9 @@ describe('RecipeListPage', () => {
       conversationAPI: {
         startSession: vi.fn(),
         sendMessage: vi.fn(),
+        getSuggestions: vi.fn(),
+        rejectRecipe: vi.fn(),
+        refine: vi.fn(),
         abandonSession: vi.fn(),
       },
     };
