@@ -10,9 +10,9 @@ current-task: PLAN-002
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase3-Recipe-Suggestion.md`
 
-**Current Task**: PLAN-008
+**Current Task**: PLAN-009
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008
 
 ---
 
@@ -25,7 +25,7 @@ current-task: PLAN-002
 - [x] PLAN-005: Extend conversation-service.ts with transitionToSuggesting
 - [x] PLAN-006: Extend session-manager.ts with state update functions
 - [x] PLAN-007: Create RecipeSuggestionCard component
-- [ ] PLAN-008: Update ConversationPage to handle suggestions
+- [x] PLAN-008: Update ConversationPage to handle suggestions
 - [ ] PLAN-009: Add IPC handler for fetching suggestions
 - [ ] PLAN-010: Update shared types for suggestions
 - [ ] PLAN-011: Write unit tests for recipe-ranker
@@ -100,7 +100,16 @@ npm test RecipeSuggestionCard.test.tsx
 
 (Implementor: Add notes here as you work through tasks)
 
-- ***
+### PLAN-008 Notes (2026-01-06)
+
+- Extended ConversationPage to handle messages with suggestions
+- Added RecipeSuggestion type inline (not in shared types yet - will be unified in PLAN-010)
+- Implemented recipe data fetching with caching mechanism (fetchedRecipes map)
+- Used useEffect to fetch recipe details when suggestions arrive
+- Loading skeleton displays while fetching recipe data
+- Button handlers are placeholder implementations (console.log) for Phase 4/5
+- Backwards compatible with messages without suggestions
+- Verification: Type checking and linting passed ✅
 
 ## Blockers / Issues
 

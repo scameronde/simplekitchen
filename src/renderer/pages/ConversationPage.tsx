@@ -1,21 +1,44 @@
 import React, { useReducer, useEffect, useRef } from 'react';
 import type { ConversationMessage } from '../../shared/types/conversation';
+import type { Recipe } from '../../shared/types/recipe';
+import { RecipeSuggestionCard } from '../components/Conversation/RecipeSuggestionCard';
+
+// Recipe suggestion structure based on ranking-schema.ts
+interface RecipeSuggestion {
+  recipeId: string;
+  relevanceScore: number;
+  reasoning: string;
+  matchedFactors: string[];
+}
+
+// Extended message type to support suggestions
+interface ConversationMessageWithSuggestions extends ConversationMessage {
+  suggestions?: RecipeSuggestion[];
+}
 
 interface ConversationState {
   sessionId: string | null;
-  messages: ConversationMessage[];
+  messages: ConversationMessageWithSuggestions[];
   isLoading: boolean;
   error: string | null;
   inputValue: string;
+  fetchedRecipes: Record<string, Recipe>; // Cache for fetched recipe data
 }
 
 type ConversationAction =
   | { type: 'session_started'; sessionId: string }
   | { type: 'add_user_message'; content: string }
   | { type: 'add_ai_message'; content: string; timestamp: Date }
+  | {
+      type: 'add_ai_message_with_suggestions';
+      content: string;
+      timestamp: Date;
+      suggestions: RecipeSuggestion[];
+    }
   | { type: 'set_loading'; isLoading: boolean }
   | { type: 'set_error'; error: string }
-  | { type: 'set_input'; value: string };
+  | { type: 'set_input'; value: string }
+  | { type: 'set_fetched_recipe'; recipeId: string; recipe: Recipe };
 
 function conversationReducer(
   state: ConversationState,
@@ -43,6 +66,28 @@ function conversationReducer(
         ],
         isLoading: false,
       };
+    case 'add_ai_message_with_suggestions':
+      return {
+        ...state,
+        messages: [
+          ...state.messages,
+          {
+            role: 'assistant',
+            content: action.content,
+            timestamp: action.timestamp,
+            suggestions: action.suggestions,
+          },
+        ],
+        isLoading: false,
+      };
+    case 'set_fetched_recipe':
+      return {
+        ...state,
+        fetchedRecipes: {
+          ...state.fetchedRecipes,
+          [action.recipeId]: action.recipe,
+        },
+      };
     case 'set_loading':
       return { ...state, isLoading: action.isLoading };
     case 'set_error':
@@ -61,6 +106,7 @@ export function ConversationPage() {
     isLoading: false,
     error: null,
     inputValue: '',
+    fetchedRecipes: {},
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -89,6 +135,36 @@ export function ConversationPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [state.messages]);
+
+  // Fetch recipe details for suggestions
+  useEffect(() => {
+    const fetchRecipeDetails = async () => {
+      // Find all messages with suggestions
+      for (const message of state.messages) {
+        if (message.suggestions) {
+          for (const suggestion of message.suggestions) {
+            // Only fetch if not already in cache
+            if (!state.fetchedRecipes[suggestion.recipeId]) {
+              try {
+                const result = await window.electron.recipeAPI.getById(suggestion.recipeId);
+                if (result.success && result.recipe) {
+                  dispatch({
+                    type: 'set_fetched_recipe',
+                    recipeId: suggestion.recipeId,
+                    recipe: result.recipe,
+                  });
+                }
+              } catch (error) {
+                console.error(`Failed to fetch recipe ${suggestion.recipeId}:`, error);
+              }
+            }
+          }
+        }
+      }
+    };
+
+    fetchRecipeDetails();
+  }, [state.messages, state.fetchedRecipes]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,17 +201,57 @@ export function ConversationPage() {
 
         <div className="flex-1 overflow-y-auto mb-4 space-y-3">
           {state.messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[70%] px-4 py-2 rounded-lg ${
-                  msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'
-                }`}
-              >
-                <p>{msg.content}</p>
+            <div key={idx}>
+              {/* Regular message bubble */}
+              <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div
+                  className={`max-w-[70%] px-4 py-2 rounded-lg ${
+                    msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'
+                  }`}
+                >
+                  <p>{msg.content}</p>
+                </div>
               </div>
+
+              {/* Recipe suggestions (if present) */}
+              {msg.suggestions && msg.suggestions.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {msg.suggestions.map((suggestion, suggestionIdx) => {
+                    const recipe = state.fetchedRecipes[suggestion.recipeId];
+
+                    // Show loading state while fetching recipe
+                    if (!recipe) {
+                      return (
+                        <div
+                          key={suggestionIdx}
+                          className="bg-gray-100 rounded-lg p-6 animate-pulse"
+                        >
+                          <div className="h-6 bg-gray-300 rounded w-3/4 mb-3"></div>
+                          <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+                          <div className="h-4 bg-gray-300 rounded w-full"></div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <RecipeSuggestionCard
+                        key={suggestionIdx}
+                        recipe={recipe}
+                        reasoning={suggestion.reasoning}
+                        matchedFactors={suggestion.matchedFactors}
+                        onSelect={() => {
+                          // TODO: Phase 4/5 - Implement recipe selection
+                          console.log('Recipe selected:', recipe.id, recipe.title);
+                        }}
+                        onReject={() => {
+                          // TODO: Phase 4/5 - Implement recipe rejection
+                          console.log('Recipe rejected:', recipe.id, recipe.title);
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ))}
           {state.isLoading && (
