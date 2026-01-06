@@ -15,6 +15,12 @@ export function NavigationBar({ currentView, onNavigate }: NavigationBarProps) {
           </div>
           <div className="flex space-x-4">
             <Button
+              onClick={() => onNavigate('conversation')}
+              variant={currentView === 'conversation' ? 'primary' : 'secondary'}
+            >
+              What's for dinner?
+            </Button>
+            <Button
               onClick={() => onNavigate('add')}
               variant={currentView === 'add' ? 'primary' : 'secondary'}
             >

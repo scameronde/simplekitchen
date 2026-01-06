@@ -1,8 +1,8 @@
 # State: Conversational Decision Support - Phase 1
 
 **Plan**: thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase1.md  
-**Current Task**: PLAN-008  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007
+**Current Task**: PLAN-009  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008
 
 ---
 
@@ -29,7 +29,7 @@
 
 - [x] PLAN-006: Create Conversation Page Component
 - [x] PLAN-007: Integrate Conversation Page into App Navigation
-- [ ] PLAN-008: Add Navigation Button to NavigationBar
+- [x] PLAN-008: Add Navigation Button to NavigationBar
 
 ### Testing
 
