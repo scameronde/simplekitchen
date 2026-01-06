@@ -1,8 +1,8 @@
 import { Button } from './Button';
 
 interface NavigationBarProps {
-  currentView: 'add' | 'list' | 'detail' | 'ai-generation' | 'import';
-  onNavigate: (view: 'add' | 'list' | 'ai-generation' | 'import') => void;
+  currentView: 'add' | 'list' | 'detail' | 'ai-generation' | 'import' | 'conversation';
+  onNavigate: (view: 'add' | 'list' | 'ai-generation' | 'import' | 'conversation') => void;
 }
 
 export function NavigationBar({ currentView, onNavigate }: NavigationBarProps) {

@@ -5,14 +5,15 @@ import { RecipeListPage } from './pages/RecipeListPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { RecipeGenerationPage } from './pages/RecipeGenerationPage';
 import { RecipeImportPage } from './pages/RecipeImportPage';
+import { ConversationPage } from './pages/ConversationPage';
 
-type View = 'add' | 'list' | 'detail' | 'ai-generation' | 'import';
+type View = 'add' | 'list' | 'detail' | 'ai-generation' | 'import' | 'conversation';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('add');
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
 
-  const handleNavigate = (view: 'add' | 'list' | 'ai-generation' | 'import') => {
+  const handleNavigate = (view: 'add' | 'list' | 'ai-generation' | 'import' | 'conversation') => {
     setCurrentView(view);
     setSelectedRecipeId(null);
   };
@@ -34,6 +35,7 @@ export default function App() {
       {currentView === 'add' && <AddRecipePage />}
       {currentView === 'ai-generation' && <RecipeGenerationPage />}
       {currentView === 'import' && <RecipeImportPage />}
+      {currentView === 'conversation' && <ConversationPage />}
       {currentView === 'list' && <RecipeListPage onRecipeClick={handleRecipeClick} />}
       {currentView === 'detail' && selectedRecipeId !== null && (
         <RecipeDetailPage recipeId={selectedRecipeId} onBack={handleBackToList} />
