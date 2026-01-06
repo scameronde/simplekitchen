@@ -1,8 +1,8 @@
 # State: Conversational Decision Support - Phase 2
 
 **Plan**: thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase2-AI-Integration.md  
-**Current Task**: PLAN-006  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005
+**Current Task**: PLAN-007  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006
 
 ---
 
@@ -28,7 +28,7 @@
 
 ### Testing
 
-- [ ] PLAN-006: Add Unit Tests for Conversation Service
+- [x] PLAN-006: Add Unit Tests for Conversation Service
 - [ ] PLAN-007: Add Integration Tests for Full Conversation Flow
 
 ---
