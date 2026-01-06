@@ -178,3 +178,107 @@ export async function transitionToSuggesting(sessionId: string): Promise<Suggest
     };
   }
 }
+
+/**
+ * Processes a refinement cycle when user rejects a suggested recipe.
+ * Enforces max 3 refinement cycles, escalating to manual browsing after limit.
+ * Fetches new ranked suggestions excluding rejected recipes.
+ *
+ * @param sessionId - The session ID to process refinement for
+ * @returns Result with new suggestions and AI message, or escalation message, or error
+ */
+export async function processRefinement(sessionId: string): Promise<SuggestionResult> {
+  try {
+    // Step 1: Get session
+    const session = getSession(sessionId);
+    if (!session) {
+      throw new Error(`Session ${sessionId} not found`);
+    }
+
+    // Step 2: Validate current state (must be 'suggesting' or 'refining')
+    if (session.state !== 'suggesting' && session.state !== 'refining') {
+      throw new Error(
+        `Cannot refine from state '${session.state}'. Must be 'suggesting' or 'refining'.`
+      );
+    }
+
+    // Step 3: Check refinement count - if > 3, return escalation response
+    if (session.refinementCount > 3) {
+      const escalationMessage =
+        "I've shown you quite a few options, but haven't found the perfect match yet. Let me suggest some alternatives:\n\n" +
+        '1. **Browse by Category** - I can show you all recipes in a specific category (e.g., pasta, chicken, vegetarian)\n' +
+        "2. **Relax Constraints** - Tell me which constraint to relax (e.g., 'I can spend more time' or 'I'll go shopping')\n" +
+        "3. **Start Fresh** - Let's restart the conversation and try a different approach\n\n" +
+        'Which would you prefer?';
+
+      // Add escalation message to session
+      updateSessionMessages(sessionId, {
+        role: 'assistant',
+        content: escalationMessage,
+        timestamp: new Date(),
+      });
+
+      return {
+        success: true,
+        aiMessage: escalationMessage,
+        suggestions: undefined,
+      };
+    }
+
+    // Step 4: Verify required context (energyLevel and availableTime must exist)
+    if (
+      session.userContext.energyLevel === undefined ||
+      session.userContext.availableTime === undefined
+    ) {
+      throw new Error('Missing required context (energyLevel and availableTime)');
+    }
+
+    // Step 5: Update session state to 'refining' if not already
+    if (session.state !== 'refining') {
+      updateSessionState(sessionId, 'refining');
+    }
+
+    // Step 6: Get new ranked suggestions (already excludes rejected recipes)
+    const result = await getRankedSuggestions(sessionId);
+
+    // Step 7: Extract recipe IDs
+    const recipeIds = result.suggestions.map(suggestion => suggestion.recipeId);
+
+    // Step 8: Update session with suggested recipes
+    updateSessionSuggestedRecipes(sessionId, recipeIds);
+
+    // Step 9: Build AI message based on refinementCount
+    let aiMessage: string;
+    if (session.refinementCount === 1) {
+      aiMessage = 'Got it! Let me find some different options for you:';
+    } else if (session.refinementCount === 2) {
+      aiMessage = "No problem! Let's try a different approach with these recipes:";
+    } else {
+      // refinementCount >= 3
+      aiMessage = "I'm determined to find the right recipe for you. How about these:";
+    }
+
+    // Step 10: Add AI message to session
+    updateSessionMessages(sessionId, {
+      role: 'assistant',
+      content: aiMessage,
+      timestamp: new Date(),
+    });
+
+    // Step 11: Return success result
+    return {
+      success: true,
+      suggestions: result,
+      aiMessage,
+    };
+  } catch (error) {
+    // Log error for debugging
+    console.error('Error in processRefinement:', error);
+
+    // Return error result
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
