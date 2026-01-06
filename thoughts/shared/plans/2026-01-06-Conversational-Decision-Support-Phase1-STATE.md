@@ -1,8 +1,8 @@
 # State: Conversational Decision Support - Phase 1
 
 **Plan**: thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase1.md  
-**Current Task**: PLAN-002  
-**Completed Tasks**: PLAN-001
+**Current Task**: PLAN-003  
+**Completed Tasks**: PLAN-001, PLAN-002
 
 ---
 
@@ -20,7 +20,7 @@
 ### Main Process (Backend)
 
 - [x] PLAN-001: Create Session Manager
-- [ ] PLAN-002: Create IPC Handlers for Conversation
+- [x] PLAN-002: Create IPC Handlers for Conversation
 - [ ] PLAN-003: Register Conversation Handlers in Main Process
 - [ ] PLAN-004: Expose Conversation API in Preload
 - [ ] PLAN-005: Update Electron API Type Definitions
