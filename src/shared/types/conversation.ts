@@ -98,6 +98,8 @@ export interface ConversationSession {
   }>;
   state: ConversationState;
   turnCount: number; // Track conversation length
+  refinementCount: number; // Track refinement cycles (max 3)
+  turnsInCurrentState: number; // Track turns in current state (for escalation)
   createdAt: Date;
   lastActivity: Date;
 }

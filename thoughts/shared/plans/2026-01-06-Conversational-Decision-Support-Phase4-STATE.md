@@ -10,15 +10,15 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-001
+**Current Task**: PLAN-002
 
-**Completed Tasks**: (none yet)
+**Completed Tasks**: PLAN-001
 
 ---
 
 ## Task Checklist
 
-- [ ] PLAN-001: Extend ConversationSession type with refinementCount and turnsInCurrentState
+- [x] PLAN-001: Extend ConversationSession type with refinementCount and turnsInCurrentState
 - [ ] PLAN-002: Add rejection tracking to session-manager
 - [ ] PLAN-003: Add buildRefinementContext to prompts.ts
 - [ ] PLAN-004: Extend recipe-ranker to exclude rejected recipes
@@ -116,7 +116,11 @@ npm run dev
 
 ## Implementation Notes
 
-(Implementor: Add notes here as you work through tasks)
+### PLAN-001 (Complete)
+
+- Added `refinementCount` and `turnsInCurrentState` fields to ConversationSession interface
+- Note: This temporarily breaks type checking in session-manager.ts and test files
+- PLAN-002 will fix these errors by initializing the new fields
 
 ---
 
