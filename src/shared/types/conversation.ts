@@ -46,6 +46,19 @@ export interface UserContext {
 }
 
 /**
+ * AI-ranked recipe suggestion with relevance scoring.
+ * Used in Phase 3+ to provide detailed reasoning for recipe recommendations.
+ * Extends basic recipe ID suggestions with scoring and explanation.
+ * @future Phase 3 - Used in AI-ranked recipe suggestion display
+ */
+export interface RecipeSuggestion {
+  recipeId: string;
+  relevanceScore: number;
+  reasoning: string; // 20-500 characters describing why it matches
+  matchedFactors: string[]; // Tags like 'quick', 'low-energy', 'seasonal'
+}
+
+/**
  * Conversation state for flow control.
  * Tracks progression through decision support workflow.
  * @future Phase 0 - Used in state machine management
@@ -57,12 +70,14 @@ export type ConversationState = 'gathering' | 'suggesting' | 'refining' | 'confi
  * Represents one turn in the conversational exchange.
  * @future Phase 0 - Used in message list rendering
  * @future Phase 1 - Passed to AI for context
+ * @future Phase 3 - Uses suggestions field for displaying ranked recipe recommendations
  */
 export interface ConversationMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
   suggestedRecipes?: string[]; // Recipe IDs (for assistant messages)
+  suggestions?: RecipeSuggestion[]; // Full suggestion data for Phase 3+ AI-ranked recommendations
 }
 
 /**
