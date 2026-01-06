@@ -23,6 +23,11 @@ const __originalAPI__ = {
       message: string
     ): Promise<{ success: boolean; aiMessage?: string; timestamp?: Date; error?: string }> =>
       ipcRenderer.invoke('conversation:sendMessage', sessionId, message),
+    getSuggestions: (sessionId: string) =>
+      ipcRenderer.invoke('conversation:get-suggestions', sessionId),
+    rejectRecipe: (sessionId: string, recipeId: string, reason?: string) =>
+      ipcRenderer.invoke('conversation:reject-recipe', sessionId, recipeId, reason),
+    refine: (sessionId: string) => ipcRenderer.invoke('conversation:refine', sessionId),
     abandonSession: (sessionId: string): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('conversation:abandon', sessionId),
   },
@@ -44,6 +49,11 @@ const __mockAPI__ = {
     startSession: () => __originalAPI__.conversationAPI.startSession(),
     sendMessage: (sessionId: string, message: string) =>
       __originalAPI__.conversationAPI.sendMessage(sessionId, message),
+    getSuggestions: (sessionId: string) =>
+      __originalAPI__.conversationAPI.getSuggestions(sessionId),
+    rejectRecipe: (sessionId: string, recipeId: string, reason?: string) =>
+      __originalAPI__.conversationAPI.rejectRecipe(sessionId, recipeId, reason),
+    refine: (sessionId: string) => __originalAPI__.conversationAPI.refine(sessionId),
     abandonSession: (sessionId: string) =>
       __originalAPI__.conversationAPI.abandonSession(sessionId),
   },

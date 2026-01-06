@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-008
+**Current Task**: PLAN-009
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008
 
 ---
 
@@ -25,7 +25,7 @@ current-task: PLAN-001
 - [x] PLAN-005: Add processRefinement to conversation-service
 - [x] PLAN-006: Add IPC handlers for rejection and refinement
 - [x] PLAN-007: Extend electron.d.ts with new API methods
-- [ ] PLAN-008: Update preload.ts with IPC bindings
+- [x] PLAN-008: Update preload.ts with IPC bindings
 - [ ] PLAN-009: Create FeedbackDialog component
 - [ ] PLAN-010: Update ConversationPage for refinement workflow
 - [ ] PLAN-011: Write unit tests for session-manager rejection tracking
@@ -177,6 +177,17 @@ npm run dev
   - `refine(sessionId: string): Promise<SuggestionResult>`
 - Created `SuggestionResult` interface in src/shared/types/conversation.ts (allowed adjacent edit)
 - Fixed test file RecipeListPage.test.tsx to include new conversationAPI methods
+- All type checking and linting passes ✅
+
+### PLAN-008 (Complete)
+
+- Added three new IPC bindings to `__originalAPI__.conversationAPI` (lines 26-30):
+  - `getSuggestions`: invokes `conversation:get-suggestions` channel
+  - `rejectRecipe`: invokes `conversation:reject-recipe` channel
+  - `refine`: invokes `conversation:refine` channel
+- Added corresponding mock methods to `__mockAPI__.conversationAPI` (lines 52-56)
+- All methods follow existing pattern and delegate to original API in mock mode
+- IPC channel names match handlers in conversation-handlers.ts
 - All type checking and linting passes ✅
 
 ---
