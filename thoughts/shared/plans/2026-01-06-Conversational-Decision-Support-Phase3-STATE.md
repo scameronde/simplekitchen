@@ -10,9 +10,9 @@ current-task: PLAN-002
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase3-Recipe-Suggestion.md`
 
-**Current Task**: PLAN-004
+**Current Task**: PLAN-005
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
 
 ---
 
@@ -21,7 +21,7 @@ current-task: PLAN-002
 - [x] PLAN-001: Create ranking-schema.ts with Zod schema
 - [x] PLAN-002: Add RANKING_SYSTEM_PROMPT to prompts.ts
 - [x] PLAN-003: Add buildRankingPrompt function to prompts.ts
-- [ ] PLAN-004: Create recipe-ranker.ts service
+- [x] PLAN-004: Create recipe-ranker.ts service
 - [ ] PLAN-005: Extend conversation-service.ts with transitionToSuggesting
 - [ ] PLAN-006: Extend session-manager.ts with state update functions
 - [ ] PLAN-007: Create RecipeSuggestionCard component
