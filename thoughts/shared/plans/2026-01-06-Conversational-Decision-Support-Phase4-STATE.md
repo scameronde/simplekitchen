@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-011
+**Current Task**: PLAN-012
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009, PLAN-010
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009, PLAN-010, PLAN-011
 
 ---
 
@@ -28,7 +28,7 @@ current-task: PLAN-001
 - [x] PLAN-008: Update preload.ts with IPC bindings
 - [x] PLAN-009: Create FeedbackDialog component
 - [x] PLAN-010: Update ConversationPage for refinement workflow
-- [ ] PLAN-011: Write unit tests for session-manager rejection tracking
+- [x] PLAN-011: Write unit tests for session-manager rejection tracking
 - [ ] PLAN-012: Write unit tests for buildRefinementContext
 - [ ] PLAN-013: Write integration tests for processRefinement
 - [ ] PLAN-014: Write component tests for FeedbackDialog
@@ -219,6 +219,19 @@ npm run dev
 - Added FeedbackDialog component to JSX with proper props
 - Fixed type mismatch: refineResult.suggestions is already RecipeSuggestion[]
 - All type checking and linting passes ✅
+
+### PLAN-011 (Complete)
+
+- Added imports: addRejectedRecipe and updateSessionState to session-manager.test.ts
+- Created new "Rejection Tracking" describe block with 5 comprehensive test cases:
+  1. "should add rejected recipe to session" - Tests basic rejection with reason
+  2. "should add rejected recipe without reason" - Tests rejection without providing reason
+  3. "should increment refinement count on each rejection" - Tests multiple rejections increment count correctly
+  4. "should throw error if session not found" - Tests error handling for invalid session
+  5. "should reset turnsInCurrentState on state change" - Tests state transition behavior
+- All tests follow existing patterns (beforeEach setup, expect syntax)
+- Test coverage: session-manager.ts has 74.64% statement coverage, 91.66% branch coverage
+- All 14 tests pass (9 existing + 5 new) ✅
 
 ---
 
