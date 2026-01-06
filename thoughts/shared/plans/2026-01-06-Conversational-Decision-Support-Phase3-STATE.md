@@ -10,16 +10,16 @@ current-task: PLAN-002
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase3-Recipe-Suggestion.md`
 
-**Current Task**: PLAN-002
+**Current Task**: PLAN-003
 
-**Completed Tasks**: PLAN-001
+**Completed Tasks**: PLAN-001, PLAN-002
 
 ---
 
 ## Task Checklist
 
 - [x] PLAN-001: Create ranking-schema.ts with Zod schema
-- [ ] PLAN-002: Add RANKING_SYSTEM_PROMPT to prompts.ts
+- [x] PLAN-002: Add RANKING_SYSTEM_PROMPT to prompts.ts
 - [ ] PLAN-003: Add buildRankingPrompt function to prompts.ts
 - [ ] PLAN-004: Create recipe-ranker.ts service
 - [ ] PLAN-005: Extend conversation-service.ts with transitionToSuggesting
