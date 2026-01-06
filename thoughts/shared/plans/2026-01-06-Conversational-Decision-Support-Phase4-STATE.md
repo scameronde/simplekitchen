@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-006
+**Current Task**: PLAN-007
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006
 
 ---
 
@@ -23,7 +23,7 @@ current-task: PLAN-001
 - [x] PLAN-003: Add buildRefinementContext to prompts.ts
 - [x] PLAN-004: Extend recipe-ranker to exclude rejected recipes
 - [x] PLAN-005: Add processRefinement to conversation-service
-- [ ] PLAN-006: Add IPC handlers for rejection and refinement
+- [x] PLAN-006: Add IPC handlers for rejection and refinement
 - [ ] PLAN-007: Extend electron.d.ts with new API methods
 - [ ] PLAN-008: Update preload.ts with IPC bindings
 - [ ] PLAN-009: Create FeedbackDialog component
@@ -157,6 +157,15 @@ npm run dev
 - Built escalation message with 3 concrete options (browse, relax, restart)
 - Progressive AI messages based on refinementCount (1st, 2nd, 3rd+ refinement)
 - State transitions from 'suggesting' to 'refining' automatically
+- All type checking and linting passes ✅
+
+### PLAN-006 (Complete)
+
+- Added imports: `addRejectedRecipe` from session-manager, `processRefinement` from conversation-service
+- Added `conversation:reject-recipe` IPC handler (lines 81-103) with full security validation
+- Added `conversation:refine` IPC handler (lines 105-124) with full security validation
+- Updated JSDoc to document all 6 handlers
+- Both handlers follow established security pattern (sender + session validation)
 - All type checking and linting passes ✅
 
 ---

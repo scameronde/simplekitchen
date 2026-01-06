@@ -5,11 +5,13 @@ import {
   getSession,
   updateSessionState,
   updateUserContext,
+  addRejectedRecipe,
   abandonSession,
 } from '../conversation/session-manager.js';
 import {
   processConversationTurn,
   transitionToSuggesting,
+  processRefinement,
 } from '../conversation/conversation-service.js';
 
 /**
@@ -26,8 +28,8 @@ function validateSender(frame: WebFrameMain): boolean {
 
 /**
  * Registers IPC handlers for conversation decision support.
- * Handles conversation:start, conversation:sendMessage, conversation:get-suggestions,
- * and conversation:abandon channels with security validation.
+ * Handles conversation:start, conversation:sendMessage, conversation:reject-recipe,
+ * conversation:refine, conversation:get-suggestions, and conversation:abandon channels with security validation.
  */
 export function registerConversationHandlers(): void {
   ipcMain.handle('conversation:start', async event => {
@@ -68,6 +70,51 @@ export function registerConversationHandlers(): void {
         aiMessage: turnResult.aiMessage,
         timestamp: new Date(),
       };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+      };
+    }
+  });
+
+  ipcMain.handle(
+    'conversation:reject-recipe',
+    async (event, sessionId: string, recipeId: string, reason?: string) => {
+      if (!event.senderFrame || !validateSender(event.senderFrame)) {
+        return { success: false, error: 'Unauthorized IPC sender' };
+      }
+
+      const session = getSession(sessionId);
+      if (!session) {
+        return { success: false, error: 'Session not found' };
+      }
+
+      try {
+        addRejectedRecipe(sessionId, recipeId, reason);
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error occurred',
+        };
+      }
+    }
+  );
+
+  ipcMain.handle('conversation:refine', async (event, sessionId: string) => {
+    if (!event.senderFrame || !validateSender(event.senderFrame)) {
+      return { success: false, error: 'Unauthorized IPC sender' };
+    }
+
+    const session = getSession(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not found' };
+    }
+
+    try {
+      const result = await processRefinement(sessionId);
+      return result;
     } catch (error) {
       return {
         success: false,
