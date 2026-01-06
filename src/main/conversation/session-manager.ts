@@ -94,16 +94,18 @@ export function updateUserContext(sessionId: string, contextUpdates: Partial<Use
 
 /**
  * Updates the suggested recipes for a conversation session.
- * Replaces the suggestedRecipes array with the provided recipe IDs.
+ * Appends the provided recipe IDs to suggestedRecipes and deduplicates.
  * @param sessionId - The session ID to update
- * @param recipeIds - Array of recipe IDs to set as suggested
+ * @param recipeIds - Array of recipe IDs to append
  * @throws Error if session not found
  */
 export function updateSessionSuggestedRecipes(sessionId: string, recipeIds: string[]): void {
   const session = activeSessions.get(sessionId);
   if (!session) throw new Error(`Session ${sessionId} not found`);
 
-  session.suggestedRecipes = recipeIds;
+  // Append and deduplicate
+  const combined = [...session.suggestedRecipes, ...recipeIds];
+  session.suggestedRecipes = Array.from(new Set(combined));
   session.lastActivity = new Date();
 }
 
