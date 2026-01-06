@@ -15,6 +15,17 @@ const __originalAPI__ = {
   generateRecipe: (criteria: RecipeGenerationCriteria) =>
     ipcRenderer.invoke('recipe:generate', criteria),
   importRecipe: (url: string) => ipcRenderer.invoke('recipe:import', url),
+  conversationAPI: {
+    startSession: (): Promise<{ success: boolean; sessionId?: string; error?: string }> =>
+      ipcRenderer.invoke('conversation:start'),
+    sendMessage: (
+      sessionId: string,
+      message: string
+    ): Promise<{ success: boolean; aiMessage?: string; timestamp?: Date; error?: string }> =>
+      ipcRenderer.invoke('conversation:sendMessage', sessionId, message),
+    abandonSession: (sessionId: string): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('conversation:abandon', sessionId),
+  },
 };
 
 /**
@@ -29,10 +40,20 @@ const __mockAPI__ = {
   filter: (filter: RecipeFilter) => __originalAPI__.filter(filter),
   generateRecipe: (criteria: RecipeGenerationCriteria) => __originalAPI__.generateRecipe(criteria),
   importRecipe: (url: string) => __originalAPI__.importRecipe(url),
+  conversationAPI: {
+    startSession: () => __originalAPI__.conversationAPI.startSession(),
+    sendMessage: (sessionId: string, message: string) =>
+      __originalAPI__.conversationAPI.sendMessage(sessionId, message),
+    abandonSession: (sessionId: string) =>
+      __originalAPI__.conversationAPI.abandonSession(sessionId),
+  },
 };
 
 // Determine which API to expose based on environment
 const recipeAPI = isUnitTest() ? __mockAPI__ : __originalAPI__;
+const conversationAPI = isUnitTest()
+  ? __mockAPI__.conversationAPI
+  : __originalAPI__.conversationAPI;
 
 // Expose safe APIs to renderer process
 // NEVER expose entire ipcRenderer or Node.js APIs directly
@@ -46,6 +67,7 @@ const electronAPI = {
   },
 
   recipeAPI,
+  conversationAPI,
 };
 
 contextBridge.exposeInMainWorld('electron', electronAPI);

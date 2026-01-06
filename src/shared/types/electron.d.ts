@@ -3,6 +3,16 @@
 import type { Recipe, CreateRecipeInput, RecipeFilter } from './recipe';
 import type { RecipeGenerationCriteria, RecipeGenerationResult } from './ai';
 
+// Conversation API types
+export interface ConversationAPI {
+  startSession: () => Promise<{ success: boolean; sessionId?: string; error?: string }>;
+  sendMessage: (
+    sessionId: string,
+    message: string
+  ) => Promise<{ success: boolean; aiMessage?: string; timestamp?: Date; error?: string }>;
+  abandonSession: (sessionId: string) => Promise<{ success: boolean; error?: string }>;
+}
+
 export interface ElectronAPI {
   platform: string;
   versions: {
@@ -39,6 +49,8 @@ export interface ElectronAPI {
       errors?: Array<{ field: string; message: string }>;
     }>;
   };
+
+  conversationAPI: ConversationAPI;
 }
 
 /**
@@ -77,6 +89,7 @@ export interface TestAPI {
       recipe?: CreateRecipeInput;
       errors?: Array<{ field: string; message: string }>;
     }>;
+    conversationAPI: ConversationAPI;
   };
   /**
    * Mock API object for test harness to override.
@@ -110,6 +123,7 @@ export interface TestAPI {
       recipe?: CreateRecipeInput;
       errors?: Array<{ field: string; message: string }>;
     }>;
+    conversationAPI: ConversationAPI;
   };
 }
 

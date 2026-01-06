@@ -57,6 +57,11 @@ describe('RecipeListPage', () => {
         generateRecipe: vi.fn(),
         importRecipe: vi.fn(),
       },
+      conversationAPI: {
+        startSession: vi.fn(),
+        sendMessage: vi.fn(),
+        abandonSession: vi.fn(),
+      },
     };
   });
 
