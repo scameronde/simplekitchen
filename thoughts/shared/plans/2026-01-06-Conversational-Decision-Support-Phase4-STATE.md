@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-012
+**Current Task**: PLAN-013
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009, PLAN-010, PLAN-011
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009, PLAN-010, PLAN-011, PLAN-012
 
 ---
 
@@ -29,7 +29,7 @@ current-task: PLAN-001
 - [x] PLAN-009: Create FeedbackDialog component
 - [x] PLAN-010: Update ConversationPage for refinement workflow
 - [x] PLAN-011: Write unit tests for session-manager rejection tracking
-- [ ] PLAN-012: Write unit tests for buildRefinementContext
+- [x] PLAN-012: Write unit tests for buildRefinementContext
 - [ ] PLAN-013: Write integration tests for processRefinement
 - [ ] PLAN-014: Write component tests for FeedbackDialog
 
@@ -232,6 +232,20 @@ npm run dev
 - All tests follow existing patterns (beforeEach setup, expect syntax)
 - Test coverage: session-manager.ts has 74.64% statement coverage, 91.66% branch coverage
 - All 14 tests pass (9 existing + 5 new) ✅
+
+### PLAN-012 (Complete)
+
+- Created new test file: src/main/conversation/prompts.test.ts (237 lines)
+- Implemented 4 comprehensive test cases for buildRefinementContext:
+  1. "should return empty string if no rejections" - Tests empty state handling
+  2. "should list rejected recipes with reasons" - Tests rejection list formatting
+  3. "should detect pattern when 2+ recipes share ingredient" - Tests pattern detection logic
+  4. "should use different strategy for refinement count 1, 2, 3+" - Tests strategy progression
+- Created mock data with 3 complete Recipe objects (Chicken Pasta, Beef Pasta, Chicken Stir Fry)
+- All recipes include complete fields and ingredients with dietary properties
+- All 4 tests pass ✅
+- Type checking passes ✅
+- Linting passes ✅
 
 ---
 
