@@ -174,13 +174,15 @@ export function buildConversationPrompt(
  * @param candidates - Array of candidate recipes to rank (limited to 20 max)
  * @param dietaryProfile - User's dietary restrictions and preferences
  * @param alreadySuggested - Recipe IDs already suggested in this session (to deprioritize)
+ * @param session - Optional conversation session for refinement context injection
  * @returns Formatted prompt string with context and candidates as JSON
  */
 export function buildRankingPrompt(
   userContext: UserContext,
   candidates: Recipe[],
   dietaryProfile: DietaryProfile,
-  alreadySuggested: string[]
+  alreadySuggested: string[],
+  session?: ConversationSession
 ): string {
   // Limit candidates to 20 recipes max to stay under 8,000 token budget
   const limitedCandidates = candidates.slice(0, 20);
@@ -214,6 +216,15 @@ export function buildRankingPrompt(
     prompt += '\n\n';
   }
 
+  // Inject refinement context if user has rejected recipes
+  if (session && session.rejectedRecipes.length > 0) {
+    const refinementContext = buildRefinementContext(session, candidates);
+    if (refinementContext) {
+      prompt += refinementContext;
+      prompt += '\n';
+    }
+  }
+
   // Build candidate recipes section as JSON
   prompt += `# Candidate Recipes\n`;
   prompt += `Evaluate and rank the following recipes. Each recipe is provided with key details for your analysis:\n\n`;
@@ -243,4 +254,99 @@ export function buildRankingPrompt(
   prompt += `Rank ALL ${limitedCandidates.length} recipes based on how well they match the user's context. Return a JSON array with rankings following the format specified in the system prompt.\n`;
 
   return prompt;
+}
+
+/**
+ * Build refinement context from rejected recipes and detected patterns.
+ * Analyzes rejection patterns to guide AI toward better suggestions.
+ *
+ * @param session - Current conversation session with rejection history
+ * @param candidates - Array of candidate recipes being ranked
+ * @returns Formatted refinement context string or empty string if no rejections
+ */
+export function buildRefinementContext(session: ConversationSession, candidates: Recipe[]): string {
+  // Return empty if no rejections
+  if (session.rejectedRecipes.length === 0) {
+    return '';
+  }
+
+  let context = '# Previously Rejected Recipes\n';
+
+  // List rejected recipes with reasons
+  const rejectedRecipeMap = new Map<string, Recipe>();
+  for (const candidate of candidates) {
+    const rejection = session.rejectedRecipes.find(r => r.recipeId === candidate.id);
+    if (rejection) {
+      rejectedRecipeMap.set(candidate.id, candidate);
+    }
+  }
+
+  session.rejectedRecipes.forEach(rejected => {
+    const recipe = rejectedRecipeMap.get(rejected.recipeId);
+    if (recipe) {
+      context += `- **${recipe.title}**`;
+      if (rejected.reason) {
+        context += `: ${rejected.reason}`;
+      }
+      context += '\n';
+    } else {
+      context += `- Recipe ID: ${rejected.recipeId}`;
+      if (rejected.reason) {
+        context += ` - ${rejected.reason}`;
+      }
+      context += '\n';
+    }
+  });
+
+  context += '\n# Refinement Instructions\n';
+
+  // List rejection reasons if provided
+  const reasons = session.rejectedRecipes.filter(r => r.reason).map(r => r.reason as string);
+
+  if (reasons.length > 0) {
+    context += 'The user rejected recipes for the following reasons:\n';
+    reasons.forEach(reason => {
+      context += `- ${reason}\n`;
+    });
+    context += '\n';
+  }
+
+  // Pattern detection for common ingredients
+  const ingredientPatterns = ['pasta', 'chicken', 'beef', 'fish', 'rice', 'salad'];
+  const patternCounts = new Map<string, number>();
+
+  for (const rejected of session.rejectedRecipes) {
+    const recipe = rejectedRecipeMap.get(rejected.recipeId);
+    if (recipe) {
+      for (const pattern of ingredientPatterns) {
+        const hasPattern = recipe.ingredients.some(ing => ing.name.toLowerCase().includes(pattern));
+        if (hasPattern) {
+          patternCounts.set(pattern, (patternCounts.get(pattern) || 0) + 1);
+        }
+      }
+    }
+  }
+
+  // Add pattern warnings for ingredients rejected 2+ times
+  const detectedPatterns = Array.from(patternCounts.entries())
+    .filter(([, count]) => count >= 2)
+    .map(([pattern]) => pattern);
+
+  if (detectedPatterns.length > 0) {
+    context += `**⚠️ Detected Patterns**: The user has rejected multiple recipes containing: ${detectedPatterns.join(', ')}. Avoid suggesting recipes with these ingredients unless they are exceptional matches.\n\n`;
+  }
+
+  // Add strategy text based on refinement count
+  if (session.refinementCount === 1) {
+    context +=
+      '**Strategy**: This is the first refinement. Focus on understanding what aspects the user disliked (complexity, ingredients, cooking method, time). Suggest recipes that address those concerns while maintaining variety.\n';
+  } else if (session.refinementCount === 2) {
+    context +=
+      '**Strategy**: This is the second refinement. The user is being selective. Pay close attention to the rejection patterns above and be more conservative. Suggest safe, reliable options that clearly avoid previous issues.\n';
+  } else {
+    context +=
+      '**Strategy**: This is the third or later refinement. The user is struggling to find a match. Consider suggesting recipes that are significantly different from all previous suggestions. It may be time to ask clarifying questions about what the user is really looking for.\n';
+  }
+
+  return context;
 }

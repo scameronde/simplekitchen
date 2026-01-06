@@ -10,9 +10,9 @@ current-task: PLAN-001
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase4-Feedback-Refinement.md`
 
-**Current Task**: PLAN-003
+**Current Task**: PLAN-004
 
-**Completed Tasks**: PLAN-001, PLAN-002
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
 
 ---
 
@@ -20,7 +20,7 @@ current-task: PLAN-001
 
 - [x] PLAN-001: Extend ConversationSession type with refinementCount and turnsInCurrentState
 - [x] PLAN-002: Add rejection tracking to session-manager
-- [ ] PLAN-003: Add buildRefinementContext to prompts.ts
+- [x] PLAN-003: Add buildRefinementContext to prompts.ts
 - [ ] PLAN-004: Extend recipe-ranker to exclude rejected recipes
 - [ ] PLAN-005: Add processRefinement to conversation-service
 - [ ] PLAN-006: Add IPC handlers for rejection and refinement
@@ -130,6 +130,15 @@ npm run dev
 - Updated updateSessionState() to reset turnsInCurrentState on state transitions
 - Fixed all test files: conversation-service.test.ts, recipe-ranker.test.ts, conversation-handlers.test.ts
 - All type errors resolved - typecheck and lint pass ✅
+
+### PLAN-003 (Complete)
+
+- Added `buildRefinementContext()` function to prompts.ts (line 258-351)
+- Updated `buildRankingPrompt()` to accept optional session parameter
+- Implemented intelligent rejection pattern detection for common ingredients
+- Added strategy text based on refinementCount (1st, 2nd, 3rd+ refinement)
+- Refinement context automatically injected when session has rejected recipes
+- All type checking and linting passes ✅
 
 ---
 
