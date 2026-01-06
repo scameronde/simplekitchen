@@ -7,7 +7,10 @@ import {
   updateUserContext,
   abandonSession,
 } from '../conversation/session-manager.js';
-import { processConversationTurn } from '../conversation/conversation-service.js';
+import {
+  processConversationTurn,
+  transitionToSuggesting,
+} from '../conversation/conversation-service.js';
 
 /**
  * Validates the sender of an IPC message for security.
@@ -23,8 +26,8 @@ function validateSender(frame: WebFrameMain): boolean {
 
 /**
  * Registers IPC handlers for conversation decision support.
- * Handles conversation:start, conversation:sendMessage, and conversation:abandon channels
- * with security validation.
+ * Handles conversation:start, conversation:sendMessage, conversation:get-suggestions,
+ * and conversation:abandon channels with security validation.
  */
 export function registerConversationHandlers(): void {
   ipcMain.handle('conversation:start', async event => {
@@ -80,5 +83,26 @@ export function registerConversationHandlers(): void {
 
     abandonSession(sessionId);
     return { success: true };
+  });
+
+  ipcMain.handle('conversation:get-suggestions', async (event, sessionId: string) => {
+    if (!event.senderFrame || !validateSender(event.senderFrame)) {
+      return { success: false, error: 'Unauthorized IPC sender' };
+    }
+
+    const session = getSession(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not found' };
+    }
+
+    try {
+      const result = await transitionToSuggesting(sessionId);
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+      };
+    }
   });
 }

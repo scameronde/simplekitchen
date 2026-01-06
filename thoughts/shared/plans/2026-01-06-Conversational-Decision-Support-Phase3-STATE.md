@@ -10,9 +10,9 @@ current-task: PLAN-002
 
 **Plan**: `thoughts/shared/plans/2026-01-06-Conversational-Decision-Support-Phase3-Recipe-Suggestion.md`
 
-**Current Task**: PLAN-009
+**Current Task**: PLAN-010
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006, PLAN-007, PLAN-008, PLAN-009
 
 ---
 
@@ -26,7 +26,7 @@ current-task: PLAN-002
 - [x] PLAN-006: Extend session-manager.ts with state update functions
 - [x] PLAN-007: Create RecipeSuggestionCard component
 - [x] PLAN-008: Update ConversationPage to handle suggestions
-- [ ] PLAN-009: Add IPC handler for fetching suggestions
+- [x] PLAN-009: Add IPC handler for fetching suggestions
 - [ ] PLAN-010: Update shared types for suggestions
 - [ ] PLAN-011: Write unit tests for recipe-ranker
 - [ ] PLAN-012: Write integration tests for suggestion flow
@@ -109,6 +109,17 @@ npm test RecipeSuggestionCard.test.tsx
 - Loading skeleton displays while fetching recipe data
 - Button handlers are placeholder implementations (console.log) for Phase 4/5
 - Backwards compatible with messages without suggestions
+- Verification: Type checking and linting passed ✅
+
+### PLAN-009 Notes (2026-01-06)
+
+- Added IPC handler 'conversation:get-suggestions' to conversation-handlers.ts
+- Imported transitionToSuggesting from conversation-service
+- Implemented security validation using existing validateSender pattern
+- Added session validation before processing
+- Wrapped business logic in try-catch for error handling
+- Returns structured SuggestionResult type (success/error)
+- Follows exact same pattern as existing conversation:sendMessage handler
 - Verification: Type checking and linting passed ✅
 
 ## Blockers / Issues
