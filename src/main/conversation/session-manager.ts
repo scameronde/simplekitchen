@@ -4,7 +4,12 @@
  * Manages active conversation sessions with automatic cleanup of stale sessions.
  */
 
-import type { ConversationSession, ConversationMessage } from '../../shared/types/conversation.js';
+import type {
+  ConversationSession,
+  ConversationMessage,
+  ConversationState,
+  UserContext,
+} from '../../shared/types/conversation.js';
 import { randomUUID } from 'crypto';
 
 // In-memory session storage (Map<sessionId, ConversationSession>)
@@ -54,6 +59,36 @@ export function updateSessionMessages(sessionId: string, message: ConversationMe
 
   session.messages.push(message);
   session.turnCount += 1;
+  session.lastActivity = new Date();
+}
+
+/**
+ * Updates the state of a conversation session.
+ * Transitions session through workflow states (gathering → suggesting → refining → confirmed/abandoned).
+ * @param sessionId - The session ID to update
+ * @param newState - The new conversation state
+ * @throws Error if session not found
+ */
+export function updateSessionState(sessionId: string, newState: ConversationState): void {
+  const session = activeSessions.get(sessionId);
+  if (!session) throw new Error(`Session ${sessionId} not found`);
+
+  session.state = newState;
+  session.lastActivity = new Date();
+}
+
+/**
+ * Updates the user context for a conversation session.
+ * Merges new context data (e.g., energyLevel, availableTime) with existing context.
+ * @param sessionId - The session ID to update
+ * @param contextUpdates - Partial context fields to merge
+ * @throws Error if session not found
+ */
+export function updateUserContext(sessionId: string, contextUpdates: Partial<UserContext>): void {
+  const session = activeSessions.get(sessionId);
+  if (!session) throw new Error(`Session ${sessionId} not found`);
+
+  session.userContext = { ...session.userContext, ...contextUpdates };
   session.lastActivity = new Date();
 }
 
