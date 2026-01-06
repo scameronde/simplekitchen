@@ -93,6 +93,21 @@ export function updateUserContext(sessionId: string, contextUpdates: Partial<Use
 }
 
 /**
+ * Updates the suggested recipes for a conversation session.
+ * Replaces the suggestedRecipes array with the provided recipe IDs.
+ * @param sessionId - The session ID to update
+ * @param recipeIds - Array of recipe IDs to set as suggested
+ * @throws Error if session not found
+ */
+export function updateSessionSuggestedRecipes(sessionId: string, recipeIds: string[]): void {
+  const session = activeSessions.get(sessionId);
+  if (!session) throw new Error(`Session ${sessionId} not found`);
+
+  session.suggestedRecipes = recipeIds;
+  session.lastActivity = new Date();
+}
+
+/**
  * Deletes a session from active sessions.
  * Used when user explicitly abandons conversation or confirms recipe selection.
  * @param sessionId - The session ID to abandon

@@ -6,11 +6,18 @@
 
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { getSession, updateSessionMessages } from './session-manager.js';
+import {
+  getSession,
+  updateSessionMessages,
+  updateSessionState,
+  updateSessionSuggestedRecipes,
+} from './session-manager.js';
 import { getDietaryProfile } from '../database/dal/dietary-profile.js';
 import { GATHERING_SYSTEM_PROMPT, buildConversationPrompt } from './prompts.js';
 import { ConversationTurnSchema } from './conversation-schema.js';
 import type { ConversationTurnOutput } from './conversation-schema.js';
+import { getRankedSuggestions } from './recipe-ranker.js';
+import type { RecipeSuggestionOutput } from './ranking-schema.js';
 
 // Lazy-initialize OpenAI client to avoid errors when API key is not set
 // This allows the app to start even without an API key configured
@@ -30,6 +37,16 @@ function getOpenAIClient(): OpenAI {
     });
   }
   return openai;
+}
+
+/**
+ * Result type for transition to suggesting state.
+ */
+export interface SuggestionResult {
+  success: boolean;
+  suggestions?: RecipeSuggestionOutput;
+  aiMessage?: string;
+  error?: string;
 }
 
 /**
@@ -102,6 +119,62 @@ export async function processConversationTurn(
       extractedContext: {},
       shouldTransition: true,
       reasoning: 'AI service unavailable',
+    };
+  }
+}
+
+/**
+ * Transitions a session from gathering to suggesting state.
+ * Verifies required context, fetches ranked suggestions, and updates session.
+ *
+ * @param sessionId - The session ID to transition
+ * @returns Result with suggestions and AI message, or error
+ */
+export async function transitionToSuggesting(sessionId: string): Promise<SuggestionResult> {
+  try {
+    // Step 1: Get session
+    const session = getSession(sessionId);
+    if (!session) {
+      throw new Error(`Session ${sessionId} not found`);
+    }
+
+    // Step 2: Verify required context
+    if (
+      session.userContext.energyLevel === undefined ||
+      session.userContext.availableTime === undefined
+    ) {
+      throw new Error('Missing required context (energyLevel and availableTime)');
+    }
+
+    // Step 3: Update session state to suggesting
+    updateSessionState(sessionId, 'suggesting');
+
+    // Step 4: Get ranked suggestions
+    const result = await getRankedSuggestions(sessionId);
+
+    // Step 5: Extract recipe IDs
+    const recipeIds = result.suggestions.map(suggestion => suggestion.recipeId);
+
+    // Step 6: Update session with suggested recipes
+    updateSessionSuggestedRecipes(sessionId, recipeIds);
+
+    // Step 7: Build AI message
+    const aiMessage = "Great! Based on your context, here are some recipes I think you'll love:";
+
+    // Step 8: Return success result
+    return {
+      success: true,
+      suggestions: result,
+      aiMessage,
+    };
+  } catch (error) {
+    // Log error for debugging
+    console.error('Error in transitionToSuggesting:', error);
+
+    // Return error result
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
