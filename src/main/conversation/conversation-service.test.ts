@@ -590,3 +590,258 @@ describe('transitionToSuggesting', () => {
     expect(firstSuggestion?.reasoning).toBe('Perfect for low energy, quick cook time');
   });
 });
+
+describe('processRefinement Integration', () => {
+  // Import real modules for integration testing
+  let realSessionManager: typeof import('./session-manager.js');
+  let realProcessRefinement: typeof import('./conversation-service.js').processRefinement;
+  let realCreateRecipe: typeof import('../database/dal/recipes.js').createRecipe;
+  let runMigrations: typeof import('../database/index.js').runMigrations;
+  let closeDatabase: typeof import('../database/index.js').closeDatabase;
+
+  beforeEach(async () => {
+    // Reset module cache to ensure all modules share the same state
+    vi.resetModules();
+
+    // Unmock session-manager and dietary-profile for integration tests
+    vi.doUnmock('./session-manager.js');
+    vi.doUnmock('../database/dal/dietary-profile.js');
+    vi.doUnmock('../database/dal/recipes.js');
+    vi.doUnmock('../database/index.js');
+
+    // Dynamically import real modules
+    realSessionManager = await import('./session-manager.js');
+    const conversationService = await import('./conversation-service.js');
+    realProcessRefinement = conversationService.processRefinement;
+    const recipesDAL = await import('../database/dal/recipes.js');
+    realCreateRecipe = recipesDAL.createRecipe;
+    const dbModule = await import('../database/index.js');
+    runMigrations = dbModule.runMigrations;
+    closeDatabase = dbModule.closeDatabase;
+
+    // Set up real database (migration creates dietary profile automatically)
+    runMigrations();
+
+    // Set dummy API key for OpenAI client
+    process.env.OPENAI_API_KEY = 'test-api-key';
+
+    // Create test recipes in database
+    await realCreateRecipe({
+      title: 'Quick Pasta',
+      cookingTimeMinutes: 20,
+      prepTimeMinutes: 5,
+      cookwareType: 'one-pot',
+      servings: 2,
+      dietaryTags: ['vegetarian'],
+      seasonality: ['any'],
+      sourceType: 'manual',
+      instructions: 'Cook pasta, add sauce',
+      ingredients: [
+        {
+          name: 'pasta',
+          quantity: 200,
+          unit: 'g',
+          dietaryProperties: ['none'],
+          optional: false,
+          orderIndex: 1,
+        },
+      ],
+    });
+
+    await realCreateRecipe({
+      title: 'Simple Salad',
+      cookingTimeMinutes: 10,
+      prepTimeMinutes: 5,
+      cookwareType: 'one-pot',
+      servings: 2,
+      dietaryTags: ['vegan', 'gluten-free'],
+      seasonality: ['any'],
+      sourceType: 'manual',
+      instructions: 'Mix ingredients',
+      ingredients: [
+        {
+          name: 'lettuce',
+          quantity: 100,
+          unit: 'g',
+          dietaryProperties: ['none'],
+          optional: false,
+          orderIndex: 1,
+        },
+      ],
+    });
+
+    await realCreateRecipe({
+      title: 'Fast Stir Fry',
+      cookingTimeMinutes: 25,
+      prepTimeMinutes: 10,
+      cookwareType: 'one-pan',
+      servings: 2,
+      dietaryTags: ['gluten-free'],
+      seasonality: ['any'],
+      sourceType: 'manual',
+      instructions: 'Stir fry vegetables',
+      ingredients: [
+        {
+          name: 'vegetables',
+          quantity: 300,
+          unit: 'g',
+          dietaryProperties: ['none'],
+          optional: false,
+          orderIndex: 1,
+        },
+      ],
+    });
+
+    await realCreateRecipe({
+      title: 'Easy Soup',
+      cookingTimeMinutes: 15,
+      prepTimeMinutes: 5,
+      cookwareType: 'one-pot',
+      servings: 2,
+      dietaryTags: ['vegan'],
+      seasonality: ['any'],
+      sourceType: 'manual',
+      instructions: 'Heat and serve',
+      ingredients: [
+        {
+          name: 'broth',
+          quantity: 500,
+          unit: 'ml',
+          dietaryProperties: ['none'],
+          optional: false,
+          orderIndex: 1,
+        },
+      ],
+    });
+
+    // Mock OpenAI parse to return ranked recipes
+    hoistedMockParse.mockResolvedValue({
+      choices: [
+        {
+          message: {
+            parsed: {
+              suggestions: [
+                {
+                  recipeId: 'recipe-2',
+                  relevanceScore: 90,
+                  reasoning: 'Fresh alternative, very easy',
+                  matchedFactors: ['energy-level'],
+                },
+                {
+                  recipeId: 'recipe-3',
+                  relevanceScore: 80,
+                  reasoning: 'Quick and nutritious',
+                  matchedFactors: ['cooking-time'],
+                },
+                {
+                  recipeId: 'recipe-4',
+                  relevanceScore: 75,
+                  reasoning: 'Simple and comforting',
+                  matchedFactors: ['energy-level'],
+                },
+              ],
+            },
+          },
+        },
+      ],
+    });
+  });
+
+  afterAll(() => {
+    closeDatabase();
+  });
+
+  it('should successfully refine with rejected recipes', async () => {
+    // Create session with complete context
+    const sessionId = await realSessionManager.createSession();
+    realSessionManager.updateUserContext(sessionId, {
+      energyLevel: 'low',
+      availableTime: 30,
+    });
+    realSessionManager.updateSessionState(sessionId, 'suggesting');
+    realSessionManager.addRejectedRecipe(sessionId, 'recipe-1', 'Too complex');
+
+    // Call processRefinement
+    const result = await realProcessRefinement(sessionId);
+
+    // Verify success
+    expect(result.success).toBe(true);
+    expect(result.suggestions).toBeDefined();
+    expect(result.aiMessage).toContain('different options');
+  });
+
+  it('should return escalation message after 3+ refinements', async () => {
+    // Create session with complete context
+    const sessionId = await realSessionManager.createSession();
+    realSessionManager.updateUserContext(sessionId, {
+      energyLevel: 'low',
+      availableTime: 30,
+    });
+    realSessionManager.updateSessionState(sessionId, 'suggesting');
+
+    // Add 4 rejected recipes to trigger escalation (refinementCount > 3)
+    realSessionManager.addRejectedRecipe(sessionId, 'recipe-1', 'Not interested');
+    realSessionManager.addRejectedRecipe(sessionId, 'recipe-2', 'Not interested');
+    realSessionManager.addRejectedRecipe(sessionId, 'recipe-3', 'Not interested');
+    realSessionManager.addRejectedRecipe(sessionId, 'recipe-4', 'Not interested');
+
+    // Call processRefinement
+    const result = await realProcessRefinement(sessionId);
+
+    // Verify escalation response
+    expect(result.success).toBe(true);
+    expect(result.suggestions).toBeUndefined();
+    expect(result.aiMessage).toContain('different approach');
+    expect(result.aiMessage).toContain('Browse by Category');
+  });
+
+  it('should return error if not in suggesting or refining state', async () => {
+    // Create session (default state is 'gathering')
+    const sessionId = await realSessionManager.createSession();
+
+    // Call processRefinement
+    const result = await realProcessRefinement(sessionId);
+
+    // Verify error
+    expect(result.success).toBe(false);
+    expect(result.error).toContain('Cannot refine from state');
+  });
+
+  it('should transition state from suggesting to refining', async () => {
+    // Create session with complete context
+    const sessionId = await realSessionManager.createSession();
+    realSessionManager.updateUserContext(sessionId, {
+      energyLevel: 'low',
+      availableTime: 30,
+    });
+    realSessionManager.updateSessionState(sessionId, 'suggesting');
+    realSessionManager.addRejectedRecipe(sessionId, 'recipe-1', 'Not what I want');
+
+    // Mock OpenAI to return suggestions
+    hoistedMockParse.mockResolvedValue({
+      choices: [
+        {
+          message: {
+            parsed: {
+              suggestions: [
+                {
+                  recipeId: 'recipe-2',
+                  relevanceScore: 90,
+                  reasoning: 'Different option',
+                  matchedFactors: ['energy-level'],
+                },
+              ],
+            },
+          },
+        },
+      ],
+    });
+
+    // Call processRefinement
+    await realProcessRefinement(sessionId);
+
+    // Verify state changed to 'refining'
+    const session = realSessionManager.getSession(sessionId);
+    expect(session?.state).toBe('refining');
+  });
+});
