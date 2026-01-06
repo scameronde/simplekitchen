@@ -4,8 +4,8 @@
  * Provides system prompts and prompt builders for gathering user context.
  */
 
-import type { ConversationSession } from '../../shared/types/conversation.js';
-import type { DietaryProfile } from '../../shared/types/recipe.js';
+import type { ConversationSession, UserContext } from '../../shared/types/conversation.js';
+import type { DietaryProfile, Recipe } from '../../shared/types/recipe.js';
 
 /**
  * System prompt for gathering user context through supportive conversation.
@@ -161,6 +161,86 @@ export function buildConversationPrompt(
   recentMessages.forEach(msg => {
     prompt += `${msg.role === 'user' ? 'User' : 'AI'}: ${msg.content}\n`;
   });
+
+  return prompt;
+}
+
+/**
+ * Build a prompt for AI recipe ranking that includes user context and candidate recipes.
+ * Formats user constraints, dietary restrictions, and recipe details into a structured
+ * prompt for the AI to evaluate and rank recipes.
+ *
+ * @param userContext - User's current cooking context (energy, time, mood, shopping)
+ * @param candidates - Array of candidate recipes to rank (limited to 20 max)
+ * @param dietaryProfile - User's dietary restrictions and preferences
+ * @param alreadySuggested - Recipe IDs already suggested in this session (to deprioritize)
+ * @returns Formatted prompt string with context and candidates as JSON
+ */
+export function buildRankingPrompt(
+  userContext: UserContext,
+  candidates: Recipe[],
+  dietaryProfile: DietaryProfile,
+  alreadySuggested: string[]
+): string {
+  // Limit candidates to 20 recipes max to stay under 8,000 token budget
+  const limitedCandidates = candidates.slice(0, 20);
+
+  // Build user context section
+  let prompt = `# User Context\n`;
+  prompt += `- Energy Level: ${userContext.energyLevel || 'not specified'}\n`;
+  prompt += `- Available Time: ${userContext.availableTime ? `${userContext.availableTime} minutes` : 'not specified'}\n`;
+  prompt += `- Mood/Cravings: ${userContext.mood || 'not specified'}\n`;
+  prompt += `- Can Shop: ${userContext.canShop !== undefined ? (userContext.canShop ? 'yes' : 'no') : 'not specified'}\n\n`;
+
+  // Build dietary restrictions section
+  const restrictions = dietaryProfile.hardRestrictions.join(', ') || 'None';
+  const preferences = dietaryProfile.preferences.join(', ') || 'None';
+  prompt += `# Dietary Profile\n`;
+  prompt += `- Hard Restrictions: ${restrictions}\n`;
+  prompt += `- Preferences: ${preferences}\n`;
+  if (dietaryProfile.explicitExclusions.length > 0) {
+    prompt += `- Explicit Exclusions: ${dietaryProfile.explicitExclusions.join(', ')}\n`;
+  }
+  if (dietaryProfile.explicitInclusions.length > 0) {
+    prompt += `- Explicit Inclusions: ${dietaryProfile.explicitInclusions.join(', ')}\n`;
+  }
+  prompt += '\n';
+
+  // Build already suggested section (if any)
+  if (alreadySuggested.length > 0) {
+    prompt += `# Already Suggested in This Session\n`;
+    prompt += `The following recipe IDs have already been shown to the user in this session. Deprioritize them unless they are exceptionally good matches:\n`;
+    prompt += alreadySuggested.map(id => `- ${id}`).join('\n');
+    prompt += '\n\n';
+  }
+
+  // Build candidate recipes section as JSON
+  prompt += `# Candidate Recipes\n`;
+  prompt += `Evaluate and rank the following recipes. Each recipe is provided with key details for your analysis:\n\n`;
+
+  const candidateData = limitedCandidates.map(recipe => ({
+    recipeId: recipe.id,
+    title: recipe.title,
+    prepTimeMinutes: recipe.prepTimeMinutes,
+    cookingTimeMinutes: recipe.cookingTimeMinutes,
+    totalTimeMinutes: recipe.totalTimeMinutes,
+    cookwareType: recipe.cookwareType,
+    dietaryTags: recipe.dietaryTags,
+    seasonality: recipe.seasonality,
+    ingredients: recipe.ingredients.map(ing => ({
+      name: ing.name,
+      quantity: ing.quantity,
+      unit: ing.unit,
+      optional: ing.optional,
+    })),
+  }));
+
+  prompt += '```json\n';
+  prompt += JSON.stringify(candidateData, null, 2);
+  prompt += '\n```\n\n';
+
+  prompt += `# Your Task\n`;
+  prompt += `Rank ALL ${limitedCandidates.length} recipes based on how well they match the user's context. Return a JSON array with rankings following the format specified in the system prompt.\n`;
 
   return prompt;
 }
