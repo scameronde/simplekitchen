@@ -6,6 +6,7 @@
 - **User requirement**: Total time (prep + cook) must be 0-60 minutes, not just cooking time
 - **User clarification**: UI slider should start at 0, not 15
 - **Rationale**: Original 30-45 minute constraint was too restrictive for practical use
+- **Architecture Decision Record**: See [`2026-01-07-ADR-Total-Time-Constraint.md`](./2026-01-07-ADR-Total-Time-Constraint.md) for detailed context and rationale
 
 ## Verified Current State
 
@@ -16,6 +17,7 @@
 **Evidence**: `src/main/validation/time-validator.ts:4-5, 18-38`
 
 **Excerpt**:
+
 ```typescript
 const MIN_COOKING_TIME = 0;
 const MAX_COOKING_TIME = 60;
@@ -48,6 +50,7 @@ if (cookingTime > MAX_COOKING_TIME) {
 **Evidence**: `src/main/database/migrations.ts:46-48`
 
 **Excerpt**:
+
 ```sql
 cooking_time_minutes INTEGER NOT NULL CHECK(cooking_time_minutes >= 0 AND cooking_time_minutes <= 60),
 prep_time_minutes INTEGER,
@@ -63,6 +66,7 @@ total_time_minutes INTEGER NOT NULL,
 **Evidence**: `src/main/database/dal/recipes.ts:39, 183-188`
 
 **Excerpt**:
+
 ```typescript
 // CREATE
 const totalTime = (input.prepTimeMinutes || 0) + input.cookingTimeMinutes;
@@ -83,6 +87,7 @@ if (input.prepTimeMinutes !== undefined) {
 **Evidence**: `src/shared/types/recipe.ts:96-98`, `src/main/database/dal/recipes.ts:124-128`
 
 **Excerpt**:
+
 ```typescript
 // Type definition
 export interface RecipeFilter {
@@ -109,6 +114,7 @@ if (filter.cookingTimeMax !== undefined) {
 **Evidence**: `src/renderer/components/RecipeList/FilterControls.tsx:23-24, 88-103`
 
 **Excerpt**:
+
 ```typescript
 const [minTime, setMinTime] = useState(initialFilters?.cookingTimeMin ?? 30);
 const [maxTime, setMaxTime] = useState(initialFilters?.cookingTimeMax ?? 45);
@@ -126,6 +132,7 @@ const [maxTime, setMaxTime] = useState(initialFilters?.cookingTimeMax ?? 45);
 **Evidence**: `src/main/conversation/recipe-ranker.ts:60-65`
 
 **Excerpt**:
+
 ```typescript
 const filter: RecipeFilter = {
   dietaryTags:
@@ -144,6 +151,7 @@ const filter: RecipeFilter = {
 **Evidence**: `src/main/database/benchmark-suite.ts:42, 50`
 
 **Excerpt**:
+
 ```typescript
 const cookingTime = 30 + (index % 16); // Range: 30-45 minutes
 prepTimeMinutes: 10 + (index % 10), // Range: 10-19 minutes
@@ -158,6 +166,7 @@ prepTimeMinutes: 10 + (index % 10), // Range: 10-19 minutes
 **Evidence**: `src/main/database/seed-data.ts:7-8, 53-54, 107-108`
 
 **Excerpt**:
+
 ```typescript
 // Recipe 1: prep=15, cook=30, total=45
 cookingTimeMinutes: 30,
@@ -207,6 +216,7 @@ Database Layer: CHECK constraint enforces total_time_minutes ∈ [0, 60]
 ### Filter Semantics Change
 
 **Before**: Filter by cooking time only (semantic mismatch)
+
 ```
 User says "I have 30 minutes"
   → Filter: cookingTimeMax = 30
@@ -215,6 +225,7 @@ User says "I have 30 minutes"
 ```
 
 **After**: Filter by total time (correct semantics)
+
 ```
 User says "I have 30 minutes"
   → Filter: totalTimeMax = 30
@@ -231,6 +242,7 @@ User says "I have 30 minutes"
 **File**: `src/main/validation/time-validator.ts`
 
 **Instruction**:
+
 1. Rename constants: `MIN_COOKING_TIME` → `MIN_TOTAL_TIME`, `MAX_COOKING_TIME` → `MAX_TOTAL_TIME`
 2. Update `validateTimeConstraints()` function:
    - After line 18 (cookingTime assignment), calculate `totalTime = (recipeInput.prepTimeMinutes || 0) + cookingTime`
@@ -242,6 +254,7 @@ User says "I have 30 minutes"
 4. Add JSDoc comment explaining total time = prep + cook
 
 **Pseudocode**:
+
 ```typescript
 const MIN_TOTAL_TIME = 0;
 const MAX_TOTAL_TIME = 60;
@@ -285,6 +298,7 @@ export function validateTimeConstraints(
 **Evidence**: `src/main/validation/time-validator.ts:4-49` (entire file needs update)
 
 **Done When**:
+
 - Constants renamed to MIN_TOTAL_TIME/MAX_TOTAL_TIME
 - Validation checks total time instead of cooking time only
 - Error messages reference "total time (prep + cook)"
@@ -299,6 +313,7 @@ export function validateTimeConstraints(
 **File**: `src/main/validation/time-validator.test.ts`
 
 **Instruction**:
+
 1. Update test cases to cover total time scenarios:
    - Valid: prep=0, cook=0, total=0
    - Valid: prep=10, cook=50, total=60
@@ -311,6 +326,7 @@ export function validateTimeConstraints(
 3. Remove or update tests checking cooking time in isolation (no longer relevant)
 
 **Pseudocode**:
+
 ```typescript
 it('should accept valid total time (prep + cook = 60)', () => {
   const recipe = { ...baseRecipe, prepTimeMinutes: 10, cookingTimeMinutes: 50 };
@@ -331,6 +347,7 @@ it('should reject total time above 60 minutes', () => {
 **Evidence**: `src/main/validation/time-validator.test.ts:12-62` (test cases need update)
 
 **Done When**:
+
 - All tests updated to validate total time scenarios
 - Tests check for 'totalTimeMinutes' field in errors
 - `npm test src/main/validation/time-validator.test.ts` passes
@@ -344,6 +361,7 @@ it('should reject total time above 60 minutes', () => {
 **File**: `src/main/database/migrations.ts`
 
 **Instruction**:
+
 1. Locate the CREATE TABLE statement for recipes (around line 43)
 2. Locate the total_time_minutes column definition (line 48)
 3. Add CHECK constraint: `total_time_minutes INTEGER NOT NULL CHECK(total_time_minutes >= 0 AND total_time_minutes <= 60)`
@@ -352,6 +370,7 @@ it('should reject total time above 60 minutes', () => {
    - On migration failure, user must manually fix data or regenerate database
 
 **Interfaces / Pseudocode**:
+
 ```sql
 CREATE TABLE recipes (
   id TEXT PRIMARY KEY,
@@ -368,6 +387,7 @@ CREATE TABLE recipes (
 **Evidence**: `src/main/database/migrations.ts:46-48` (total_time_minutes column definition)
 
 **Done When**:
+
 - CHECK constraint added to total_time_minutes column
 - Comment added explaining constraint
 - `npm run typecheck` passes
@@ -382,12 +402,14 @@ CREATE TABLE recipes (
 **File**: `src/shared/types/recipe.ts`
 
 **Instruction**:
+
 1. Locate RecipeFilter interface (line 95-103)
 2. Replace `cookingTimeMin?: number;` with `totalTimeMin?: number;`
 3. Replace `cookingTimeMax?: number;` with `totalTimeMax?: number;`
 4. Add JSDoc comment: `@remarks totalTimeMin/totalTimeMax filter on total_time_minutes (prep + cook) column`
 
 **Interfaces / Pseudocode**:
+
 ```typescript
 /**
  * Recipe filter criteria
@@ -406,6 +428,7 @@ export interface RecipeFilter {
 **Evidence**: `src/shared/types/recipe.ts:95-103` (RecipeFilter interface)
 
 **Done When**:
+
 - cookingTimeMin/Max replaced with totalTimeMin/Max
 - JSDoc comment added
 - `npm run typecheck` shows errors in consuming files (expected; will fix in next tasks)
@@ -419,12 +442,14 @@ export interface RecipeFilter {
 **File**: `src/main/database/dal/recipes.ts`
 
 **Instruction**:
+
 1. Locate getRecipes() function filter application (lines 124-128)
 2. Replace `filter.cookingTimeMin` check with `filter.totalTimeMin`, query `total_time_minutes` column
 3. Replace `filter.cookingTimeMax` check with `filter.totalTimeMax`, query `total_time_minutes` column
 4. Update variable names for clarity: `filter.totalTimeMin` → query on `'total_time_minutes'`
 
 **Pseudocode**:
+
 ```typescript
 // Apply filters
 if (filter) {
@@ -441,6 +466,7 @@ if (filter) {
 **Evidence**: `src/main/database/dal/recipes.ts:124-128` (filter application)
 
 **Done When**:
+
 - DAL queries total_time_minutes instead of cooking_time_minutes
 - `npm run typecheck` passes (after UI and conversation updates)
 
@@ -453,6 +479,7 @@ if (filter) {
 **File**: `src/renderer/components/RecipeList/FilterControls.tsx`
 
 **Instruction**:
+
 1. Update state variable initialization (lines 23-24):
    - Replace `initialFilters?.cookingTimeMin ?? 30` with `initialFilters?.totalTimeMin ?? 30`
    - Replace `initialFilters?.cookingTimeMax ?? 45` with `initialFilters?.totalTimeMax ?? 45`
@@ -467,6 +494,7 @@ if (filter) {
 5. Update onFilterChange call to use totalTimeMin/totalTimeMax
 
 **Pseudocode**:
+
 ```typescript
 const [minTime, setMinTime] = useState(initialFilters?.totalTimeMin ?? 30);
 const [maxTime, setMaxTime] = useState(initialFilters?.totalTimeMax ?? 45);
@@ -491,6 +519,7 @@ const handleClearFilters = () => {
 **Evidence**: `src/renderer/components/RecipeList/FilterControls.tsx:23-24, 66-72, 88-103`
 
 **Done When**:
+
 - Slider min changed from 15 to 0
 - Filter fields renamed to totalTimeMin/totalTimeMax
 - Label updated to "Total Time (Prep + Cook)"
@@ -505,11 +534,13 @@ const handleClearFilters = () => {
 **File**: `src/renderer/pages/RecipeListPage.tsx`
 
 **Instruction**:
+
 1. Locate currentFilters state initialization (lines 15-16)
 2. Replace `cookingTimeMin: 30` with `totalTimeMin: 30`
 3. Replace `cookingTimeMax: 45` with `totalTimeMax: 45`
 
 **Pseudocode**:
+
 ```typescript
 const [currentFilters, setCurrentFilters] = useState<FilterState>({
   totalTimeMin: 30,
@@ -522,6 +553,7 @@ const [currentFilters, setCurrentFilters] = useState<FilterState>({
 **Evidence**: `src/renderer/pages/RecipeListPage.tsx:15-16`
 
 **Done When**:
+
 - Filter initialization uses totalTimeMin/totalTimeMax
 - `npm run typecheck` passes
 
@@ -534,11 +566,13 @@ const [currentFilters, setCurrentFilters] = useState<FilterState>({
 **File**: `src/main/conversation/recipe-ranker.ts`
 
 **Instruction**:
+
 1. Locate filter construction in rankRecipes() function (line 63)
 2. Replace `cookingTimeMax: userContext.availableTime` with `totalTimeMax: userContext.availableTime`
 3. Update comment (line 64) to clarify filtering by total time, not just cooking time
 
 **Pseudocode**:
+
 ```typescript
 const filter: RecipeFilter = {
   dietaryTags:
@@ -551,6 +585,7 @@ const filter: RecipeFilter = {
 **Evidence**: `src/main/conversation/recipe-ranker.ts:60-65`
 
 **Done When**:
+
 - Conversation system filters by total time
 - Comment updated
 - `npm run typecheck` passes
@@ -564,6 +599,7 @@ const filter: RecipeFilter = {
 **File**: `src/main/database/benchmark-suite.ts`
 
 **Instruction**:
+
 1. Locate generateRecipe() function (around line 42-50)
 2. Update prepTimeMinutes calculation to ensure prep + cook ≤ 60:
    - Current: `prepTimeMinutes: 10 + (index % 10)` yields 10-19
@@ -575,6 +611,7 @@ const filter: RecipeFilter = {
    - New maximum total: 15 + 45 = 60 ✓
 
 **Pseudocode**:
+
 ```typescript
 const cookingTime = 30 + (index % 16); // Range: 30-45 minutes
 const prepTime = index % 16; // Range: 0-15 minutes (ensures total ≤ 60)
@@ -590,6 +627,7 @@ return {
 **Evidence**: `src/main/database/benchmark-suite.ts:42, 50`
 
 **Done When**:
+
 - Benchmark recipes have total time ≤ 60 minutes
 - `npm run benchmark` completes without validation errors
 
@@ -602,12 +640,14 @@ return {
 **File**: `src/main/database/benchmark-suite.ts`
 
 **Instruction**:
+
 1. Locate benchmark query definitions using RecipeFilter (around lines 144-154)
 2. Replace `cookingTimeMin: 30` with `totalTimeMin: 30`
 3. Replace `cookingTimeMax: 45` with `totalTimeMax: 45`
 4. Update benchmark name from "Query with Time Filter (30-45 min)" to "Query with Total Time Filter (30-45 min)"
 
 **Pseudocode**:
+
 ```typescript
 const filter: RecipeFilter = {
   totalTimeMin: 30,
@@ -623,6 +663,7 @@ return {
 **Evidence**: `src/main/database/benchmark-suite.ts:144-154`
 
 **Done When**:
+
 - Benchmark queries use totalTimeMin/totalTimeMax
 - Benchmark names updated
 - `npm run benchmark` completes successfully
@@ -633,12 +674,14 @@ return {
 
 **Change Type**: modify
 
-**Files**: 
+**Files**:
+
 - `src/main/database/dal/recipes.test.ts`
 - `src/main/conversation/recipe-ranker.test.ts` (if exists)
 - Any other test files importing RecipeFilter
 
 **Instruction**:
+
 1. Search all test files for usages of `cookingTimeMin` or `cookingTimeMax`
 2. Replace with `totalTimeMin` and `totalTimeMax`
 3. Update test descriptions to reference "total time" instead of "cooking time"
@@ -647,6 +690,7 @@ return {
 **Evidence**: Use `grep -r "cookingTimeMin\|cookingTimeMax" src/main/ src/renderer/ --include="*.test.ts"` to find all usages
 
 **Done When**:
+
 - All test files updated
 - `npm run test:unit` passes
 
@@ -657,11 +701,13 @@ return {
 **Change Type**: modify
 
 **Files**:
+
 - `e2e/cross-feature-workflows.spec.ts`
 - `e2e/performance.spec.ts`
 - Any other E2E tests using time filters
 
 **Instruction**:
+
 1. Update performance tests (e2e/performance.spec.ts:59-70):
    - Update comments from "Time Filter Performance (30-40 minutes)" to "Total Time Filter Performance (30-40 minutes)"
    - Verify slider interactions still work with min=0
@@ -670,11 +716,13 @@ return {
    - Verify validation error tests still work (75-minute reject test at line 216-228)
 3. Check for any UI label assertions looking for "Cooking Time" text, update to "Total Time"
 
-**Evidence**: 
+**Evidence**:
+
 - `e2e/performance.spec.ts:59-70`
 - `e2e/cross-feature-workflows.spec.ts:240, 216-228`
 
 **Done When**:
+
 - All E2E tests updated
 - `npm run test:e2e` passes
 
@@ -687,6 +735,7 @@ return {
 **File**: `docs/user-guide.md`
 
 **Instruction**:
+
 1. Line 14: Update "Cooking Time" to "Total Time (Prep + Cook)" in field list
 2. Line 43: Update validation rules section:
    - Change "**Cooking Time**: 0-60 minutes" to "**Total Time**: 0-60 minutes (prep + cook combined)"
@@ -701,6 +750,7 @@ return {
 **Evidence**: `docs/user-guide.md:14, 43, 51, 53, 99-100`
 
 **Done When**:
+
 - All references updated from "cooking time" to "total time"
 - Clarification added that total = prep + cook
 - Documentation accurately reflects UI and validation
@@ -714,6 +764,7 @@ return {
 **File**: `docs/user-guide-manual-entry.md`
 
 **Instruction**:
+
 1. Apply same changes as PLAN-013 (user-guide.md) to this file
 2. Lines 12, 41, 49, 51: Update references to cooking time constraint
 3. Ensure examples clarify total time = prep + cook
@@ -721,6 +772,7 @@ return {
 **Evidence**: `docs/user-guide-manual-entry.md:12, 41, 49, 51`
 
 **Done When**:
+
 - Documentation matches user-guide.md updates
 - Total time constraint clearly explained
 
@@ -733,6 +785,7 @@ return {
 **File**: `docs/user-guide-web-import.md`
 
 **Instruction**:
+
 1. Line 154: Update error cause text:
    - Change "cooking time outside 0-60 minutes" to "total time (prep + cook) outside 0-60 minutes"
 2. Lines 158-159: Update resolution steps:
@@ -743,6 +796,7 @@ return {
 **Evidence**: `docs/user-guide-web-import.md:154, 158-159`
 
 **Done When**:
+
 - Web import documentation reflects total time constraint
 - Users understand imported recipes are validated on total time
 
@@ -755,8 +809,9 @@ return {
 **File**: `src/main/validation/README.md`
 
 **Instruction**:
+
 1. Line 38: Update constraint documentation:
-   - Change "**Maximum**: 60 minutes" 
+   - Change "**Maximum**: 60 minutes"
    - To: "**Total Time Constraint**: 0-60 minutes (prep + cook combined)"
 2. Add explanation that prepTimeMinutes is optional (nullable) and defaults to 0 for calculation
 3. Update any examples to show total time validation
@@ -764,6 +819,7 @@ return {
 **Evidence**: `src/main/validation/README.md:38`
 
 **Done When**:
+
 - README accurately documents total time constraint
 - Examples show prep + cook calculation
 
@@ -776,6 +832,7 @@ return {
 **File**: `src/main/database/README.md`
 
 **Instruction**:
+
 1. Lines 38, 45: Update constraints and indexes documentation:
    - Change "`cooking_time_minutes`: Must be 0-60 (spec requirement)"
    - To: "`total_time_minutes`: Must be 0-60 (total of prep + cook, spec requirement)"
@@ -785,6 +842,7 @@ return {
 **Evidence**: `src/main/database/README.md:38, 45`
 
 **Done When**:
+
 - Database documentation explains both cooking and total time constraints
 - Relationship between fields clarified
 
@@ -797,6 +855,7 @@ return {
 **File**: `thoughts/shared/plans/2026-01-02-Recipe-Collection-EPIC-COMPLETE.md`
 
 **Instruction**:
+
 1. Line 120: Update acceptance criteria AC-F5:
    - Change "✅ **AC-F5**: Time constraint (30-45 min) and cookware limit (1 item) enforcement working"
    - To: "✅ **AC-F5**: Time constraint (0-60 min total time) and cookware limit (1 item) enforcement working"
@@ -805,6 +864,7 @@ return {
 **Evidence**: `thoughts/shared/plans/2026-01-02-Recipe-Collection-EPIC-COMPLETE.md:120`
 
 **Done When**:
+
 - Epic documentation reflects current implementation
 - Discrepancy between original spec and current state documented
 
@@ -818,6 +878,7 @@ return {
 
 **Instruction**:
 Create an Architecture Decision Record documenting:
+
 1. **Context**: Original spec defined 30-45 minute cooking time constraint
 2. **Decision**: Expanded to 0-60 minute total time (prep + cook) constraint
 3. **Rationale**: 30-45 minutes too restrictive for practical use; total time is more meaningful than cooking time alone
@@ -829,37 +890,47 @@ Create an Architecture Decision Record documenting:
 6. **Status**: Accepted
 
 **Pseudocode**:
+
 ```markdown
 # ADR: Total Time Constraint (0-60 Minutes)
 
 ## Status
+
 Accepted - 2026-01-07
 
 ## Context
+
 Original specification (2025-12-25) defined cooking time constraint as 30-45 minutes...
 
 ## Decision
+
 Enforce 0-60 minute total time (prep + cook) constraint at validation and database levels...
 
 ## Rationale
+
 1. 30-45 minutes too restrictive for practical recipe variety
 2. Total time more meaningful than cooking time alone for user planning
 3. Allows quick recipes (15-20 min total) and longer recipes (50-60 min total)
 
 ## Consequences
+
 ### Positive
+
 - Greater recipe variety within constraint
 - Better user experience (filter by total time matches mental model)
 
 ### Negative
+
 - Breaking change to RecipeFilter API
 - All consuming code must be updated
 
 ## Implementation
+
 See: thoughts/shared/plans/2026-01-07-Total-Time-Constraint-Enforcement.md
 ```
 
 **Done When**:
+
 - ADR file created with complete context
 - Linked from main implementation plan
 
