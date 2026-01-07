@@ -34,8 +34,10 @@ SimpleKitchen implements **zero-false-negative** constraint validation through a
 
 ### Time Constraints
 
-- **Minimum**: 0 minutes
-- **Maximum**: 60 minutes
+- **Total Time Constraint**: 0-60 minutes (prep + cook combined)
+- **prepTimeMinutes**: Optional (nullable), defaults to 0 for calculation
+- **cookingTimeMinutes**: Required
+- **Validation**: `(prepTimeMinutes ?? 0) + cookingTimeMinutes` must be within 0-60 minutes
 - **Rationale**: Flexible time range to accommodate quick snacks to full meals
 
 ### Cookware Constraints
@@ -95,7 +97,7 @@ const profile = await getDietaryProfile();
 const dietaryErrors = await validateDietaryConstraints(recipeInput, profile);
 const timeErrors = validateTimeConstraints(recipeInput);
 
-const { min, max } = getTimeConstraints(); // { min: 0, max: 60 }
+const { min, max } = getTimeConstraints(); // { min: 0, max: 60 } - total time (prep + cook)
 ```
 
 ### Lookup Ingredient Properties
