@@ -1,7 +1,7 @@
 ---
 date: 2026-01-07
 status: in-progress
-current-task: PLAN-002
+current-task: PLAN-003
 priority: critical
 type: bugfix
 ---
@@ -10,16 +10,16 @@ type: bugfix
 
 **Plan**: `thoughts/shared/plans/2026-01-07-Fix-Conversation-Transition-Gap.md`
 
-**Current Task**: PLAN-002
+**Current Task**: PLAN-003
 
-**Completed Tasks**: PLAN-001
+**Completed Tasks**: PLAN-001, PLAN-002
 
 ---
 
 ## Task Checklist
 
 - [x] PLAN-001: Update IPC handler to return shouldTransition
-- [ ] PLAN-002: Update TypeScript type definition for sendMessage
+- [x] PLAN-002: Update TypeScript type definition for sendMessage
 - [ ] PLAN-003: Update ConversationPage to handle transition
 - [ ] PLAN-004: Add unit test for shouldTransition return
 - [ ] PLAN-005: Add component test for transition handling
@@ -74,7 +74,7 @@ npm run dev
 ### Technical Criteria
 
 - [x] `shouldTransition` flag returned from `conversation:sendMessage` IPC handler
-- [ ] TypeScript type definitions updated for `sendMessage` return type
+- [x] TypeScript type definitions updated for `sendMessage` return type
 - [ ] `ConversationPage.tsx` checks `shouldTransition` and calls `getSuggestions()`
 - [ ] Loading state displayed while fetching suggestions
 - [ ] Error handling for failed suggestion fetch
@@ -110,6 +110,12 @@ npm run dev
 - TypeScript compilation: PASSED
 - No adjacent edits needed
 - File: src/main/ipc/conversation-handlers.ts
+
+### PLAN-002 (Completed 2026-01-07)
+- Added `shouldTransition?: boolean` to sendMessage return type (line 17)
+- TypeScript compilation: PASSED
+- Type definition now matches IPC handler implementation
+- File: src/shared/types/electron.d.ts
 
 ---
 

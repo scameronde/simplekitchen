@@ -10,7 +10,13 @@ export interface ConversationAPI {
   sendMessage: (
     sessionId: string,
     message: string
-  ) => Promise<{ success: boolean; aiMessage?: string; timestamp?: Date; error?: string }>;
+  ) => Promise<{
+    success: boolean;
+    aiMessage?: string;
+    timestamp?: Date;
+    shouldTransition?: boolean;
+    error?: string;
+  }>;
   abandonSession: (sessionId: string) => Promise<{ success: boolean; error?: string }>;
   getSuggestions: (sessionId: string) => Promise<SuggestionResult>;
   rejectRecipe: (
