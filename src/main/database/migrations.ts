@@ -45,7 +45,8 @@ function migration001_initialSchema(): void {
       title TEXT NOT NULL,
       cooking_time_minutes INTEGER NOT NULL CHECK(cooking_time_minutes >= 0 AND cooking_time_minutes <= 60),
       prep_time_minutes INTEGER,
-      total_time_minutes INTEGER NOT NULL,
+      -- Total time (prep + cook) must be 0-60 minutes
+      total_time_minutes INTEGER NOT NULL CHECK(total_time_minutes >= 0 AND total_time_minutes <= 60),
       cookware_type TEXT NOT NULL CHECK(cookware_type IN ('one-pot', 'one-pan', 'oven')),
       servings INTEGER NOT NULL CHECK(servings = 2),
       dietary_tags TEXT NOT NULL DEFAULT '[]',
