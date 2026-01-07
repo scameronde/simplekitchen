@@ -1,7 +1,7 @@
 ---
 date: 2026-01-07
 status: in-progress
-current-task: PLAN-005
+current-task: PLAN-006
 priority: critical
 type: bugfix
 ---
@@ -10,9 +10,9 @@ type: bugfix
 
 **Plan**: `thoughts/shared/plans/2026-01-07-Fix-Conversation-Transition-Gap.md`
 
-**Current Task**: PLAN-005
+**Current Task**: PLAN-006
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005
 
 ---
 
@@ -22,7 +22,7 @@ type: bugfix
 - [x] PLAN-002: Update TypeScript type definition for sendMessage
 - [x] PLAN-003: Update ConversationPage to handle transition
 - [x] PLAN-004: Add unit test for shouldTransition return
-- [ ] PLAN-005: Add component test for transition handling
+- [x] PLAN-005: Add component test for transition handling
 - [ ] PLAN-006: Add integration test for full flow
 - [ ] PLAN-007: Add E2E test for user-visible behavior
 
@@ -84,9 +84,9 @@ npm run dev
 
 - [x] Unit test verifies `shouldTransition: true` returned when AI signals transition
 - [x] Unit test verifies `shouldTransition: false` returned when AI doesn't signal transition
-- [ ] Component test verifies `getSuggestions()` called when transition detected
-- [ ] Component test verifies NO fetch when `shouldTransition` is false
-- [ ] Component test verifies error handling for failed suggestion fetch
+- [x] Component test verifies `getSuggestions()` called when transition detected
+- [x] Component test verifies NO fetch when `shouldTransition` is false
+- [x] Component test verifies error handling for failed suggestion fetch
 - [ ] Integration test verifies full backend flow (conversation → transition → state change)
 - [ ] E2E test verifies user sees recipe cards after conversation
 - [ ] All existing tests still pass (no regressions)
@@ -130,6 +130,15 @@ npm run dev
 - Added assertion `expect(result.shouldTransition).toBe(true)` to transition test (line 187)
 - All tests passed: 10/10 tests passing
 - File: src/main/ipc/conversation-handlers.test.ts
+
+### PLAN-005 (Completed 2026-01-07)
+- Created new component test file with 3 comprehensive test cases
+- Added scrollIntoView mock to fix JSDOM compatibility (line 73-74)
+- Test 1: Verifies getSuggestions called when shouldTransition: true
+- Test 2: Verifies NO fetch when shouldTransition: false
+- Test 3: Verifies error handling for failed getSuggestions
+- All tests passed: 3/3 tests passing
+- File: src/renderer/pages/ConversationPage.test.tsx
 
 ---
 
