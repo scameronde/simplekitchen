@@ -74,6 +74,7 @@ export function registerConversationHandlers(): void {
         success: true,
         aiMessage: turnResult.aiMessage,
         timestamp: new Date(),
+        shouldTransition: turnResult.shouldTransition,
       };
     } catch (error) {
       return {

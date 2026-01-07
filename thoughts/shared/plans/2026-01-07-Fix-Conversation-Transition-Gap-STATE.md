@@ -1,7 +1,7 @@
 ---
 date: 2026-01-07
-status: ready
-current-task: PLAN-001
+status: in-progress
+current-task: PLAN-002
 priority: critical
 type: bugfix
 ---
@@ -10,15 +10,15 @@ type: bugfix
 
 **Plan**: `thoughts/shared/plans/2026-01-07-Fix-Conversation-Transition-Gap.md`
 
-**Current Task**: PLAN-001
+**Current Task**: PLAN-002
 
-**Completed Tasks**: (none yet)
+**Completed Tasks**: PLAN-001
 
 ---
 
 ## Task Checklist
 
-- [ ] PLAN-001: Update IPC handler to return shouldTransition
+- [x] PLAN-001: Update IPC handler to return shouldTransition
 - [ ] PLAN-002: Update TypeScript type definition for sendMessage
 - [ ] PLAN-003: Update ConversationPage to handle transition
 - [ ] PLAN-004: Add unit test for shouldTransition return
@@ -73,7 +73,7 @@ npm run dev
 
 ### Technical Criteria
 
-- [ ] `shouldTransition` flag returned from `conversation:sendMessage` IPC handler
+- [x] `shouldTransition` flag returned from `conversation:sendMessage` IPC handler
 - [ ] TypeScript type definitions updated for `sendMessage` return type
 - [ ] `ConversationPage.tsx` checks `shouldTransition` and calls `getSuggestions()`
 - [ ] Loading state displayed while fetching suggestions
@@ -105,7 +105,11 @@ npm run dev
 
 ## Implementation Notes
 
-(Implementor: Add notes here as you work through tasks)
+### PLAN-001 (Completed 2026-01-07)
+- Added `shouldTransition: turnResult.shouldTransition` to IPC handler return object (line 77)
+- TypeScript compilation: PASSED
+- No adjacent edits needed
+- File: src/main/ipc/conversation-handlers.ts
 
 ---
 
