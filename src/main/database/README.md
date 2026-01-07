@@ -35,14 +35,15 @@ Stores recipe metadata (title, times, cookware, dietary tags, source).
 
 **Constraints:**
 
-- `cooking_time_minutes`: Must be 0-60 (spec requirement)
+- `total_time_minutes`: Must be 0-60 (total of prep + cook, spec requirement) - calculated/stored column, not a generated column
+- `cooking_time_minutes`: Must be 0-60 (individual constraint, but total time is the binding constraint)
 - `servings`: Must be exactly 2 (spec requirement)
 - `cookware_type`: One of 'one-pot', 'one-pan', 'oven'
 - `source_type`: One of 'manual', 'ai-generated', 'web-imported'
 
 **Indexes:**
 
-- `idx_recipes_cooking_time`: For time-based filtering
+- `idx_recipes_cooking_time`: For time-based filtering (indexes total_time_minutes)
 - `idx_recipes_cookware_type`: For cookware filtering
 - `idx_recipes_source_type`: For source filtering
 
