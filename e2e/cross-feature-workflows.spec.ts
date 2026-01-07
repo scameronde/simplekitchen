@@ -237,7 +237,7 @@ test.describe('Cross-Feature Workflows', () => {
     await window.click('text=View Recipes');
     await expect(window.locator('h1:has-text("My Recipes")')).toBeVisible();
 
-    // Step 9: Verify recipe appears in filtered results (default filter is 30-45 minutes)
+    // Step 9: Verify recipe appears in filtered results (default filter is 30-45 minutes total time)
     // Our corrected recipe is 40 minutes, so it should be visible
     await expect(window.locator('[data-testid="recipe-card"]').first()).toBeVisible({
       timeout: 5000,

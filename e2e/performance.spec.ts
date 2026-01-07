@@ -56,7 +56,7 @@ test.describe('Performance Testing with Large Dataset', () => {
     expect(recipeCards).toBeGreaterThan(0);
 
     // =========================================================================
-    // TEST 2: Time Filter Performance (30-40 minutes)
+    // TEST 2: Total Time Filter Performance (30-40 minutes)
     // =========================================================================
     console.log('Test 2: Apply time filter (30-40 minutes)');
 

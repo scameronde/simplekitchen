@@ -51,7 +51,7 @@ test.describe('Recipe Viewing and Filtering', () => {
     await electronApp.close();
   });
 
-  test('filters recipes by cooking time', async () => {
+  test('filters recipes by total time', async () => {
     const electronApp = await electron.launch({
       args: ['.'],
       env: {
@@ -76,7 +76,7 @@ test.describe('Recipe Viewing and Filtering', () => {
     // Apply filters
     await window.click('button:has-text("Apply Filters")');
 
-    // Verify recipe is filtered out (cooking time 35 < 40)
+    // Verify recipe is filtered out (total time 35 < 40)
     await expect(window.locator('text=E2E Test Recipe')).not.toBeVisible();
 
     await electronApp.close();
