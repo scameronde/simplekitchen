@@ -401,7 +401,7 @@ describe('Recipe Ranker', () => {
       mockGetRecipes.mockResolvedValue([mockRecipes[0]!]);
 
       await expect(getRankedSuggestions(mockSessionId)).rejects.toThrow(
-        'Insufficient recipes found. Need at least 2 recipes but found 1'
+        'Insufficient recipes found after filtering rejections. Need at least 2 recipes but found 1'
       );
 
       expect(mockParse).not.toHaveBeenCalled();
@@ -411,7 +411,7 @@ describe('Recipe Ranker', () => {
       mockGetRecipes.mockResolvedValue([]);
 
       await expect(getRankedSuggestions(mockSessionId)).rejects.toThrow(
-        'Insufficient recipes found. Need at least 2 recipes but found 0'
+        'Insufficient recipes found after filtering rejections. Need at least 2 recipes but found 0'
       );
 
       expect(mockParse).not.toHaveBeenCalled();
