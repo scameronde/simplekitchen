@@ -60,8 +60,8 @@ export async function getRankedSuggestions(sessionId: string): Promise<RecipeSug
   const filter: RecipeFilter = {
     dietaryTags:
       dietaryProfile.hardRestrictions.length > 0 ? dietaryProfile.hardRestrictions : undefined,
-    cookingTimeMax: userContext.availableTime,
-    // cookwareTypes left undefined to let AI rank all types
+    totalTimeMax: userContext.availableTime,
+    // Filter by total time (prep + cooking); cookwareTypes left undefined to let AI rank all types
   };
 
   // Step 5: Query recipes with filter
