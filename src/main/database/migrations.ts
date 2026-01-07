@@ -180,6 +180,67 @@ function migration004_addCookingSessions(): void {
   console.log('Migration 004 complete');
 }
 
+// Migration 5: Relax cooking_time_minutes constraint from 30-45 to 0-60
+function migration005_relaxCookingTimeConstraint(): void {
+  const version = 5;
+  if (isMigrationApplied(version)) return;
+
+  console.log('Running migration 005: Relax cooking_time_minutes constraint');
+
+  // SQLite doesn't support ALTER TABLE to modify CHECK constraints
+  // We need to recreate the table with the new constraint
+
+  // Step 1: Create new table with relaxed constraint
+  rawDb
+    .prepare(
+      `
+    CREATE TABLE recipes_new (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      cooking_time_minutes INTEGER NOT NULL CHECK(cooking_time_minutes >= 0 AND cooking_time_minutes <= 60),
+      prep_time_minutes INTEGER,
+      -- Total time (prep + cook) must be 0-60 minutes
+      total_time_minutes INTEGER NOT NULL CHECK(total_time_minutes >= 0 AND total_time_minutes <= 60),
+      cookware_type TEXT NOT NULL CHECK(cookware_type IN ('one-pot', 'one-pan', 'oven')),
+      servings INTEGER NOT NULL CHECK(servings = 2),
+      dietary_tags TEXT NOT NULL DEFAULT '[]',
+      seasonality TEXT NOT NULL DEFAULT '["any"]',
+      source_type TEXT NOT NULL CHECK(source_type IN ('manual', 'ai-generated', 'web-imported')),
+      source_reference TEXT,
+      instructions TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  `
+    )
+    .run();
+
+  // Step 2: Copy all data from old table to new table
+  rawDb
+    .prepare(
+      `
+    INSERT INTO recipes_new 
+    SELECT * FROM recipes
+  `
+    )
+    .run();
+
+  // Step 3: Drop old table
+  rawDb.prepare('DROP TABLE recipes').run();
+
+  // Step 4: Rename new table to recipes
+  rawDb.prepare('ALTER TABLE recipes_new RENAME TO recipes').run();
+
+  // Step 5: Recreate all indexes
+  rawDb.prepare('CREATE INDEX idx_recipes_cooking_time ON recipes(cooking_time_minutes)').run();
+  rawDb.prepare('CREATE INDEX idx_recipes_cookware_type ON recipes(cookware_type)').run();
+  rawDb.prepare('CREATE INDEX idx_recipes_source_type ON recipes(source_type)').run();
+  rawDb.prepare('CREATE INDEX idx_recipes_created_at ON recipes(created_at DESC)').run();
+
+  recordMigration(version, 'relax_cooking_time_constraint');
+  console.log('Migration 005 complete');
+}
+
 // Run all migrations
 export function runMigrations(): void {
   createMigrationsTable();
@@ -187,6 +248,7 @@ export function runMigrations(): void {
   migration002_addCreatedAtIndex();
   migration003_resetDietaryProfile();
   migration004_addCookingSessions();
+  migration005_relaxCookingTimeConstraint();
   // Future migrations will be added here
   console.log('All migrations applied');
 }
