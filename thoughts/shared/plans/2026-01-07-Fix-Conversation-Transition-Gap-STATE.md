@@ -1,7 +1,7 @@
 ---
 date: 2026-01-07
 status: in-progress
-current-task: PLAN-004
+current-task: PLAN-005
 priority: critical
 type: bugfix
 ---
@@ -10,9 +10,9 @@ type: bugfix
 
 **Plan**: `thoughts/shared/plans/2026-01-07-Fix-Conversation-Transition-Gap.md`
 
-**Current Task**: PLAN-004
+**Current Task**: PLAN-005
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
 
 ---
 
@@ -21,7 +21,7 @@ type: bugfix
 - [x] PLAN-001: Update IPC handler to return shouldTransition
 - [x] PLAN-002: Update TypeScript type definition for sendMessage
 - [x] PLAN-003: Update ConversationPage to handle transition
-- [ ] PLAN-004: Add unit test for shouldTransition return
+- [x] PLAN-004: Add unit test for shouldTransition return
 - [ ] PLAN-005: Add component test for transition handling
 - [ ] PLAN-006: Add integration test for full flow
 - [ ] PLAN-007: Add E2E test for user-visible behavior
@@ -82,8 +82,8 @@ npm run dev
 
 ### Testing Criteria
 
-- [ ] Unit test verifies `shouldTransition: true` returned when AI signals transition
-- [ ] Unit test verifies `shouldTransition: false` returned when AI doesn't signal transition
+- [x] Unit test verifies `shouldTransition: true` returned when AI signals transition
+- [x] Unit test verifies `shouldTransition: false` returned when AI doesn't signal transition
 - [ ] Component test verifies `getSuggestions()` called when transition detected
 - [ ] Component test verifies NO fetch when `shouldTransition` is false
 - [ ] Component test verifies error handling for failed suggestion fetch
@@ -124,6 +124,13 @@ npm run dev
 - Includes loading state management and error handling
 - File: src/renderer/pages/ConversationPage.tsx
 
+### PLAN-004 (Completed 2026-01-07)
+- Added `shouldTransition?: boolean` to ConversationMessageResult type (line 36)
+- Added assertion `expect(result.shouldTransition).toBe(false)` to first test (line 138)
+- Added assertion `expect(result.shouldTransition).toBe(true)` to transition test (line 187)
+- All tests passed: 10/10 tests passing
+- File: src/main/ipc/conversation-handlers.test.ts
+
 ---
 
 ## Blockers / Issues
@@ -135,3 +142,4 @@ npm run dev
 ---
 
 **Last Updated**: 2026-01-07
+

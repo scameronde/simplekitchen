@@ -33,6 +33,7 @@ type ConversationMessageResult = {
   success: boolean;
   aiMessage?: string;
   timestamp?: Date;
+  shouldTransition?: boolean;
   error?: string;
 };
 type ConversationAbandonResult = { success: boolean; error?: string };
@@ -134,6 +135,7 @@ describe('Conversation IPC Handlers', () => {
       expect(result.success).toBe(true);
       expect(result.aiMessage).toBe('How are you feeling today?');
       expect(result.timestamp).toBeInstanceOf(Date);
+      expect(result.shouldTransition).toBe(false);
 
       // Verify session was retrieved
       expect(getSession).toHaveBeenCalledWith('test-session-123');
@@ -182,6 +184,7 @@ describe('Conversation IPC Handlers', () => {
       const result = await messageHandlerFn(event, 'test-session-123', 'About 30 minutes');
 
       expect(result.success).toBe(true);
+      expect(result.shouldTransition).toBe(true);
 
       // Verify user context was updated
       const { updateUserContext } = await import('../conversation/session-manager.js');
