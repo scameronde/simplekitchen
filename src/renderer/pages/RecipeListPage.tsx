@@ -12,8 +12,8 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentFilters, setCurrentFilters] = useState<FilterState>({
-    cookingTimeMin: 30,
-    cookingTimeMax: 45,
+    totalTimeMin: 30,
+    totalTimeMax: 45,
     cookwareTypes: [],
     dietaryTags: [],
   });
@@ -48,8 +48,8 @@ export function RecipeListPage({ onRecipeClick }: RecipeListPageProps) {
     setError(null);
     try {
       const response = await window.electron.recipeAPI.filter({
-        cookingTimeMin: filters.cookingTimeMin, // CORRECTED: field name
-        cookingTimeMax: filters.cookingTimeMax, // CORRECTED: field name
+        totalTimeMin: filters.totalTimeMin,
+        totalTimeMax: filters.totalTimeMax,
         cookwareTypes: filters.cookwareTypes.length > 0 ? filters.cookwareTypes : undefined,
         dietaryTags: filters.dietaryTags.length > 0 ? filters.dietaryTags : undefined,
       });
