@@ -210,6 +210,40 @@ export function ConversationPage() {
         content: result.aiMessage,
         timestamp: result.timestamp || new Date(),
       });
+
+      // Check if AI wants to show suggestions
+      if (result.shouldTransition && state.sessionId) {
+        dispatch({ type: 'set_loading', isLoading: true });
+
+        try {
+          const suggestionsResult = await window.electron.conversationAPI.getSuggestions(
+            state.sessionId
+          );
+
+          if (suggestionsResult.success && suggestionsResult.suggestions) {
+            // Display AI message with recipe suggestions
+            dispatch({
+              type: 'add_ai_message_with_suggestions',
+              content: suggestionsResult.aiMessage || 'Here are some recipes for you:',
+              timestamp: new Date(),
+              suggestions: suggestionsResult.suggestions,
+            });
+          } else {
+            // Display error if suggestion fetch failed
+            dispatch({
+              type: 'set_error',
+              error: suggestionsResult.error || 'Failed to fetch suggestions',
+            });
+          }
+        } catch (error) {
+          dispatch({
+            type: 'set_error',
+            error: 'Failed to fetch suggestions. Please try again.',
+          });
+        } finally {
+          dispatch({ type: 'set_loading', isLoading: false });
+        }
+      }
     } else {
       dispatch({ type: 'set_error', error: result.error || 'Failed to send message' });
     }
