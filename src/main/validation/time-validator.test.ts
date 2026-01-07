@@ -9,49 +9,63 @@ describe('Time Constraint Validator', () => {
     servings: 2,
   };
 
-  it('should accept valid cooking time (0 minutes)', () => {
-    const recipe = { ...baseRecipe, cookingTimeMinutes: 0 };
+  it('should accept valid total time (prep=0, cook=0, total=0)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: 0, cookingTimeMinutes: 0 };
     const errors = validateTimeConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(0);
   });
 
-  it('should accept valid cooking time (30 minutes)', () => {
+  it('should accept valid total time (prep=10, cook=50, total=60)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: 10, cookingTimeMinutes: 50 };
+    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('should accept valid total time (prep=null, cook=60, total=60)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: undefined, cookingTimeMinutes: 60 };
+    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('should accept valid total time (prep=15, cook=30, total=45)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: 15, cookingTimeMinutes: 30 };
+    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('should accept valid total time (cook only, total=30)', () => {
     const recipe = { ...baseRecipe, cookingTimeMinutes: 30 };
     const errors = validateTimeConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(0);
   });
 
-  it('should accept valid cooking time (60 minutes)', () => {
-    const recipe = { ...baseRecipe, cookingTimeMinutes: 60 };
-    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
-    expect(errors).toHaveLength(0);
-  });
-
-  it('should accept valid cooking time (45 minutes)', () => {
-    const recipe = { ...baseRecipe, cookingTimeMinutes: 45 };
-    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
-    expect(errors).toHaveLength(0);
-  });
-
-  it('should accept valid cooking time (15 minutes)', () => {
-    const recipe = { ...baseRecipe, cookingTimeMinutes: 15 };
-    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
-    expect(errors).toHaveLength(0);
-  });
-
-  it('should reject negative cooking time', () => {
-    const recipe = { ...baseRecipe, cookingTimeMinutes: -5 };
+  it('should reject negative total time (prep=-5, cook=0, total=-5)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: -5, cookingTimeMinutes: 0 };
     const errors = validateTimeConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
+    expect(errors[0]!.field).toBe('totalTimeMinutes');
     expect(errors[0]!.constraint).toBe('time-minimum');
+    expect(errors[0]!.message).toContain('Total time (prep + cook)');
     expect(errors[0]!.message).toContain('at least 0');
   });
 
-  it('should reject cooking time above 60 minutes', () => {
-    const recipe = { ...baseRecipe, cookingTimeMinutes: 65 };
+  it('should reject total time above 60 minutes (prep=30, cook=35, total=65)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: 30, cookingTimeMinutes: 35 };
     const errors = validateTimeConstraints(recipe as CreateRecipeInput);
     expect(errors).toHaveLength(1);
+    expect(errors[0]!.field).toBe('totalTimeMinutes');
     expect(errors[0]!.constraint).toBe('time-maximum');
+    expect(errors[0]!.message).toContain('Total time (prep + cook)');
+    expect(errors[0]!.message).toContain('at most 60');
+  });
+
+  it('should reject total time above 60 minutes (prep=10, cook=55, total=65)', () => {
+    const recipe = { ...baseRecipe, prepTimeMinutes: 10, cookingTimeMinutes: 55 };
+    const errors = validateTimeConstraints(recipe as CreateRecipeInput);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]!.field).toBe('totalTimeMinutes');
+    expect(errors[0]!.constraint).toBe('time-maximum');
+    expect(errors[0]!.message).toContain('Total time (prep + cook)');
     expect(errors[0]!.message).toContain('at most 60');
   });
 
