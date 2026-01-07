@@ -1,10 +1,14 @@
 import type { CreateRecipeInput, UpdateRecipeInput } from '../../shared/types/recipe.js';
 import type { ValidationError } from '../../shared/types/validation.js';
 
-const MIN_COOKING_TIME = 0;
-const MAX_COOKING_TIME = 60;
+const MIN_TOTAL_TIME = 0;
+const MAX_TOTAL_TIME = 60;
 
-// Validate cooking time constraint
+/**
+ * Validate time constraints for recipes.
+ * Validates total time (prep time + cooking time) against minimum and maximum limits.
+ * Total time = prepTimeMinutes + cookingTimeMinutes
+ */
 export function validateTimeConstraints(
   recipeInput: CreateRecipeInput | UpdateRecipeInput
 ): ValidationError[] {
@@ -16,24 +20,25 @@ export function validateTimeConstraints(
   }
 
   const cookingTime = recipeInput.cookingTimeMinutes;
+  const totalTime = (recipeInput.prepTimeMinutes || 0) + cookingTime;
 
-  // Validate minimum cooking time (0 minutes or positive)
-  if (cookingTime < MIN_COOKING_TIME) {
+  // Validate minimum total time (0 minutes or positive)
+  if (totalTime < MIN_TOTAL_TIME) {
     errors.push({
-      field: 'cookingTimeMinutes',
+      field: 'totalTimeMinutes',
       constraint: 'time-minimum',
-      message: `Cooking time must be at least ${MIN_COOKING_TIME} minutes (zero or positive). Current: ${cookingTime} minutes.`,
-      suggestedFix: `Set cooking time to ${MIN_COOKING_TIME} minutes or more.`,
+      message: `Total time (prep + cook) must be at least ${MIN_TOTAL_TIME} minutes (zero or positive). Current: ${totalTime} minutes.`,
+      suggestedFix: `Reduce prep time or cook time to reach ${MIN_TOTAL_TIME} minutes or more.`,
     });
   }
 
-  // Validate maximum cooking time (60 minutes)
-  if (cookingTime > MAX_COOKING_TIME) {
+  // Validate maximum total time (60 minutes)
+  if (totalTime > MAX_TOTAL_TIME) {
     errors.push({
-      field: 'cookingTimeMinutes',
+      field: 'totalTimeMinutes',
       constraint: 'time-maximum',
-      message: `Cooking time must be at most ${MAX_COOKING_TIME} minutes. Current: ${cookingTime} minutes.`,
-      suggestedFix: `Reduce cooking time to ${MAX_COOKING_TIME} minutes or less, or simplify the recipe.`,
+      message: `Total time (prep + cook) must be at most ${MAX_TOTAL_TIME} minutes. Current: ${totalTime} minutes.`,
+      suggestedFix: `Reduce prep time or cook time to ${MAX_TOTAL_TIME} minutes or less, or simplify the recipe.`,
     });
   }
 
@@ -43,7 +48,7 @@ export function validateTimeConstraints(
 // Get time constraint limits (for UI display)
 export function getTimeConstraints(): { min: number; max: number } {
   return {
-    min: MIN_COOKING_TIME,
-    max: MAX_COOKING_TIME,
+    min: MIN_TOTAL_TIME,
+    max: MAX_TOTAL_TIME,
   };
 }
