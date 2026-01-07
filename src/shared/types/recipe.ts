@@ -92,10 +92,13 @@ export interface UpdateRecipeInput {
   ingredients?: CreateIngredientInput[]; // Replace all ingredients if provided
 }
 
-// Recipe filter criteria
+/**
+ * Recipe filter criteria
+ * @remarks totalTimeMin/totalTimeMax filter on total_time_minutes (prep + cook) column
+ */
 export interface RecipeFilter {
-  cookingTimeMin?: number;
-  cookingTimeMax?: number;
+  totalTimeMin?: number;
+  totalTimeMax?: number;
   cookwareTypes?: CookwareType[];
   dietaryTags?: DietaryTag[]; // Recipes must have ALL specified tags
   seasonality?: Season[]; // Recipes matching ANY specified season
