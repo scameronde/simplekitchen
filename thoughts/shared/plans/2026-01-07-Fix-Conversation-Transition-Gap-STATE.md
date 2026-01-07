@@ -1,7 +1,7 @@
 ---
 date: 2026-01-07
 status: in-progress
-current-task: PLAN-006
+current-task: PLAN-007
 priority: critical
 type: bugfix
 ---
@@ -10,9 +10,9 @@ type: bugfix
 
 **Plan**: `thoughts/shared/plans/2026-01-07-Fix-Conversation-Transition-Gap.md`
 
-**Current Task**: PLAN-006
+**Current Task**: PLAN-007
 
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005, PLAN-006
 
 ---
 
@@ -23,7 +23,7 @@ type: bugfix
 - [x] PLAN-003: Update ConversationPage to handle transition
 - [x] PLAN-004: Add unit test for shouldTransition return
 - [x] PLAN-005: Add component test for transition handling
-- [ ] PLAN-006: Add integration test for full flow
+- [x] PLAN-006: Add integration test for full flow
 - [ ] PLAN-007: Add E2E test for user-visible behavior
 
 ---
@@ -87,7 +87,7 @@ npm run dev
 - [x] Component test verifies `getSuggestions()` called when transition detected
 - [x] Component test verifies NO fetch when `shouldTransition` is false
 - [x] Component test verifies error handling for failed suggestion fetch
-- [ ] Integration test verifies full backend flow (conversation → transition → state change)
+- [x] Integration test verifies full backend flow (conversation → transition → state change)
 - [ ] E2E test verifies user sees recipe cards after conversation
 - [ ] All existing tests still pass (no regressions)
 
@@ -139,6 +139,14 @@ npm run dev
 - Test 3: Verifies error handling for failed getSuggestions
 - All tests passed: 3/3 tests passing
 - File: src/renderer/pages/ConversationPage.test.tsx
+
+### PLAN-006 (Completed 2026-01-07)
+- Added new integration test "should support transition to suggestions after gathering context"
+- Test verifies complete backend flow: conversation → shouldTransition: true → state change to 'suggesting'
+- Test verifies updateSessionState called with correct parameters
+- Adaptation: Removed unused updateUserContext import
+- All tests passed: 11/11 tests passing
+- File: src/main/ipc/conversation-handlers.test.ts
 
 ---
 

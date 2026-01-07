@@ -400,5 +400,48 @@ describe('Conversation IPC Handlers', () => {
       // Verify: processConversationTurn was called twice
       expect(processConversationTurn).toHaveBeenCalledTimes(2);
     });
+
+    it('should support transition to suggestions after gathering context', async () => {
+      // Setup: Mock getSession to return a valid session
+      const { getSession, updateSessionState } = await import('../conversation/session-manager.js');
+      vi.mocked(getSession).mockReturnValue({
+        sessionId: 'test-session-123',
+        messages: [],
+        userContext: { energyLevel: 'low', availableTime: 30 },
+        suggestedRecipes: [],
+        rejectedRecipes: [],
+        state: 'gathering',
+        turnCount: 0,
+        refinementCount: 0,
+        turnsInCurrentState: 0,
+        createdAt: new Date(),
+        lastActivity: new Date(),
+      });
+
+      // Setup: Mock processConversationTurn to signal transition
+      const { processConversationTurn } = await import('../conversation/conversation-service.js');
+      vi.mocked(processConversationTurn).mockResolvedValueOnce({
+        aiMessage: 'Perfect! Let me find some recipes.',
+        extractedContext: {},
+        shouldTransition: true,
+      });
+
+      const event = { senderFrame: { url: 'file://test' } };
+      if (!messageHandlerFn) throw new Error('messageHandlerFn not initialized');
+
+      // Execute: User confirms they want recipes
+      const result = await messageHandlerFn(event, 'test-session-123', 'Yes, show me recipes');
+
+      // Verify: Handler returned shouldTransition: true
+      expect(result.success).toBe(true);
+      expect(result.shouldTransition).toBe(true);
+      expect(result.aiMessage).toBe('Perfect! Let me find some recipes.');
+
+      // Verify: State was transitioned to 'suggesting'
+      expect(updateSessionState).toHaveBeenCalledWith('test-session-123', 'suggesting');
+
+      // Note: Frontend is responsible for calling getSuggestions when it sees shouldTransition: true
+      // This test verifies the backend correctly signals the transition
+    });
   });
 });
