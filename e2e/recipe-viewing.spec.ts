@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { _electron as electron, Page } from 'playwright';
+import { clearTestDatabase } from './helpers/test-database';
 
 // Helper function to create a test recipe
 async function createTestRecipe(window: Page) {
@@ -30,11 +31,15 @@ test.describe('Recipe Viewing and Filtering', () => {
       env: {
         ...process.env,
         NODE_ENV: 'development',
+        E2E_TEST: 'true',
       },
     });
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
+
+    // Clear database before test
+    await clearTestDatabase(window);
 
     // Create a test recipe
     await createTestRecipe(window);
@@ -45,8 +50,8 @@ test.describe('Recipe Viewing and Filtering', () => {
     // Verify recipe list page loads
     await expect(window.locator('h1:has-text("My Recipes")')).toBeVisible();
 
-    // Verify test recipe is displayed (use .first() since there may be multiple recipes from previous tests)
-    await expect(window.locator('text=E2E Test Recipe').first()).toBeVisible();
+    // Verify test recipe is displayed
+    await expect(window.locator('text=E2E Test Recipe')).toBeVisible();
 
     await electronApp.close();
   });
@@ -57,11 +62,15 @@ test.describe('Recipe Viewing and Filtering', () => {
       env: {
         ...process.env,
         NODE_ENV: 'development',
+        E2E_TEST: 'true',
       },
     });
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
+
+    // Clear database before test
+    await clearTestDatabase(window);
 
     // Create a test recipe
     await createTestRecipe(window);
@@ -88,25 +97,29 @@ test.describe('Recipe Viewing and Filtering', () => {
       env: {
         ...process.env,
         NODE_ENV: 'development',
+        E2E_TEST: 'true',
       },
     });
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
 
-    // Create a test recipe
+    // Clear database before test
+    await clearTestDatabase(window);
+
+    // Create a test recipe (one-pan)
     await createTestRecipe(window);
 
     // Navigate to View Recipes
     await window.click('text=View Recipes');
 
-    // Select only "oven" cookware
-    await window.check('label:has-text("oven")');
+    // Select one-pot filter (which should hide our one-pan recipe)
+    await window.click('text=One Pot');
 
     // Apply filters
     await window.click('button:has-text("Apply Filters")');
 
-    // Verify recipe is filtered out (cookware is one-pan, not oven)
+    // Recipe should not be visible
     await expect(window.locator('text=E2E Test Recipe')).not.toBeVisible();
 
     await electronApp.close();
@@ -118,11 +131,15 @@ test.describe('Recipe Viewing and Filtering', () => {
       env: {
         ...process.env,
         NODE_ENV: 'development',
+        E2E_TEST: 'true',
       },
     });
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
+
+    // Clear database before test
+    await clearTestDatabase(window);
 
     // Create a test recipe
     await createTestRecipe(window);
@@ -131,14 +148,15 @@ test.describe('Recipe Viewing and Filtering', () => {
     await window.click('text=View Recipes');
 
     // Apply a filter
-    await window.check('label:has-text("oven")');
+    await window.click('text=One Pot');
     await window.click('button:has-text("Apply Filters")');
+    await expect(window.locator('text=E2E Test Recipe')).not.toBeVisible();
 
     // Clear filters
     await window.click('button:has-text("Clear Filters")');
 
-    // Verify recipe is visible again (use .first() since there may be multiple recipes from previous tests)
-    await expect(window.locator('text=E2E Test Recipe').first()).toBeVisible();
+    // Recipe should be visible again
+    await expect(window.locator('text=E2E Test Recipe')).toBeVisible();
 
     await electronApp.close();
   });
@@ -149,11 +167,15 @@ test.describe('Recipe Viewing and Filtering', () => {
       env: {
         ...process.env,
         NODE_ENV: 'development',
+        E2E_TEST: 'true',
       },
     });
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
+
+    // Clear database before test
+    await clearTestDatabase(window);
 
     // Create a test recipe
     await createTestRecipe(window);
@@ -161,8 +183,8 @@ test.describe('Recipe Viewing and Filtering', () => {
     // Navigate to View Recipes
     await window.click('text=View Recipes');
 
-    // Click on recipe card (use .first() since there may be multiple recipes from previous tests)
-    await window.locator('text=E2E Test Recipe').first().click();
+    // Click on recipe card
+    await window.locator('text=E2E Test Recipe').click();
 
     // Verify detail page loads
     await expect(window.locator('h1:has-text("E2E Test Recipe")')).toBeVisible();
@@ -178,18 +200,22 @@ test.describe('Recipe Viewing and Filtering', () => {
       env: {
         ...process.env,
         NODE_ENV: 'development',
+        E2E_TEST: 'true',
       },
     });
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
 
+    // Clear database before test
+    await clearTestDatabase(window);
+
     // Create a test recipe
     await createTestRecipe(window);
 
     // Navigate to View Recipes
     await window.click('text=View Recipes');
-    await window.locator('text=E2E Test Recipe').first().click();
+    await window.locator('text=E2E Test Recipe').click();
 
     // Click back button
     await window.click('button:has-text("Back to Recipes")');

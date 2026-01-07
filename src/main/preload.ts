@@ -65,6 +65,11 @@ const conversationAPI = isUnitTest()
   ? __mockAPI__.conversationAPI
   : __originalAPI__.conversationAPI;
 
+// E2E Test helpers (only in E2E test mode)
+const testHelpers = process.env.E2E_TEST === 'true' ? {
+  clearDatabase: () => ipcRenderer.invoke('test:clearDatabase'),
+} : undefined;
+
 // Expose safe APIs to renderer process
 // NEVER expose entire ipcRenderer or Node.js APIs directly
 const electronAPI = {
@@ -78,6 +83,7 @@ const electronAPI = {
 
   recipeAPI,
   conversationAPI,
+  ...(testHelpers && { testHelpers }),
 };
 
 contextBridge.exposeInMainWorld('electron', electronAPI);

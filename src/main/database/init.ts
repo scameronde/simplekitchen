@@ -5,12 +5,18 @@ import type Database from 'better-sqlite3';
 import type { Database as DatabaseSchema } from '../../shared/types/database.js';
 import { createDatabaseClient } from './client.js';
 
-// Database file location: app user data directory (or temp for tests)
+// Database file location: app user data directory (or in-memory/temp for tests)
 let dbPath: string;
 if (process.env.VITEST || process.env.NODE_ENV === 'test') {
-  // Use in-memory database for tests
+  // Use in-memory database for unit tests
   dbPath = ':memory:';
+} else if (process.env.E2E_TEST === 'true') {
+  // Use separate database file for E2E tests to avoid polluting development data
+  // This file will be cleaned between test runs
+  dbPath = path.join(app.getPath('userData'), 'recipes-e2e-test.db');
+  console.log('E2E Test mode: Using isolated database for testing');
 } else {
+  // Production/development database
   dbPath = path.join(app.getPath('userData'), 'recipes.db');
 }
 
@@ -49,3 +55,15 @@ export function closeDatabase(): void {
 
 // Log database location for debugging
 console.log(`Database initialized at: ${dbPath}`);
+
+// Expose database path for test cleanup
+export function getDatabasePath(): string {
+  return dbPath;
+}
+
+// Clear all data from database (E2E tests only)
+export async function clearAllData(): Promise<void> {
+  await db.deleteFrom('ingredients').execute();
+  await db.deleteFrom('recipes').execute();
+  await db.deleteFrom('cooking_sessions').execute();
+}

@@ -139,6 +139,10 @@ export interface TestAPI {
     }>;
     conversationAPI: ConversationAPI;
   };
+  // E2E Test helpers (only available when E2E_TEST=true)
+  testHelpers?: {
+    clearDatabase: () => Promise<{ success: boolean; error?: string }>;
+  };
 }
 
 declare global {
