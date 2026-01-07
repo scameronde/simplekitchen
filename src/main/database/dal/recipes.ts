@@ -121,11 +121,11 @@ export async function getRecipes(filter?: RecipeFilter): Promise<Recipe[]> {
 
   // Apply filters
   if (filter) {
-    if (filter.cookingTimeMin !== undefined) {
-      query = query.where('cooking_time_minutes', '>=', filter.cookingTimeMin);
+    if (filter.totalTimeMin !== undefined) {
+      query = query.where('total_time_minutes', '>=', filter.totalTimeMin);
     }
-    if (filter.cookingTimeMax !== undefined) {
-      query = query.where('cooking_time_minutes', '<=', filter.cookingTimeMax);
+    if (filter.totalTimeMax !== undefined) {
+      query = query.where('total_time_minutes', '<=', filter.totalTimeMax);
     }
     if (filter.cookwareTypes && filter.cookwareTypes.length > 0) {
       query = query.where('cookware_type', 'in', filter.cookwareTypes);
