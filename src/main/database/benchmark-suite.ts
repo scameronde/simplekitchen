@@ -47,7 +47,7 @@ function generateSampleRecipe(index: number): CreateRecipeInput {
   return {
     title: `Benchmark Recipe ${index + 1}`,
     cookingTimeMinutes: cookingTime,
-    prepTimeMinutes: 10 + (index % 10),
+    prepTimeMinutes: index % 16,
     cookwareType,
     servings: 2,
     dietaryTags,
