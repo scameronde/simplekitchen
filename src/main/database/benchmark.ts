@@ -21,10 +21,10 @@ export async function runPerformanceBenchmark(): Promise<void> {
   console.log(`  - Time: ${(getAllEnd - getAllStart).toFixed(2)}ms`);
   console.log(`  - Target: <1000ms ✓\n`);
 
-  // Benchmark: Filter by cooking time
-  console.log('Benchmark: getRecipes({ cookingTimeMin: 30, cookingTimeMax: 40 })');
+  // Benchmark: Filter by total time
+  console.log('Benchmark: getRecipes({ totalTimeMin: 30, totalTimeMax: 40 })');
   const filterTimeStart = performance.now();
-  const filterByTime: RecipeFilter = { cookingTimeMin: 30, cookingTimeMax: 40 };
+  const filterByTime: RecipeFilter = { totalTimeMin: 30, totalTimeMax: 40 };
   const filteredByTime = await getRecipes(filterByTime);
   const filterTimeEnd = performance.now();
   console.log(`  - Retrieved ${filteredByTime.length} recipes`);
@@ -53,12 +53,12 @@ export async function runPerformanceBenchmark(): Promise<void> {
 
   // Benchmark: Complex filter (all criteria)
   console.log(
-    'Benchmark: getRecipes({ cookingTimeMin: 30, cookingTimeMax: 40, cookwareTypes: ["one-pan"], dietaryTags: ["gluten-free"] })'
+    'Benchmark: getRecipes({ totalTimeMin: 30, totalTimeMax: 40, cookwareTypes: ["one-pan"], dietaryTags: ["gluten-free"] })'
   );
   const filterComplexStart = performance.now();
   const filterComplex: RecipeFilter = {
-    cookingTimeMin: 30,
-    cookingTimeMax: 40,
+    totalTimeMin: 30,
+    totalTimeMax: 40,
     cookwareTypes: ['one-pan'],
     dietaryTags: ['gluten-free'],
   };

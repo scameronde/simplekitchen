@@ -542,7 +542,7 @@ describe('transitionToSuggesting', () => {
     const sessionId = await realSessionManager.createSession();
     realSessionManager.updateUserContext(sessionId, {
       energyLevel: 'low',
-      availableTime: 20,
+      availableTime: 50,
     });
 
     // Verify initial suggestedRecipes is empty

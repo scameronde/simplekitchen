@@ -41,67 +41,65 @@ describe('Recipe Filtering - getRecipes()', () => {
     ...overrides,
   });
 
-  describe('Cooking Time Filtering', () => {
-    it('should filter by minimum cooking time', async () => {
+  describe('Total Time Filtering', () => {
+    it('should filter by minimum total time', async () => {
       // Create recipes with different cooking times (all within 30-45 valid range)
       await createRecipe(createTestRecipe({ title: 'Quick Recipe', cookingTimeMinutes: 30 }));
       await createRecipe(createTestRecipe({ title: 'Medium Recipe', cookingTimeMinutes: 35 }));
       await createRecipe(createTestRecipe({ title: 'Slow Recipe', cookingTimeMinutes: 45 }));
 
-      // Filter for recipes with cooking time >= 35 minutes
-      const filtered = await getRecipes({ cookingTimeMin: 35 });
+      // Filter for recipes with total time >= 45 minutes
+      const filtered = await getRecipes({ totalTimeMin: 45 });
 
       expect(filtered).toHaveLength(2);
-      expect(filtered.every(r => r.cookingTimeMinutes >= 35)).toBe(true);
+      expect(filtered.every(r => r.totalTimeMinutes >= 45)).toBe(true);
       expect(filtered.some(r => r.title === 'Medium Recipe')).toBe(true);
       expect(filtered.some(r => r.title === 'Slow Recipe')).toBe(true);
       expect(filtered.some(r => r.title === 'Quick Recipe')).toBe(false);
     });
 
-    it('should filter by maximum cooking time', async () => {
+    it('should filter by maximum total time', async () => {
       // Create recipes with different cooking times (all within 30-45 valid range)
       await createRecipe(createTestRecipe({ title: 'Quick Recipe', cookingTimeMinutes: 30 }));
       await createRecipe(createTestRecipe({ title: 'Medium Recipe', cookingTimeMinutes: 35 }));
       await createRecipe(createTestRecipe({ title: 'Slow Recipe', cookingTimeMinutes: 45 }));
 
-      // Filter for recipes with cooking time <= 35 minutes
-      const filtered = await getRecipes({ cookingTimeMax: 35 });
+      // Filter for recipes with total time <= 45 minutes
+      const filtered = await getRecipes({ totalTimeMax: 45 });
 
       expect(filtered).toHaveLength(2);
-      expect(filtered.every(r => r.cookingTimeMinutes <= 35)).toBe(true);
+      expect(filtered.every(r => r.totalTimeMinutes <= 45)).toBe(true);
       expect(filtered.some(r => r.title === 'Quick Recipe')).toBe(true);
       expect(filtered.some(r => r.title === 'Medium Recipe')).toBe(true);
       expect(filtered.some(r => r.title === 'Slow Recipe')).toBe(false);
     });
 
-    it('should filter by cooking time range', async () => {
+    it('should filter by total time range', async () => {
       // Create recipes with different cooking times (all within 30-45 valid range)
       await createRecipe(createTestRecipe({ title: 'Quick Recipe', cookingTimeMinutes: 30 }));
       await createRecipe(createTestRecipe({ title: 'Medium Recipe 1', cookingTimeMinutes: 33 }));
       await createRecipe(createTestRecipe({ title: 'Medium Recipe 2', cookingTimeMinutes: 38 }));
       await createRecipe(createTestRecipe({ title: 'Slow Recipe', cookingTimeMinutes: 45 }));
 
-      // Filter for recipes with cooking time between 32 and 40 minutes
-      const filtered = await getRecipes({ cookingTimeMin: 32, cookingTimeMax: 40 });
+      // Filter for recipes with total time between 43 and 48 minutes
+      const filtered = await getRecipes({ totalTimeMin: 43, totalTimeMax: 48 });
 
       expect(filtered).toHaveLength(2);
-      expect(filtered.every(r => r.cookingTimeMinutes >= 32 && r.cookingTimeMinutes <= 40)).toBe(
-        true
-      );
+      expect(filtered.every(r => r.totalTimeMinutes >= 43 && r.totalTimeMinutes <= 48)).toBe(true);
       expect(filtered.some(r => r.title === 'Medium Recipe 1')).toBe(true);
       expect(filtered.some(r => r.title === 'Medium Recipe 2')).toBe(true);
     });
 
-    it('should handle edge case with exact cooking time match', async () => {
+    it('should handle edge case with exact total time match', async () => {
       await createRecipe(createTestRecipe({ title: 'Exact Match', cookingTimeMinutes: 35 }));
       await createRecipe(createTestRecipe({ title: 'Too Quick', cookingTimeMinutes: 30 }));
       await createRecipe(createTestRecipe({ title: 'Too Slow', cookingTimeMinutes: 40 }));
 
-      const filtered = await getRecipes({ cookingTimeMin: 35, cookingTimeMax: 35 });
+      const filtered = await getRecipes({ totalTimeMin: 45, totalTimeMax: 45 });
 
       expect(filtered).toHaveLength(1);
       expect(filtered[0]!.title).toBe('Exact Match');
-      expect(filtered[0]!.cookingTimeMinutes).toBe(35);
+      expect(filtered[0]!.totalTimeMinutes).toBe(45);
     });
   });
 
@@ -348,8 +346,8 @@ describe('Recipe Filtering - getRecipes()', () => {
       );
 
       const filtered = await getRecipes({
-        cookingTimeMin: 30,
-        cookingTimeMax: 40,
+        totalTimeMin: 40,
+        totalTimeMax: 50,
         cookwareTypes: ['one-pot'],
         dietaryTags: ['gluten-free', 'lactose-free'],
         seasonality: ['summer'],
@@ -383,7 +381,7 @@ describe('Recipe Filtering - getRecipes()', () => {
       );
 
       const filtered = await getRecipes({
-        cookingTimeMax: 35,
+        totalTimeMax: 40,
         cookwareTypes: ['one-pot'],
       });
 
@@ -447,7 +445,7 @@ describe('Recipe Filtering - getRecipes()', () => {
       );
 
       const filtered = await getRecipes({
-        cookingTimeMin: 40,
+        totalTimeMin: 40,
         cookwareTypes: ['oven'],
       });
 
@@ -481,7 +479,7 @@ describe('Recipe Filtering - getRecipes()', () => {
       expect(filtered).toHaveLength(2);
     });
 
-    it('should handle cooking time filtering at lower boundary', async () => {
+    it('should handle total time filtering at lower boundary', async () => {
       await createRecipe(
         createTestRecipe({
           title: 'Minimum Time Recipe',
@@ -495,7 +493,7 @@ describe('Recipe Filtering - getRecipes()', () => {
         })
       );
 
-      const filtered = await getRecipes({ cookingTimeMax: 30 });
+      const filtered = await getRecipes({ totalTimeMax: 40 });
 
       expect(filtered).toHaveLength(1);
       expect(filtered[0]!.title).toBe('Minimum Time Recipe');

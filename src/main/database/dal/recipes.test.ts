@@ -85,12 +85,12 @@ describe('Recipe CRUD Operations', () => {
     expect(recipes.length).toBeGreaterThanOrEqual(2);
   });
 
-  it('should filter recipes by cooking time', async () => {
+  it('should filter recipes by total time', async () => {
     await createRecipe({ ...sampleRecipe, cookingTimeMinutes: 30 });
     await createRecipe({ ...sampleRecipe, title: 'Quick Dish', cookingTimeMinutes: 35 });
 
-    const filtered = await getRecipes({ cookingTimeMin: 32 });
-    expect(filtered.every(r => r.cookingTimeMinutes >= 32)).toBe(true);
+    const filtered = await getRecipes({ totalTimeMin: 32 });
+    expect(filtered.every(r => r.totalTimeMinutes >= 32)).toBe(true);
   });
 
   it('should filter recipes by cookware type', async () => {

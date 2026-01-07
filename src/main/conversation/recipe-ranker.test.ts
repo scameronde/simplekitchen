@@ -290,7 +290,7 @@ describe('Recipe Ranker', () => {
       expect(mockGetDietaryProfile).toHaveBeenCalled();
       expect(mockGetRecipes).toHaveBeenCalledWith({
         dietaryTags: ['vegetarian', 'gluten-free'],
-        cookingTimeMax: 30,
+        totalTimeMax: 30,
       });
       expect(mockParse).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -339,7 +339,7 @@ describe('Recipe Ranker', () => {
       expect(result).toEqual(mockSuggestions);
       expect(mockGetRecipes).toHaveBeenCalledWith({
         dietaryTags: undefined,
-        cookingTimeMax: 30,
+        totalTimeMax: 30,
       });
     });
 
@@ -380,7 +380,7 @@ describe('Recipe Ranker', () => {
       expect(result).toEqual(mockSuggestions);
       expect(mockGetRecipes).toHaveBeenCalledWith({
         dietaryTags: ['vegetarian', 'gluten-free'],
-        cookingTimeMax: undefined,
+        totalTimeMax: undefined,
       });
     });
   });
@@ -515,7 +515,7 @@ describe('Recipe Ranker', () => {
 
       expect(mockGetRecipes).toHaveBeenCalledWith({
         dietaryTags: ['vegan', 'gluten-free', 'lactose-free'],
-        cookingTimeMax: 30,
+        totalTimeMax: 30,
       });
     });
 
