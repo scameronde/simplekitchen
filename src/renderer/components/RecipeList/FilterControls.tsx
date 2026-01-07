@@ -6,8 +6,8 @@ import { DIETARY_TAG_OPTIONS } from '../../../shared/constants/dietary-tags';
 
 // Local state mirrors RecipeFilter structure
 export interface FilterState {
-  cookingTimeMin: number;
-  cookingTimeMax: number;
+  totalTimeMin: number;
+  totalTimeMax: number;
   cookwareTypes: CookwareType[];
   dietaryTags: DietaryTag[];
 }
@@ -20,8 +20,8 @@ interface FilterControlsProps {
 const COOKWARE_OPTIONS: CookwareType[] = ['one-pot', 'one-pan', 'oven'];
 
 export function FilterControls({ onFilterChange, initialFilters }: FilterControlsProps) {
-  const [minTime, setMinTime] = useState(initialFilters?.cookingTimeMin ?? 30);
-  const [maxTime, setMaxTime] = useState(initialFilters?.cookingTimeMax ?? 45);
+  const [minTime, setMinTime] = useState(initialFilters?.totalTimeMin ?? 30);
+  const [maxTime, setMaxTime] = useState(initialFilters?.totalTimeMax ?? 45);
   const [selectedCookware, setSelectedCookware] = useState<CookwareType[]>(
     initialFilters?.cookwareTypes ?? []
   );
@@ -32,8 +32,8 @@ export function FilterControls({ onFilterChange, initialFilters }: FilterControl
   // Sync state with initialFilters when it changes
   useEffect(() => {
     if (initialFilters) {
-      setMinTime(initialFilters.cookingTimeMin);
-      setMaxTime(initialFilters.cookingTimeMax);
+      setMinTime(initialFilters.totalTimeMin);
+      setMaxTime(initialFilters.totalTimeMax);
       setSelectedCookware(initialFilters.cookwareTypes);
       setSelectedDietary(initialFilters.dietaryTags);
     }
@@ -55,8 +55,8 @@ export function FilterControls({ onFilterChange, initialFilters }: FilterControl
 
   const handleApplyFilters = () => {
     onFilterChange({
-      cookingTimeMin: minTime,
-      cookingTimeMax: maxTime,
+      totalTimeMin: minTime,
+      totalTimeMax: maxTime,
       cookwareTypes: selectedCookware,
       dietaryTags: selectedDietary,
     });
@@ -68,8 +68,8 @@ export function FilterControls({ onFilterChange, initialFilters }: FilterControl
     setSelectedCookware([]);
     setSelectedDietary([]);
     onFilterChange({
-      cookingTimeMin: 30,
-      cookingTimeMax: 45,
+      totalTimeMin: 30,
+      totalTimeMax: 45,
       cookwareTypes: [],
       dietaryTags: [],
     });
@@ -82,12 +82,12 @@ export function FilterControls({ onFilterChange, initialFilters }: FilterControl
       {/* Cooking Time Range */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Cooking Time: {minTime}-{maxTime} minutes
+          Total Time (Prep + Cook): {minTime}-{maxTime} minutes
         </label>
         <div className="flex items-center space-x-4">
           <input
             type="range"
-            min="15"
+            min="0"
             max="60"
             value={minTime}
             onChange={e => setMinTime(Number(e.target.value))}
@@ -95,7 +95,7 @@ export function FilterControls({ onFilterChange, initialFilters }: FilterControl
           />
           <input
             type="range"
-            min="15"
+            min="0"
             max="60"
             value={maxTime}
             onChange={e => setMaxTime(Number(e.target.value))}
