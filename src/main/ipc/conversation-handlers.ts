@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import type { WebFrameMain } from 'electron/main';
+import type { UserContext } from '../../shared/types/conversation.js';
 import {
   createSession,
   getSession,
@@ -55,9 +56,13 @@ export function registerConversationHandlers(): void {
       // Phase 2: AI-powered conversation
       const turnResult = await processConversationTurn(sessionId, message);
 
-      // Update session context if AI extracted new information
-      if (Object.keys(turnResult.extractedContext).length > 0) {
-        updateUserContext(sessionId, turnResult.extractedContext);
+      // Update session context if AI extracted new information (filter out null values)
+      const extractedContext = Object.fromEntries(
+        Object.entries(turnResult.extractedContext).filter(([_, value]) => value != null)
+      ) as Partial<UserContext>;
+
+      if (Object.keys(extractedContext).length > 0) {
+        updateUserContext(sessionId, extractedContext);
       }
 
       // Transition state if AI indicates readiness
