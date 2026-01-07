@@ -139,10 +139,10 @@ async function benchmarkQueryAllRecipes(): Promise<BenchmarkResult> {
  * Target: <1000ms
  */
 async function benchmarkQueryTimeFilter(): Promise<BenchmarkResult> {
-  console.log('  Running: Query with Time Filter (30-45 min)...');
+  console.log('  Running: Query with Total Time Filter (30-45 min)...');
   const filter: RecipeFilter = {
-    cookingTimeMin: 30,
-    cookingTimeMax: 45,
+    totalTimeMin: 30,
+    totalTimeMax: 45,
   };
 
   const start = performance.now();
@@ -151,7 +151,7 @@ async function benchmarkQueryTimeFilter(): Promise<BenchmarkResult> {
   const threshold = 1000;
 
   return {
-    name: 'Query with Time Filter (30-45 min)',
+    name: 'Query with Total Time Filter (30-45 min)',
     duration,
     count: recipes.length,
     avgTime: duration,
@@ -314,8 +314,8 @@ async function benchmarkFullTextSearch(): Promise<BenchmarkResult> {
 async function benchmarkComplexQuery(): Promise<BenchmarkResult> {
   console.log('  Running: Complex Multi-Filter Query...');
   const filter: RecipeFilter = {
-    cookingTimeMin: 30,
-    cookingTimeMax: 40,
+    totalTimeMin: 30,
+    totalTimeMax: 40,
     cookwareTypes: ['one-pan', 'one-pot'],
     dietaryTags: ['gluten-free'],
   };
