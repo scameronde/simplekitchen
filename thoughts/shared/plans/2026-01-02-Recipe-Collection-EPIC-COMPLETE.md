@@ -117,10 +117,12 @@ All 6 user stories from the epic have been successfully delivered:
 2. ✅ **AC-F2**: AI recipe generation, review, and addition to collection fully functional
 3. ✅ **AC-F3**: Web import from URL with adaptation and storage capability verified
 4. ✅ **AC-F4**: Gluten and lactose rejection with clear, actionable error messages
-5. ✅ **AC-F5**: Time constraint (30-45 min) and cookware limit (1 item) enforcement working
+5. ✅ **AC-F5**: Time constraint (0-60 min total time) and cookware limit (1 item) enforcement working
 6. ✅ **AC-F6**: Recipe collection viewing with proper display and navigation
 7. ✅ **AC-F7**: Multi-criteria filtering (time, cookware, dietary tags) fully operational
 8. ✅ **AC-F8**: Data persistence across application restarts verified
+
+**Note on AC-F5 Time Constraint Evolution**: The original epic specification defined a cooking time constraint of 30-45 minutes. During implementation, this was expanded to a 0-60 minute total time constraint for greater practical flexibility and real-world applicability. The UI defaults remain at 30-45 minutes to guide typical usage while allowing users to search the full 0-60 minute range when needed. This evolution better supports the diverse cooking scenarios encountered in production recipe data.
 
 ### Technical Criteria (System-Level) - 5/5 Met
 
