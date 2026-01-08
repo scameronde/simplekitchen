@@ -12,6 +12,8 @@ import {
   updateSessionState,
   updateSessionSuggestedRecipes,
   setSessionTransitionMessage,
+  getSessionTransitionMessage,
+  clearSessionTransitionMessage,
 } from './session-manager.js';
 import { getDietaryProfile } from '../database/dal/dietary-profile.js';
 import { buildConversationMessages } from './prompts.js';
@@ -143,7 +145,15 @@ export async function transitionToSuggesting(sessionId: string): Promise<Suggest
       throw new Error(`Session ${sessionId} not found`);
     }
 
-    // Step 2: Verify required context
+    // Step 2: Retrieve stored transition message from previous conversation turn
+    const contextualMessage = getSessionTransitionMessage(sessionId);
+
+    // Step 3: Clear the stored message (one-time use)
+    if (contextualMessage) {
+      clearSessionTransitionMessage(sessionId);
+    }
+
+    // Step 4: Verify required context
     if (
       session.userContext.energyLevel === undefined ||
       session.userContext.availableTime === undefined
@@ -151,22 +161,24 @@ export async function transitionToSuggesting(sessionId: string): Promise<Suggest
       throw new Error('Missing required context (energyLevel and availableTime)');
     }
 
-    // Step 3: Update session state to suggesting
+    // Step 5: Update session state to suggesting
     updateSessionState(sessionId, 'suggesting');
 
-    // Step 4: Get ranked suggestions
+    // Step 6: Get ranked suggestions
     const result = await getRankedSuggestions(sessionId);
 
-    // Step 5: Extract recipe IDs
+    // Step 7: Extract recipe IDs
     const recipeIds = result.suggestions.map(suggestion => suggestion.recipeId);
 
-    // Step 6: Update session with suggested recipes
+    // Step 8: Update session with suggested recipes
     updateSessionSuggestedRecipes(sessionId, recipeIds);
 
-    // Step 7: Build AI message
-    const aiMessage = "Great! Based on your context, here are some recipes I think you'll love:";
+    // Step 9: Use contextual AI message from conversation turn, or fallback to generic message
+    const aiMessage =
+      contextualMessage ||
+      "Great! Based on your context, here are some recipes I think you'll love:";
 
-    // Step 8: Return success result
+    // Step 10: Return success result
     return {
       success: true,
       suggestions: result.suggestions,
