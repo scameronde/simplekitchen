@@ -64,26 +64,26 @@ test.describe('Conversation to Suggestions Flow', () => {
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
-    await page.click("text=What's for dinner?");
+    await window.click("text=What's for dinner?");
 
     // Wait for conversation to load
-    await expect(page.locator('h1')).toContainText("What's for dinner?");
+    await expect(window.locator('h1')).toContainText("What's for dinner?");
 
     // Send a vague message
-    const input = page.locator('input[placeholder*="Tell me about your day"]');
-    const sendButton = page.locator('button:has-text("Send")');
+    const input = window.locator('input[placeholder*="Tell me about your day"]');
+    const sendButton = window.locator('button:has-text("Send")');
 
     await input.fill('Hello');
     await sendButton.click();
 
     // Wait for AI response asking for more info
-    await expect(page.locator('.bg-gray-200').last()).toBeVisible({ timeout: 10000 });
+    await expect(window.locator('.bg-gray-200').last()).toBeVisible({ timeout: 10000 });
 
     // Verify: NO recipe suggestions appear (AI still gathering context)
-    await expect(page.locator('[data-testid="recipe-suggestion-card"]')).not.toBeVisible();
+    await expect(window.locator('[data-testid="recipe-suggestion-card"]')).not.toBeVisible();
 
     // Verify: Conversation continues normally
-    const aiMessages = page.locator('.bg-gray-200');
+    const aiMessages = window.locator('.bg-gray-200');
     await expect(aiMessages).toHaveCount(1); // Only one AI message so far
   });
 });
