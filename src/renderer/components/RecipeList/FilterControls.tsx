@@ -3,6 +3,7 @@ import { Checkbox } from '../common/Checkbox';
 import { Button } from '../common/Button';
 import type { CookwareType, DietaryTag } from '../../../shared/types/recipe';
 import { DIETARY_TAG_OPTIONS } from '../../../shared/constants/dietary-tags';
+import { COOKWARE_TYPE_OPTIONS } from '../../../shared/constants/cookware-types';
 
 // Local state mirrors RecipeFilter structure
 export interface FilterState {
@@ -16,8 +17,6 @@ interface FilterControlsProps {
   onFilterChange: (filters: FilterState) => void;
   initialFilters?: FilterState;
 }
-
-const COOKWARE_OPTIONS: CookwareType[] = ['one-pot', 'one-pan', 'oven'];
 
 export function FilterControls({ onFilterChange, initialFilters }: FilterControlsProps) {
   const [minTime, setMinTime] = useState(initialFilters?.totalTimeMin ?? 30);
@@ -108,12 +107,12 @@ export function FilterControls({ onFilterChange, initialFilters }: FilterControl
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">Cookware Type</label>
         <div className="space-y-2">
-          {COOKWARE_OPTIONS.map(type => (
+          {COOKWARE_TYPE_OPTIONS.map(option => (
             <Checkbox
-              key={type}
-              label={type}
-              checked={selectedCookware.includes(type)}
-              onChange={() => handleCookwareToggle(type)}
+              key={option.value}
+              label={option.label}
+              checked={selectedCookware.includes(option.value)}
+              onChange={() => handleCookwareToggle(option.value)}
             />
           ))}
         </div>
