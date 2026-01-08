@@ -1,8 +1,8 @@
 # State: Conversation E2E Mocks Implementation
 
 **Plan**: thoughts/shared/plans/2026-01-08-conversation-e2e-mocks.md  
-**Current Task**: Not started  
-**Completed Tasks**: (none yet)
+**Current Task**: PLAN-002  
+**Completed Tasks**: PLAN-001
 
 ## Quick Verification
 
@@ -35,7 +35,7 @@ npm run dev
 
 ## Files to Create
 
-- [ ] `src/main/conversation/conversation-service.mock.ts` (~100-150 lines)
+- [x] `src/main/conversation/conversation-service.mock.ts` (~119 lines) - PLAN-001
 - [ ] `src/main/conversation/recipe-ranker.mock.ts` (~50-80 lines)
 
 ## Files to Modify
@@ -53,3 +53,7 @@ npm run dev
 - Estimated LOC: 250-400 lines (mostly new mock files)
 - Pattern reference: `src/main/ipc/recipe-ai-handlers.mock.ts` (420 lines)
 - Research document: `thoughts/shared/research/2026-01-08-conversation-test-failures.md`
+
+## Progress Log
+
+- **2026-01-08**: PLAN-001 complete - Created mock conversation service with pattern matching and test signals
