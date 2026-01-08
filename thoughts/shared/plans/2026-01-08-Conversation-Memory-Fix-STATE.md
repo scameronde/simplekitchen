@@ -1,8 +1,8 @@
 # State: Conversation Memory Loss Fix
 
 **Plan**: thoughts/shared/plans/2026-01-08-Conversation-Memory-Fix.md  
-**Current Task**: PLAN-004  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
+**Current Task**: PLAN-005  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
 
 ## Quick Verification
 
@@ -76,3 +76,14 @@ NOT the old broken format:
   - Fixed test mocks to properly update session messages array
   - All 16 tests passing
   - Commit: b631d49
+
+- **PLAN-004 (✅ Complete)**: Added unit tests for buildConversationMessages()
+  - Added import for buildConversationMessages in test file
+  - Created new test suite with 4 comprehensive test cases
+  - Test 1: Verifies message array structure with system message first
+  - Test 2: Verifies all conversation messages included in correct order
+  - Test 3: Verifies user context included in system message
+  - Test 4: Verifies no message limit (all 10+ messages preserved)
+  - All 20 tests passing (4 new + 16 existing)
+  - TypeScript compilation verified with strict null checks
+  - Commit: [pending]

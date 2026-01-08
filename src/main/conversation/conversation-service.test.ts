@@ -50,7 +50,7 @@ vi.mock('../database/dal/dietary-profile.js', () => ({
 
 // Import AFTER mocks are set up
 const { processConversationTurn } = await import('./conversation-service.js');
-const { buildConversationPrompt } = await import('./prompts.js');
+const { buildConversationPrompt, buildConversationMessages } = await import('./prompts.js');
 
 describe('processConversationTurn', () => {
   const mockParse = hoistedMockParse;
@@ -401,6 +401,142 @@ describe('buildConversationPrompt', () => {
     // Should NOT include the first 2 messages
     expect(prompt).not.toContain('Message 1');
     expect(prompt).not.toContain('Message 2');
+  });
+});
+
+describe('buildConversationMessages', () => {
+  it('should return message array with system message first', () => {
+    const mockSession: ConversationSession = {
+      sessionId: 'test-session',
+      messages: [],
+      userContext: {},
+      suggestedRecipes: [],
+      rejectedRecipes: [],
+      state: 'gathering',
+      turnCount: 0,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
+      createdAt: new Date(),
+      lastActivity: new Date(),
+    };
+    const mockDietaryProfile: DietaryProfile = {
+      id: 1,
+      hardRestrictions: ['gluten-free'],
+      preferences: [],
+      explicitInclusions: [],
+      explicitExclusions: [],
+      updatedAt: new Date(),
+    };
+
+    const messages = buildConversationMessages(mockSession, mockDietaryProfile);
+
+    expect(messages).toBeInstanceOf(Array);
+    expect(messages.length).toBeGreaterThan(0);
+    expect(messages[0]?.role).toBe('system');
+    expect(messages[0]?.content).toContain('gluten-free');
+  });
+
+  it('should include all conversation messages in order', () => {
+    const mockSession: ConversationSession = {
+      sessionId: 'test-session',
+      messages: [
+        { role: 'user', content: 'Message 1', timestamp: new Date() },
+        { role: 'assistant', content: 'Message 2', timestamp: new Date() },
+        { role: 'user', content: 'Message 3', timestamp: new Date() },
+      ],
+      userContext: { energyLevel: 'low' },
+      suggestedRecipes: [],
+      rejectedRecipes: [],
+      state: 'gathering',
+      turnCount: 3,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
+      createdAt: new Date(),
+      lastActivity: new Date(),
+    };
+    const mockDietaryProfile: DietaryProfile = {
+      id: 1,
+      hardRestrictions: [],
+      preferences: [],
+      explicitInclusions: [],
+      explicitExclusions: [],
+      updatedAt: new Date(),
+    };
+
+    const messages = buildConversationMessages(mockSession, mockDietaryProfile);
+
+    expect(messages.length).toBe(4); // system + 3 messages
+    expect(messages[0]?.role).toBe('system');
+    expect(messages[1]?.role).toBe('user');
+    expect(messages[1]?.content).toBe('Message 1');
+    expect(messages[2]?.role).toBe('assistant');
+    expect(messages[2]?.content).toBe('Message 2');
+    expect(messages[3]?.role).toBe('user');
+    expect(messages[3]?.content).toBe('Message 3');
+  });
+
+  it('should include user context in system message', () => {
+    const mockSession: ConversationSession = {
+      sessionId: 'test-session',
+      messages: [],
+      userContext: { energyLevel: 'high', availableTime: 60 },
+      suggestedRecipes: [],
+      rejectedRecipes: [],
+      state: 'gathering',
+      turnCount: 0,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
+      createdAt: new Date(),
+      lastActivity: new Date(),
+    };
+    const mockDietaryProfile: DietaryProfile = {
+      id: 1,
+      hardRestrictions: [],
+      preferences: [],
+      explicitInclusions: [],
+      explicitExclusions: [],
+      updatedAt: new Date(),
+    };
+
+    const messages = buildConversationMessages(mockSession, mockDietaryProfile);
+
+    expect(messages[0]?.content).toContain('high');
+    expect(messages[0]?.content).toContain('60');
+  });
+
+  it('should not limit message history (unlike old buildConversationPrompt)', () => {
+    const mockSession: ConversationSession = {
+      sessionId: 'test-session',
+      messages: Array.from({ length: 10 }, (_, i) => ({
+        role: (i % 2 === 0 ? 'user' : 'assistant') as 'user' | 'assistant',
+        content: `Message ${i + 1}`,
+        timestamp: new Date(),
+      })),
+      userContext: {},
+      suggestedRecipes: [],
+      rejectedRecipes: [],
+      state: 'gathering',
+      turnCount: 10,
+      refinementCount: 0,
+      turnsInCurrentState: 0,
+      createdAt: new Date(),
+      lastActivity: new Date(),
+    };
+    const mockDietaryProfile: DietaryProfile = {
+      id: 1,
+      hardRestrictions: [],
+      preferences: [],
+      explicitInclusions: [],
+      explicitExclusions: [],
+      updatedAt: new Date(),
+    };
+
+    const messages = buildConversationMessages(mockSession, mockDietaryProfile);
+
+    // Should include system + all 10 messages
+    expect(messages.length).toBe(11);
+    expect(messages[1]?.content).toBe('Message 1');
+    expect(messages[10]?.content).toBe('Message 10');
   });
 });
 
