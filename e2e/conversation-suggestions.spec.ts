@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { _electron as electron } from 'playwright';
 
 test.describe('Conversation to Suggestions Flow', () => {
   test('should display recipe suggestions after conversation', async ({ page }) => {
