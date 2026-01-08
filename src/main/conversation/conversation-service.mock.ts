@@ -5,12 +5,14 @@
  */
 
 import type { ConversationTurnOutput } from './conversation-schema.js';
+import type { SuggestionResult } from './conversation-service.js';
 import {
   getSession,
   updateSessionMessages,
   updateUserContext,
   setSessionTransitionMessage,
 } from './session-manager.js';
+import { mockGetRankedSuggestions } from './recipe-ranker.mock.js';
 
 /**
  * Mock implementation of processConversationTurn for E2E tests.
@@ -114,5 +116,43 @@ export async function mockProcessConversationTurn(
     aiMessage,
     extractedContext,
     shouldTransition,
+  };
+}
+
+/**
+ * Mock implementation of processRefinement for E2E tests.
+ * Handles refinement cycles when user rejects suggested recipes.
+ * Enforces max 3 refinement cycles, escalating to manual browsing after limit.
+ *
+ * @param sessionId - The session ID to process refinement for
+ * @returns Result with new suggestions and AI message, or escalation message
+ * @throws Error if session not found
+ */
+export async function mockProcessRefinement(sessionId: string): Promise<SuggestionResult> {
+  // Step 1: Validate session exists
+  const session = getSession(sessionId);
+  if (!session) {
+    throw new Error(`Session ${sessionId} not found`);
+  }
+
+  // Step 2: Check if max refinements reached (3)
+  if (session.refinementCount >= 3) {
+    return {
+      success: true,
+      aiMessage:
+        "I've shown you quite a few options. Would you like to browse recipes by category instead?",
+      suggestions: [], // Escalation - no more suggestions
+    };
+  }
+
+  // Step 3: Get new suggestions excluding rejected recipes
+  // mockGetRankedSuggestions already handles filtering rejected recipes
+  const result = await mockGetRankedSuggestions(sessionId);
+
+  // Step 4: Return success result with AI message
+  return {
+    success: true,
+    aiMessage: 'Let me find you some different options!',
+    suggestions: result.suggestions,
   };
 }
