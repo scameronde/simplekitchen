@@ -48,7 +48,7 @@ test('displays validation errors for invalid recipe', async () => {
 
   // Fill with invalid data
   await window.fill('#input-recipe-title', 'Test');
-  await window.fill('#input-cooking-time-\\(minutes\\)', '60'); // Exceeds limit
+  await window.fill('#input-cooking-time-\\(minutes\\)', '61'); // Exceeds 60 minute limit
   await window.selectOption('#select-cookware-type', 'one-pot');
   await window.fill('input[placeholder="Name"]', 'butter'); // Contains lactose
   await window.fill('input[placeholder="Qty"]', '50');
