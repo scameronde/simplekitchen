@@ -1,8 +1,8 @@
 # State: Conversation E2E Mocks Implementation
 
 **Plan**: thoughts/shared/plans/2026-01-08-conversation-e2e-mocks.md  
-**Current Task**: PLAN-004  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
+**Current Task**: PLAN-005  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
 
 ## Quick Verification
 
@@ -41,7 +41,7 @@ npm run dev
 ## Files to Modify
 
 - [x] `src/main/conversation/conversation-service.mock.ts` (add refinement function) - PLAN-003
-- [ ] `src/main/ipc/conversation-handlers.ts` (add E2E detection) - PLAN-004
+- [x] `src/main/ipc/conversation-handlers.ts` (add E2E detection) - PLAN-004
 - [ ] `src/main/database/seed-data.ts` (possibly, if recipe IDs don't exist)
 - [ ] `e2e/conversation-suggestions.spec.ts` (possibly, if assertions don't match)
 - [ ] `src/renderer/pages/ConversationPage.tsx` (optional, add data-testids)
@@ -60,3 +60,4 @@ npm run dev
 - **2026-01-08**: PLAN-001 complete - Created mock conversation service with pattern matching and test signals
 - **2026-01-08**: PLAN-002 complete - Created mock recipe ranker with dynamic database queries
 - **2026-01-08**: PLAN-003 complete - Added mock refinement function with 3-cycle limit and escalation
+- **2026-01-08**: PLAN-004 complete - Added E2E detection to all 3 conversation IPC handlers with debug logging

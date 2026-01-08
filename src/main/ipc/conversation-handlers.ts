@@ -8,12 +8,21 @@ import {
   updateUserContext,
   addRejectedRecipe,
   abandonSession,
+  getSessionTransitionMessage,
+  clearSessionTransitionMessage,
+  updateSessionSuggestedRecipes,
 } from '../conversation/session-manager.js';
 import {
   processConversationTurn,
   transitionToSuggesting,
   processRefinement,
 } from '../conversation/conversation-service.js';
+import { isE2ETest } from '../utils/test-env.js';
+import {
+  mockProcessConversationTurn,
+  mockProcessRefinement,
+} from '../conversation/conversation-service.mock.js';
+import { mockGetRankedSuggestions } from '../conversation/recipe-ranker.mock.js';
 
 /**
  * Validates the sender of an IPC message for security.
@@ -54,7 +63,11 @@ export function registerConversationHandlers(): void {
 
     try {
       // Phase 2: AI-powered conversation
-      const turnResult = await processConversationTurn(sessionId, message);
+      const turnResult = isE2ETest()
+        ? await mockProcessConversationTurn(sessionId, message)
+        : await processConversationTurn(sessionId, message);
+
+      console.log('Conversation handler using:', isE2ETest() ? 'MOCK' : 'REAL');
 
       // Update session context if AI extracted new information (filter out null values)
       const extractedContext = Object.fromEntries(
@@ -119,7 +132,12 @@ export function registerConversationHandlers(): void {
     }
 
     try {
-      const result = await processRefinement(sessionId);
+      const result = isE2ETest()
+        ? await mockProcessRefinement(sessionId)
+        : await processRefinement(sessionId);
+
+      console.log('Refinement handler using:', isE2ETest() ? 'MOCK' : 'REAL');
+
       return result;
     } catch (error) {
       return {
@@ -149,7 +167,56 @@ export function registerConversationHandlers(): void {
     }
 
     try {
-      const result = await transitionToSuggesting(sessionId);
+      let result;
+
+      if (isE2ETest()) {
+        // E2E mode: Inline mock logic to avoid creating additional mock function
+        // Retrieve stored transition message from previous conversation turn
+        const contextualMessage = getSessionTransitionMessage(sessionId);
+
+        // Clear the stored message (one-time use)
+        if (contextualMessage) {
+          clearSessionTransitionMessage(sessionId);
+        }
+
+        // Verify required context
+        if (
+          session.userContext.energyLevel === undefined ||
+          session.userContext.availableTime === undefined
+        ) {
+          throw new Error('Missing required context (energyLevel and availableTime)');
+        }
+
+        // Update session state to suggesting
+        updateSessionState(sessionId, 'suggesting');
+
+        // Get ranked suggestions using mock ranker
+        const rankingResult = await mockGetRankedSuggestions(sessionId);
+
+        // Extract recipe IDs
+        const recipeIds = rankingResult.suggestions.map(suggestion => suggestion.recipeId);
+
+        // Update session with suggested recipes
+        updateSessionSuggestedRecipes(sessionId, recipeIds);
+
+        // Use contextual AI message from conversation turn, or fallback to generic message
+        const aiMessage =
+          contextualMessage ||
+          "Great! Based on your context, here are some recipes I think you'll love:";
+
+        // Return success result
+        result = {
+          success: true,
+          suggestions: rankingResult.suggestions,
+          aiMessage,
+        };
+      } else {
+        // Production mode: Use real transitionToSuggesting function
+        result = await transitionToSuggesting(sessionId);
+      }
+
+      console.log('Suggestion handler using:', isE2ETest() ? 'MOCK' : 'REAL');
+
       return result;
     } catch (error) {
       return {
