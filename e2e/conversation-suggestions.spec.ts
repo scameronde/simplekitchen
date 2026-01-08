@@ -48,6 +48,8 @@ test.describe('Conversation to Suggestions Flow', () => {
     await expect(firstCard.locator('text=/min/i')).toBeVisible(); // Time indicator
     await expect(firstCard.locator('button:has-text("Select this recipe")')).toBeVisible();
     await expect(firstCard.locator('button:has-text("Not this one")')).toBeVisible();
+
+    await electronApp.close();
   });
 
   test('should continue conversation if AI needs more info', async ({ page }) => {

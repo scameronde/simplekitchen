@@ -1,8 +1,8 @@
 # State: Fix Conversation Suggestions E2E Test Failures
 
 **Plan**: thoughts/shared/plans/2026-01-07-fix-conversation-suggestions-e2e-tests.md  
-**Current Task**: PLAN-004  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
+**Current Task**: PLAN-005  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
 
 ## Quick Verification
 
@@ -22,5 +22,5 @@ npm run test:e2e -- e2e/conversation-suggestions.spec.ts
 - Total tasks: 7
 - Phases: 
   1. Add imports (PLAN-001) ✅
-  2. Fix first test structure (PLAN-002 to PLAN-004) - in progress
-  3. Fix second test structure (PLAN-005 to PLAN-007)
+  2. Fix first test structure (PLAN-002 to PLAN-004) ✅
+  3. Fix second test structure (PLAN-005 to PLAN-007) - starting
