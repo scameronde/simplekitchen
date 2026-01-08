@@ -99,6 +99,12 @@ export interface ConversationSession {
   state: ConversationState;
   turnCount: number; // Track conversation length
   refinementCount: number; // Track refinement cycles (max 3)
+  /**
+   * Contextual AI message to display when transitioning to recipe suggestions.
+   * Set by processConversationTurn() when shouldTransition=true.
+   * Consumed and cleared by transitionToSuggesting().
+   */
+  transitionMessage?: string;
   turnsInCurrentState: number; // Track turns in current state (for escalation)
   createdAt: Date;
   lastActivity: Date;
