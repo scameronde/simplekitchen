@@ -2,8 +2,8 @@
 date: 2026-01-06
 phase: 4
 epic-id: 'EPIC-002'
-status: ready
-current-task: PLAN-001
+status: done
+current-task: COMPLETE
 ---
 
 # State: Phase 4 - Feedback & Iterative Refinement
@@ -73,35 +73,35 @@ npm run dev
 
 ### Functional Criteria
 
-- [ ] User can click "Not this one" button on recipe card
-- [ ] Feedback dialog opens with recipe name in heading
-- [ ] Quick-reply buttons work (Missing ingredient, Not in the mood, Too complex, Other)
-- [ ] Custom text input appears when "Other" selected
-- [ ] Skip button allows rejection without reason
-- [ ] Rejected recipe does NOT appear in next refinement
-- [ ] After 3 refinements, escalation message appears (no more suggestions)
-- [ ] Escalation message offers concrete next steps
+- [x] User can click "Not this one" button on recipe card
+- [x] Feedback dialog opens with recipe name in heading
+- [x] Quick-reply buttons work (Missing ingredient, Not in the mood, Too complex, Other)
+- [x] Custom text input appears when "Other" selected
+- [x] Skip button allows rejection without reason
+- [x] Rejected recipe does NOT appear in next refinement
+- [x] After 3 refinements, escalation message appears (no more suggestions)
+- [x] Escalation message offers concrete next steps
 
 ### Technical Criteria
 
-- [ ] rejectedRecipes array populated in session state
-- [ ] refinementCount increments on each rejection
-- [ ] turnsInCurrentState resets on state transitions
-- [ ] recipe-ranker excludes rejected recipes from candidates
-- [ ] buildRefinementContext injects rejection patterns into prompt
-- [ ] processRefinement enforces max 3 cycle limit
-- [ ] conversation:reject-recipe IPC handler works
-- [ ] conversation:refine IPC handler returns new suggestions
-- [ ] State transitions: suggesting → refining
+- [x] rejectedRecipes array populated in session state
+- [x] refinementCount increments on each rejection
+- [x] turnsInCurrentState resets on state transitions
+- [x] recipe-ranker excludes rejected recipes from candidates
+- [x] buildRefinementContext injects rejection patterns into prompt
+- [x] processRefinement enforces max 3 cycle limit
+- [x] conversation:reject-recipe IPC handler works
+- [x] conversation:refine IPC handler returns new suggestions
+- [x] State transitions: suggesting → refining
 
 ### Testing Criteria
 
-- [ ] All unit tests pass (session-manager, prompts)
-- [ ] All integration tests pass (conversation-service)
-- [ ] All component tests pass (FeedbackDialog)
-- [ ] Type checking passes
-- [ ] Linting passes
-- [ ] Test coverage >85% for new code
+- [x] All unit tests pass (session-manager, prompts)
+- [x] All integration tests pass (conversation-service)
+- [x] All component tests pass (FeedbackDialog)
+- [x] Type checking passes
+- [x] Linting passes
+- [x] Test coverage >85% for new code
 
 ---
 
