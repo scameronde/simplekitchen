@@ -163,7 +163,7 @@ export async function transitionToSuggesting(sessionId: string): Promise<Suggest
     // Step 8: Return success result
     return {
       success: true,
-      suggestions: result,
+      suggestions: result.suggestions,
       aiMessage,
     };
   } catch (error) {
