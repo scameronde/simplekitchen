@@ -206,8 +206,10 @@ export function ConversationPage() {
     );
     if (result.success && result.aiMessage) {
       // Check if AI wants to show suggestions
+      // When transitioning to suggestions, skip displaying the conversational message here.
+      // The AI's message will be shown with the recipe cards instead (from getSuggestions).
+      // This prevents showing two consecutive AI messages.
       if (result.shouldTransition && state.sessionId) {
-        // Skip adding the conversational message - it will be shown with recipes
         dispatch({ type: 'set_loading', isLoading: true });
 
         try {

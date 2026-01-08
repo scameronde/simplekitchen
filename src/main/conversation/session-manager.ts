@@ -114,11 +114,11 @@ export function updateSessionSuggestedRecipes(sessionId: string, recipeIds: stri
 }
 
 /**
- * Sets the transition message for the session.
- * Used when shouldTransition=true to store AI's contextual intro.
- * @param sessionId - The session ID to update
- * @param message - The transition message to store
- * @throws Error if session not found
+ * Stores the AI's contextual transition message for later use.
+ * Called when shouldTransition=true to preserve the message for display with suggestions.
+ *
+ * @param sessionId - The session ID
+ * @param message - The AI's contextual message to store
  */
 export function setSessionTransitionMessage(sessionId: string, message: string): void {
   const session = activeSessions.get(sessionId);
@@ -129,9 +129,11 @@ export function setSessionTransitionMessage(sessionId: string, message: string):
 }
 
 /**
- * Retrieves the stored transition message from the session.
- * @param sessionId - The session ID to retrieve from
- * @returns The transition message or undefined if not set or session not found
+ * Retrieves the stored transition message.
+ * Returns undefined if no message is stored.
+ *
+ * @param sessionId - The session ID
+ * @returns The stored transition message, or undefined
  */
 export function getSessionTransitionMessage(sessionId: string): string | undefined {
   const session = activeSessions.get(sessionId);
@@ -139,9 +141,10 @@ export function getSessionTransitionMessage(sessionId: string): string | undefin
 }
 
 /**
- * Clears the transition message from the session after it has been consumed.
- * @param sessionId - The session ID to update
- * @throws Error if session not found
+ * Clears the stored transition message after use.
+ * Ensures one-time use pattern for transition messages.
+ *
+ * @param sessionId - The session ID
  */
 export function clearSessionTransitionMessage(sessionId: string): void {
   const session = activeSessions.get(sessionId);

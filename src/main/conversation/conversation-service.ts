@@ -55,6 +55,7 @@ export interface SuggestionResult {
 /**
  * Processes a single conversation turn with the user.
  * Sends user message to AI, extracts context, and returns AI response.
+ * If shouldTransition=true, stores the AI message for use in transitionToSuggesting().
  *
  * @param sessionId - The session ID to process
  * @param userMessage - The user's message text
@@ -133,9 +134,10 @@ export async function processConversationTurn(
 /**
  * Transitions a session from gathering to suggesting state.
  * Verifies required context, fetches ranked suggestions, and updates session.
+ * Uses the contextual AI message stored during the previous conversation turn.
  *
  * @param sessionId - The session ID to transition
- * @returns Result with suggestions and AI message, or error
+ * @returns Result with suggestions and contextual AI message, or error
  */
 export async function transitionToSuggesting(sessionId: string): Promise<SuggestionResult> {
   try {
