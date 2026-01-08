@@ -1,7 +1,28 @@
 /**
- * @module conversation-service-mock
+ * @module conversation-service.mock
  * Mock implementation of conversation service for E2E testing.
- * Provides deterministic responses based on pattern matching instead of OpenAI API calls.
+ * Provides deterministic conversation flows without calling OpenAI API.
+ * Supports test signals for error scenarios.
+ *
+ * Test Signal Usage:
+ * - Send message 'MOCK_API_ERROR' to simulate OpenAI API failure
+ * - Send message 'MOCK_INVALID_SESSION' to simulate session not found error
+ * - Set userContext.mock_error = 'NO_RECIPES' to simulate no recipes found during ranking
+ * - Normal inputs produce deterministic conversation flows matching test expectations
+ *
+ * Example Conversation Flows:
+ * ```typescript
+ * // Success case
+ * await mockProcessConversationTurn(sessionId, "I'm feeling tired tonight");
+ * // → Returns: { aiMessage: "I hear you! How much time...", shouldTransition: false }
+ *
+ * await mockProcessConversationTurn(sessionId, "About 30 minutes");
+ * // → Returns: { aiMessage: "Perfect! With low energy...", shouldTransition: true }
+ *
+ * // Error case
+ * await mockProcessConversationTurn(sessionId, "MOCK_API_ERROR");
+ * // → Throws: Error('OpenAI API unavailable')
+ * ```
  */
 
 import type { ConversationTurnOutput } from './conversation-schema.js';
