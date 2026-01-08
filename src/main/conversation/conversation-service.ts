@@ -13,7 +13,7 @@ import {
   updateSessionSuggestedRecipes,
 } from './session-manager.js';
 import { getDietaryProfile } from '../database/dal/dietary-profile.js';
-import { GATHERING_SYSTEM_PROMPT, buildConversationPrompt } from './prompts.js';
+import { buildConversationMessages } from './prompts.js';
 import { ConversationTurnSchema } from './conversation-schema.js';
 import type { ConversationTurnOutput } from './conversation-schema.js';
 import { getRankedSuggestions } from './recipe-ranker.js';
@@ -78,17 +78,14 @@ export async function processConversationTurn(
     // Step 3: Fetch dietary profile
     const dietaryProfile = await getDietaryProfile();
 
-    // Step 4: Build prompt
-    const prompt = buildConversationPrompt(session, dietaryProfile);
+    // Step 4: Build message array with conversation history
+    const messages = buildConversationMessages(session, dietaryProfile);
 
-    // Step 5: Call OpenAI API
+    // Step 5: Call OpenAI API with full conversation history
     const client = getOpenAIClient();
     const completion = await client.chat.completions.parse({
       model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: GATHERING_SYSTEM_PROMPT },
-        { role: 'user', content: prompt },
-      ],
+      messages: messages, // ← Now an array of messages, not [system, user]
       response_format: zodResponseFormat(ConversationTurnSchema, 'conversation_turn'),
       temperature: 0.7,
       max_tokens: 500,
