@@ -1,8 +1,8 @@
 # State: Conversation Memory Loss Fix
 
 **Plan**: thoughts/shared/plans/2026-01-08-Conversation-Memory-Fix.md  
-**Current Task**: PLAN-002  
-**Completed Tasks**: PLAN-001
+**Current Task**: PLAN-003  
+**Completed Tasks**: PLAN-001, PLAN-002
 
 ## Quick Verification
 
@@ -59,3 +59,11 @@ NOT the old broken format:
   - Embeds dietary restrictions and user context in system message
   - TypeScript compilation verified
   - Commit: 1e6ffe0
+
+- **PLAN-002 (✅ Complete)**: Updated conversation-service.ts to use message array
+  - Replaced buildConversationPrompt() with buildConversationMessages()
+  - OpenAI API now receives full message array instead of 2-message format
+  - Each conversation turn preserved as separate message
+  - Removed unused GATHERING_SYSTEM_PROMPT import
+  - TypeScript compilation verified
+  - Commit: 8a5b01d
