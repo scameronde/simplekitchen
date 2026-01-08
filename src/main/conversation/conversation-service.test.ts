@@ -37,9 +37,15 @@ vi.mock('openai/helpers/zod', () => ({
 // Mock session-manager
 const mockGetSession = vi.fn();
 const mockUpdateSessionMessages = vi.fn();
+const mockSetSessionTransitionMessage = vi.fn();
+const mockGetSessionTransitionMessage = vi.fn();
+const mockClearSessionTransitionMessage = vi.fn();
 vi.mock('./session-manager.js', () => ({
   getSession: mockGetSession,
   updateSessionMessages: mockUpdateSessionMessages,
+  setSessionTransitionMessage: mockSetSessionTransitionMessage,
+  getSessionTransitionMessage: mockGetSessionTransitionMessage,
+  clearSessionTransitionMessage: mockClearSessionTransitionMessage,
 }));
 
 // Mock dietary-profile DAL
