@@ -14,20 +14,20 @@ test.describe('Conversation to Suggestions Flow', () => {
 
     const window = await electronApp.firstWindow();
     await window.waitForLoadState('domcontentloaded');
-    await page.click("text=What's for dinner?");
+    await window.click("text=What's for dinner?");
 
     // Wait for conversation to load
-    await expect(page.locator('h1')).toContainText("What's for dinner?");
+    await expect(window.locator('h1')).toContainText("What's for dinner?");
 
     // Simulate conversation: Answer energy level question
-    const input = page.locator('input[placeholder*="Tell me about your day"]');
-    const sendButton = page.locator('button:has-text("Send")');
+    const input = window.locator('input[placeholder*="Tell me about your day"]');
+    const sendButton = window.locator('button:has-text("Send")');
 
     await input.fill("I'm feeling pretty tired tonight");
     await sendButton.click();
 
     // Wait for AI response
-    await expect(page.locator('text=/time do you have/i')).toBeVisible({ timeout: 10000 });
+    await expect(window.locator('text=/time do you have/i')).toBeVisible({ timeout: 10000 });
 
     // Simulate conversation: Answer time question
     await input.fill('About 30 minutes');
@@ -35,15 +35,15 @@ test.describe('Conversation to Suggestions Flow', () => {
 
     // Wait for AI to transition and show suggestions
     // This should happen automatically when AI detects sufficient context
-    await expect(page.locator('text=/Here are some recipes/i')).toBeVisible({ timeout: 15000 });
+    await expect(window.locator('text=/Here are some recipes/i')).toBeVisible({ timeout: 15000 });
 
     // Verify: Recipe cards are displayed
-    await expect(page.locator('[data-testid="recipe-suggestion-card"]').first()).toBeVisible({
+    await expect(window.locator('[data-testid="recipe-suggestion-card"]').first()).toBeVisible({
       timeout: 5000,
     });
 
     // Verify: Recipe card has expected elements
-    const firstCard = page.locator('[data-testid="recipe-suggestion-card"]').first();
+    const firstCard = window.locator('[data-testid="recipe-suggestion-card"]').first();
     await expect(firstCard.locator('h3')).toBeVisible(); // Recipe title
     await expect(firstCard.locator('text=/min/i')).toBeVisible(); // Time indicator
     await expect(firstCard.locator('button:has-text("Select this recipe")')).toBeVisible();

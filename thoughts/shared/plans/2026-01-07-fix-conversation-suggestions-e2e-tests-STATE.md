@@ -1,8 +1,8 @@
 # State: Fix Conversation Suggestions E2E Test Failures
 
 **Plan**: thoughts/shared/plans/2026-01-07-fix-conversation-suggestions-e2e-tests.md  
-**Current Task**: PLAN-003  
-**Completed Tasks**: PLAN-001, PLAN-002
+**Current Task**: PLAN-004  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
 
 ## Quick Verification
 
