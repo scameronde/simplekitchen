@@ -1,8 +1,8 @@
 # State: Conversation Memory Loss Fix
 
 **Plan**: thoughts/shared/plans/2026-01-08-Conversation-Memory-Fix.md  
-**Current Task**: PLAN-001  
-**Completed Tasks**: (none yet)
+**Current Task**: PLAN-002  
+**Completed Tasks**: PLAN-001
 
 ## Quick Verification
 
@@ -50,3 +50,12 @@ NOT the old broken format:
 - Phases: Implementation (PLAN-001 to PLAN-005), Testing (PLAN-006), Manual Verification (PLAN-007)
 - Critical files: `src/main/conversation/prompts.ts`, `src/main/conversation/conversation-service.ts`
 - No breaking changes expected
+
+## Progress Log
+
+- **PLAN-001 (✅ Complete)**: Created buildConversationMessages() function in prompts.ts
+  - Returns OpenAI-compatible message array format
+  - Includes full conversation history (no limit)
+  - Embeds dietary restrictions and user context in system message
+  - TypeScript compilation verified
+  - Commit: 1e6ffe0
