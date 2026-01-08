@@ -1,8 +1,8 @@
 # State: Conversation Memory Loss Fix
 
 **Plan**: thoughts/shared/plans/2026-01-08-Conversation-Memory-Fix.md  
-**Current Task**: PLAN-003  
-**Completed Tasks**: PLAN-001, PLAN-002
+**Current Task**: PLAN-004  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003
 
 ## Quick Verification
 
@@ -67,3 +67,12 @@ NOT the old broken format:
   - Removed unused GATHERING_SYSTEM_PROMPT import
   - TypeScript compilation verified
   - Commit: 8a5b01d
+
+- **PLAN-003 (✅ Complete)**: Updated tests to verify message array format
+  - Added verification in "should extract energy level" test
+  - Added verification in "should transition to suggesting" test
+  - Added new comprehensive test "should send full conversation history to OpenAI"
+  - Fixed conversation service to re-fetch session after adding user message
+  - Fixed test mocks to properly update session messages array
+  - All 16 tests passing
+  - Commit: b631d49
