@@ -267,7 +267,7 @@ export async function processRefinement(sessionId: string): Promise<SuggestionRe
     // Step 11: Return success result
     return {
       success: true,
-      suggestions: result,
+      suggestions: result.suggestions,
       aiMessage,
     };
   } catch (error) {
