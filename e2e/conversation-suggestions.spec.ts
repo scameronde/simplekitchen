@@ -85,5 +85,7 @@ test.describe('Conversation to Suggestions Flow', () => {
     // Verify: Conversation continues normally
     const aiMessages = window.locator('.bg-gray-200');
     await expect(aiMessages).toHaveCount(1); // Only one AI message so far
+
+    await electronApp.close();
   });
 });
