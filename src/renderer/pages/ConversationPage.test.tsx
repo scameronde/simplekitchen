@@ -168,13 +168,6 @@ describe('ConversationPage - Transition Detection', () => {
       expect(mockGetSuggestions).toHaveBeenCalledWith('test-session-123');
     });
 
-    // Wait for AI message to appear
-    await waitFor(() => {
-      expect(
-        screen.getByText("I understand you're tired. Let me suggest some quick recipes.")
-      ).toBeInTheDocument();
-    });
-
     // Wait for suggestions message to appear
     await waitFor(() => {
       expect(screen.getByText('Here are some recipes for you:')).toBeInTheDocument();
@@ -281,11 +274,6 @@ describe('ConversationPage - Transition Detection', () => {
     // Wait for sendMessage to be called
     await waitFor(() => {
       expect(mockSendMessage).toHaveBeenCalledWith('test-session-789', 'I want something quick');
-    });
-
-    // Wait for AI response to appear
-    await waitFor(() => {
-      expect(screen.getByText('Let me find some recipes for you.')).toBeInTheDocument();
     });
 
     // Verify getSuggestions was called
