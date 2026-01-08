@@ -114,6 +114,44 @@ export function updateSessionSuggestedRecipes(sessionId: string, recipeIds: stri
 }
 
 /**
+ * Sets the transition message for the session.
+ * Used when shouldTransition=true to store AI's contextual intro.
+ * @param sessionId - The session ID to update
+ * @param message - The transition message to store
+ * @throws Error if session not found
+ */
+export function setSessionTransitionMessage(sessionId: string, message: string): void {
+  const session = activeSessions.get(sessionId);
+  if (!session) throw new Error(`Session ${sessionId} not found`);
+
+  session.transitionMessage = message;
+  session.lastActivity = new Date();
+}
+
+/**
+ * Retrieves the stored transition message from the session.
+ * @param sessionId - The session ID to retrieve from
+ * @returns The transition message or undefined if not set or session not found
+ */
+export function getSessionTransitionMessage(sessionId: string): string | undefined {
+  const session = activeSessions.get(sessionId);
+  return session?.transitionMessage;
+}
+
+/**
+ * Clears the transition message from the session after it has been consumed.
+ * @param sessionId - The session ID to update
+ * @throws Error if session not found
+ */
+export function clearSessionTransitionMessage(sessionId: string): void {
+  const session = activeSessions.get(sessionId);
+  if (!session) throw new Error(`Session ${sessionId} not found`);
+
+  session.transitionMessage = undefined;
+  session.lastActivity = new Date();
+}
+
+/**
  * Adds a rejected recipe to the session's rejection list.
  * Records recipe ID and optional reason for rejection.
  * Increments refinement count to track refinement cycles.
