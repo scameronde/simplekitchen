@@ -18,6 +18,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { runMigrations, closeDatabase } from './database/index.js';
+import { seedDatabase } from './database/seed-data.js';
 import { registerAllHandlers } from './ipc/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -58,10 +59,18 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Initialize database before creating window
   console.log('Initializing database...');
   runMigrations();
+
+  // Seed database in E2E test mode
+  if (process.env.E2E_TEST === 'true') {
+    console.log('E2E mode: Seeding database...');
+    await seedDatabase(10);
+    console.log('E2E mode: Database seeded');
+  }
+
   console.log('Database ready');
 
   // Register IPC handlers before creating window
