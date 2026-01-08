@@ -205,14 +205,9 @@ export function ConversationPage() {
       messageContent
     );
     if (result.success && result.aiMessage) {
-      dispatch({
-        type: 'add_ai_message',
-        content: result.aiMessage,
-        timestamp: result.timestamp || new Date(),
-      });
-
       // Check if AI wants to show suggestions
       if (result.shouldTransition && state.sessionId) {
+        // Skip adding the conversational message - it will be shown with recipes
         dispatch({ type: 'set_loading', isLoading: true });
 
         try {
@@ -243,6 +238,13 @@ export function ConversationPage() {
         } finally {
           dispatch({ type: 'set_loading', isLoading: false });
         }
+      } else {
+        // Not transitioning yet - display the conversational message
+        dispatch({
+          type: 'add_ai_message',
+          content: result.aiMessage,
+          timestamp: result.timestamp || new Date(),
+        });
       }
     } else {
       dispatch({ type: 'set_error', error: result.error || 'Failed to send message' });
