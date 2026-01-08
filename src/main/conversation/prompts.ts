@@ -2,6 +2,10 @@
  * @module conversation-prompts
  * Prompt templates for AI-driven conversational recipe support.
  * Provides system prompts and prompt builders for gathering user context.
+ *
+ * NOTE: buildConversationPrompt() is deprecated. Use buildConversationMessages() instead.
+ * The old function formatted conversations as text strings, breaking OpenAI's conversational
+ * context. The new function returns properly structured message arrays.
  */
 
 import type { ConversationSession, UserContext } from '../../shared/types/conversation.js';
@@ -139,6 +143,10 @@ Ranking:
 - Return rankings in descending order by score (best matches first)`;
 
 /**
+ * @deprecated Use buildConversationMessages() instead. This function formats
+ * conversation as a text string, which breaks OpenAI's conversational context.
+ * Kept temporarily for reference only. Will be removed in future version.
+ *
  * Build a prompt for the AI that includes conversation history and user context.
  * Formats the last 5 messages, current captured context, and dietary restrictions
  * into a structured prompt for the AI to process.

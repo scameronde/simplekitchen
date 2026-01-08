@@ -1,8 +1,8 @@
 # State: Conversation Memory Loss Fix
 
 **Plan**: thoughts/shared/plans/2026-01-08-Conversation-Memory-Fix.md  
-**Current Task**: PLAN-005  
-**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004
+**Current Task**: PLAN-006  
+**Completed Tasks**: PLAN-001, PLAN-002, PLAN-003, PLAN-004, PLAN-005
 
 ## Quick Verification
 
@@ -86,4 +86,14 @@ NOT the old broken format:
   - Test 4: Verifies no message limit (all 10+ messages preserved)
   - All 20 tests passing (4 new + 16 existing)
   - TypeScript compilation verified with strict null checks
+  - Commit: [pending]
+
+- **PLAN-005 (✅ Complete)**: Deprecated old buildConversationPrompt() function
+  - Added deprecation notice to file header explaining why function is deprecated
+  - Added @deprecated JSDoc tag with clear migration guidance
+  - Explained function "breaks OpenAI's conversational context" by formatting as text
+  - Kept function temporarily for reference (not removed)
+  - Verified no production code uses deprecated function (only test files)
+  - All 20 tests still passing with deprecated function
+  - TypeScript compilation verified (no errors)
   - Commit: [pending]
