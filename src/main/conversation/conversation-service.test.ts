@@ -60,6 +60,14 @@ describe('processConversationTurn', () => {
     vi.clearAllMocks();
     // Set dummy API key to allow tests to reach mocked OpenAI client
     process.env.OPENAI_API_KEY = 'test-api-key';
+
+    // Make mockUpdateSessionMessages actually update the session
+    mockUpdateSessionMessages.mockImplementation((sessionId, message) => {
+      const session = mockGetSession(sessionId);
+      if (session) {
+        session.messages.push(message);
+      }
+    });
   });
 
   afterEach(() => {
@@ -127,6 +135,14 @@ describe('processConversationTurn', () => {
       content: 'Got it! How much time do you have?',
       timestamp: expect.any(Date),
     });
+
+    // Verify OpenAI received message array (not string prompt)
+    expect(mockParse).toHaveBeenCalledTimes(1);
+    const openAICallArgs = mockParse.mock.calls[0]?.[0];
+    expect(openAICallArgs.messages).toBeInstanceOf(Array);
+    expect(openAICallArgs.messages.length).toBeGreaterThan(1); // System + at least 1 user message
+    expect(openAICallArgs.messages[0]?.role).toBe('system');
+    expect(openAICallArgs.messages[1]?.role).toBe('user');
   });
 
   it('should transition to suggesting when context complete', async () => {
@@ -191,6 +207,68 @@ describe('processConversationTurn', () => {
 
     // Verify both messages were added
     expect(mockUpdateSessionMessages).toHaveBeenCalledTimes(2);
+
+    // Verify OpenAI received full conversation history
+    const openAICallArgs = mockParse.mock.calls[0]?.[0];
+    expect(openAICallArgs.messages.length).toBeGreaterThan(2); // System + previous messages + new message
+  });
+
+  it('should send full conversation history to OpenAI', async () => {
+    // Mock session with 3 previous turns
+    const mockSession: ConversationSession = {
+      sessionId,
+      messages: [
+        { role: 'user', content: 'I want chicken', timestamp: new Date() },
+        { role: 'assistant', content: 'How much time?', timestamp: new Date() },
+        { role: 'user', content: 'I have 30 minutes', timestamp: new Date() },
+      ],
+      userContext: { energyLevel: 'low', availableTime: 30 },
+      suggestedRecipes: [],
+      rejectedRecipes: [],
+      state: 'gathering',
+      turnCount: 3,
+      refinementCount: 0,
+      turnsInCurrentState: 3,
+      createdAt: new Date(),
+      lastActivity: new Date(),
+    };
+    mockGetSession.mockReturnValue(mockSession);
+    mockGetDietaryProfile.mockResolvedValue({
+      id: 1,
+      hardRestrictions: [],
+      preferences: [],
+      explicitInclusions: [],
+      explicitExclusions: [],
+      updatedAt: new Date(),
+    });
+    mockParse.mockResolvedValue({
+      choices: [
+        {
+          message: {
+            parsed: {
+              aiMessage: 'Got it!',
+              extractedContext: {},
+              shouldTransition: true,
+            },
+          },
+        },
+      ],
+    });
+
+    await processConversationTurn(sessionId, 'Any suggestions?');
+
+    // Verify OpenAI received all 3 previous messages + new message
+    const openAICallArgs = mockParse.mock.calls[0]?.[0];
+    expect(openAICallArgs.messages.length).toBe(5); // system + 3 previous + 1 new
+    expect(openAICallArgs.messages[0]?.role).toBe('system');
+    expect(openAICallArgs.messages[1]?.role).toBe('user');
+    expect(openAICallArgs.messages[1]?.content).toBe('I want chicken');
+    expect(openAICallArgs.messages[2]?.role).toBe('assistant');
+    expect(openAICallArgs.messages[2]?.content).toBe('How much time?');
+    expect(openAICallArgs.messages[3]?.role).toBe('user');
+    expect(openAICallArgs.messages[3]?.content).toBe('I have 30 minutes');
+    expect(openAICallArgs.messages[4]?.role).toBe('user');
+    expect(openAICallArgs.messages[4]?.content).toBe('Any suggestions?');
   });
 
   it('should handle AI service failure gracefully', async () => {

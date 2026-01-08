@@ -78,8 +78,10 @@ export async function processConversationTurn(
     // Step 3: Fetch dietary profile
     const dietaryProfile = await getDietaryProfile();
 
-    // Step 4: Build message array with conversation history
-    const messages = buildConversationMessages(session, dietaryProfile);
+    // Step 4: Re-fetch session with updated messages and build message array
+    const updatedSession = getSession(sessionId);
+    if (!updatedSession) throw new Error(`Session ${sessionId} not found`);
+    const messages = buildConversationMessages(updatedSession, dietaryProfile);
 
     // Step 5: Call OpenAI API with full conversation history
     const client = getOpenAIClient();
