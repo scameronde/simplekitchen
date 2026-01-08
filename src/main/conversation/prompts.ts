@@ -166,6 +166,47 @@ export function buildConversationPrompt(
 }
 
 /**
+ * Build an OpenAI-compatible message array for conversation with enhanced context.
+ * Constructs a system message with dietary restrictions and user context, followed by
+ * the full conversation history. Returns messages in OpenAI's expected format.
+ *
+ * @param session - Current conversation session with messages and context
+ * @param dietaryProfile - User's dietary restrictions and preferences
+ * @returns Array of message objects with role ('system' | 'user' | 'assistant') and content
+ */
+export function buildConversationMessages(
+  session: ConversationSession,
+  dietaryProfile: DietaryProfile
+): Array<{ role: 'system' | 'user' | 'assistant'; content: string }> {
+  // Build dietary restrictions summary
+  const restrictions = dietaryProfile.hardRestrictions.join(', ') || 'None';
+
+  // Build user context summary
+  const contextSummary = JSON.stringify(session.userContext, null, 2);
+
+  // Create enhanced system prompt with current context
+  const enhancedSystemPrompt = `${GATHERING_SYSTEM_PROMPT}
+
+# Current User Context
+${contextSummary}
+
+# Dietary Restrictions
+${restrictions}`;
+
+  // Create system message
+  const systemMessage = { role: 'system' as const, content: enhancedSystemPrompt };
+
+  // Map conversation messages to OpenAI format
+  const conversationMessages = session.messages.map(msg => ({
+    role: msg.role,
+    content: msg.content,
+  }));
+
+  // Return system message followed by full conversation history
+  return [systemMessage, ...conversationMessages];
+}
+
+/**
  * Build a prompt for AI recipe ranking that includes user context and candidate recipes.
  * Formats user constraints, dietary restrictions, and recipe details into a structured
  * prompt for the AI to evaluate and rank recipes.
