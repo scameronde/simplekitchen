@@ -11,6 +11,7 @@ import {
   updateSessionMessages,
   updateSessionState,
   updateSessionSuggestedRecipes,
+  setSessionTransitionMessage,
 } from './session-manager.js';
 import { getDietaryProfile } from '../database/dal/dietary-profile.js';
 import { buildConversationMessages } from './prompts.js';
@@ -106,7 +107,12 @@ export async function processConversationTurn(
       timestamp: new Date(),
     });
 
-    // Step 8: Return parsed result
+    // Step 8: If transitioning, store the AI message for use in transitionToSuggesting()
+    if (parsed.shouldTransition) {
+      setSessionTransitionMessage(sessionId, parsed.aiMessage);
+    }
+
+    // Step 9: Return parsed result
     return parsed;
   } catch (error) {
     // Log error for debugging
