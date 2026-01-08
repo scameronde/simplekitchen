@@ -1,8 +1,8 @@
 # State: E2E Recipe Viewing Test Fix
 
 **Plan**: thoughts/shared/plans/2026-01-07-e2e-recipe-viewing-test-fix.md  
-**Current Task**: PLAN-001  
-**Completed Tasks**: (none yet)
+**Current Task**: PLAN-002  
+**Completed Tasks**: PLAN-001
 
 ## Quick Verification
 
@@ -28,3 +28,5 @@ npm run build
 - Plan created: 2026-01-07
 - Total tasks: 4
 - Phases: Create constants, Update UI, Verify tests, Build verification
+- PLAN-001 completed: Created src/shared/constants/cookware-types.ts
+
