@@ -1,8 +1,8 @@
 # State: Conversation E2E Mocks Implementation
 
 **Plan**: thoughts/shared/plans/2026-01-08-conversation-e2e-mocks.md  
-**Current Task**: PLAN-002  
-**Completed Tasks**: PLAN-001
+**Current Task**: PLAN-003  
+**Completed Tasks**: PLAN-001, PLAN-002
 
 ## Quick Verification
 
@@ -36,12 +36,13 @@ npm run dev
 ## Files to Create
 
 - [x] `src/main/conversation/conversation-service.mock.ts` (~119 lines) - PLAN-001
-- [ ] `src/main/conversation/recipe-ranker.mock.ts` (~50-80 lines)
+- [x] `src/main/conversation/recipe-ranker.mock.ts` (~197 lines) - PLAN-002
 
 ## Files to Modify
 
-- [ ] `src/main/ipc/conversation-handlers.ts` (add E2E detection)
-- [ ] `src/main/database/seed.ts` (possibly, if recipe IDs don't exist)
+- [ ] `src/main/conversation/conversation-service.mock.ts` (add refinement function) - PLAN-003
+- [ ] `src/main/ipc/conversation-handlers.ts` (add E2E detection) - PLAN-004
+- [ ] `src/main/database/seed-data.ts` (possibly, if recipe IDs don't exist)
 - [ ] `e2e/conversation-suggestions.spec.ts` (possibly, if assertions don't match)
 - [ ] `src/renderer/pages/ConversationPage.tsx` (optional, add data-testids)
 
@@ -57,3 +58,4 @@ npm run dev
 ## Progress Log
 
 - **2026-01-08**: PLAN-001 complete - Created mock conversation service with pattern matching and test signals
+- **2026-01-08**: PLAN-002 complete - Created mock recipe ranker with dynamic database queries
