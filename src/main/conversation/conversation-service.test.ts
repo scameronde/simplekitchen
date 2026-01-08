@@ -694,7 +694,7 @@ describe('transitionToSuggesting', () => {
     // Verify success
     expect(result.success).toBe(true);
     expect(result.suggestions).toBeDefined();
-    expect(result.suggestions?.suggestions).toHaveLength(3);
+    expect(result.suggestions).toHaveLength(3);
     expect(result.aiMessage).toBeDefined();
     expect(result.error).toBeUndefined();
   });
@@ -772,10 +772,10 @@ describe('transitionToSuggesting', () => {
     expect(sessionAfter?.suggestedRecipes).toEqual(['recipe-1', 'recipe-2', 'recipe-3']);
 
     // Also verify in result
-    expect(result.suggestions?.suggestions).toHaveLength(3);
-    expect(result.suggestions?.suggestions[0]?.recipeId).toBe('recipe-1');
-    expect(result.suggestions?.suggestions[1]?.recipeId).toBe('recipe-2');
-    expect(result.suggestions?.suggestions[2]?.recipeId).toBe('recipe-3');
+    expect(result.suggestions).toHaveLength(3);
+    expect(result.suggestions?.[0]?.recipeId).toBe('recipe-1');
+    expect(result.suggestions?.[1]?.recipeId).toBe('recipe-2');
+    expect(result.suggestions?.[2]?.recipeId).toBe('recipe-3');
   });
 
   it('should return AI message and suggestions in result', async () => {
@@ -795,10 +795,10 @@ describe('transitionToSuggesting', () => {
       "Great! Based on your context, here are some recipes I think you'll love:"
     );
     expect(result.suggestions).toBeDefined();
-    expect(result.suggestions?.suggestions).toHaveLength(3);
+    expect(result.suggestions).toHaveLength(3);
 
     // Verify suggestions have required fields
-    const firstSuggestion = result.suggestions?.suggestions[0];
+    const firstSuggestion = result.suggestions?.[0];
     expect(firstSuggestion?.recipeId).toBe('recipe-1');
     expect(firstSuggestion?.relevanceScore).toBe(95);
     expect(firstSuggestion?.reasoning).toBe('Perfect for low energy, quick cook time');

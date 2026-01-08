@@ -44,7 +44,7 @@ function getOpenAIClient(): OpenAI {
  */
 export interface SuggestionResult {
   success: boolean;
-  suggestions?: RecipeSuggestionOutput;
+  suggestions?: RecipeSuggestionOutput['suggestions'];
   aiMessage?: string;
   error?: string;
 }
