@@ -322,6 +322,7 @@ export function ConversationPage() {
               {/* Regular message bubble */}
               <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
+                  data-testid={msg.role === 'user' ? 'user-message' : 'ai-message'}
                   className={`max-w-[70%] px-4 py-2 rounded-lg ${
                     msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'
                   }`}
@@ -372,7 +373,10 @@ export function ConversationPage() {
           ))}
           {state.isLoading && (
             <div className="flex justify-start">
-              <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg">
+              <div
+                data-testid="ai-loading"
+                className="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg"
+              >
                 <p className="italic">AI is thinking...</p>
               </div>
             </div>

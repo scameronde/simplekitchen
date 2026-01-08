@@ -35,7 +35,7 @@ test.describe('Conversation to Suggestions Flow', () => {
 
     // Wait for AI to transition and show suggestions
     // This should happen automatically when AI detects sufficient context
-    await expect(window.locator('text=/Here are some recipes/i')).toBeVisible({ timeout: 15000 });
+    await expect(window.locator('text=/quick and easy recipes/i')).toBeVisible({ timeout: 15000 });
 
     // Verify: Recipe cards are displayed
     await expect(window.locator('[data-testid="recipe-suggestion-card"]').first()).toBeVisible({
@@ -45,7 +45,7 @@ test.describe('Conversation to Suggestions Flow', () => {
     // Verify: Recipe card has expected elements
     const firstCard = window.locator('[data-testid="recipe-suggestion-card"]').first();
     await expect(firstCard.locator('h3')).toBeVisible(); // Recipe title
-    await expect(firstCard.locator('text=/min/i')).toBeVisible(); // Time indicator
+    await expect(firstCard.locator('text=/🕐.*min/i')).toBeVisible(); // Time indicator
     await expect(firstCard.locator('button:has-text("Select this recipe")')).toBeVisible();
     await expect(firstCard.locator('button:has-text("Not this one")')).toBeVisible();
 
@@ -77,13 +77,15 @@ test.describe('Conversation to Suggestions Flow', () => {
     await sendButton.click();
 
     // Wait for AI response asking for more info
-    await expect(window.locator('.bg-gray-200').last()).toBeVisible({ timeout: 10000 });
+    await expect(window.locator('[data-testid="ai-message"]').last()).toBeVisible({
+      timeout: 10000,
+    });
 
     // Verify: NO recipe suggestions appear (AI still gathering context)
     await expect(window.locator('[data-testid="recipe-suggestion-card"]')).not.toBeVisible();
 
     // Verify: Conversation continues normally
-    const aiMessages = window.locator('.bg-gray-200');
+    const aiMessages = window.locator('[data-testid="ai-message"]');
     await expect(aiMessages).toHaveCount(1); // Only one AI message so far
 
     await electronApp.close();
