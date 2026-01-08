@@ -17,7 +17,7 @@ test.describe('Conversation to Suggestions Flow', () => {
     await window.click("text=What's for dinner?");
 
     // Wait for conversation to load
-    await expect(window.locator('h1')).toContainText("What's for dinner?");
+    await expect(window.getByRole('heading', { name: "What's for dinner?" })).toBeVisible();
 
     // Simulate conversation: Answer energy level question
     const input = window.locator('input[placeholder*="Tell me about your day"]');
@@ -67,7 +67,7 @@ test.describe('Conversation to Suggestions Flow', () => {
     await window.click("text=What's for dinner?");
 
     // Wait for conversation to load
-    await expect(window.locator('h1')).toContainText("What's for dinner?");
+    await expect(window.getByRole('heading', { name: "What's for dinner?" })).toBeVisible();
 
     // Send a vague message
     const input = window.locator('input[placeholder*="Tell me about your day"]');
