@@ -96,7 +96,7 @@ test.describe('Performance Testing with Large Dataset', () => {
     const cookwareFilterStart = performance.now();
 
     // Select one-pan cookware
-    await window.check('label:has-text("one-pan")');
+    await window.check('label:has-text("One Pan")');
 
     // Apply filters
     await window.click('button:has-text("Apply Filters")');
@@ -158,7 +158,7 @@ test.describe('Performance Testing with Large Dataset', () => {
     await maxSlider.fill('45');
 
     // Select cookware
-    await window.check('label:has-text("one-pan")');
+    await window.check('label:has-text("One Pan")');
 
     // Select dietary tag
     await window.check('label:has-text("Gluten-Free")');
@@ -194,7 +194,7 @@ test.describe('Performance Testing with Large Dataset', () => {
     await window.waitForSelector('[data-testid="recipe-card"]', { timeout: 5000 });
 
     // Quickly toggle multiple filters
-    await window.check('label:has-text("one-pot")');
+    await window.check('label:has-text("One Pot")');
     await window.click('button:has-text("Apply Filters")');
     await window.waitForSelector('[data-testid="recipe-card"]', { timeout: 5000 });
 
@@ -202,7 +202,7 @@ test.describe('Performance Testing with Large Dataset', () => {
     await window.click('button:has-text("Apply Filters")');
     await window.waitForTimeout(100); // Small delay for UI update
 
-    await window.uncheck('label:has-text("one-pot")');
+    await window.uncheck('label:has-text("One Pot")');
     await window.click('button:has-text("Apply Filters")');
     await window.waitForTimeout(100);
 
