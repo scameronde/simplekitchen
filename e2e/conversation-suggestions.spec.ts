@@ -2,9 +2,18 @@ import { test, expect } from '@playwright/test';
 import { _electron as electron } from 'playwright';
 
 test.describe('Conversation to Suggestions Flow', () => {
-  test('should display recipe suggestions after conversation', async ({ page }) => {
-    // Navigate to conversation page
-    await page.goto('/');
+  test('should display recipe suggestions after conversation', async () => {
+    const electronApp = await electron.launch({
+      args: ['.'],
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        E2E_TEST: 'true',
+      },
+    });
+
+    const window = await electronApp.firstWindow();
+    await window.waitForLoadState('domcontentloaded');
     await page.click("text=What's for dinner?");
 
     // Wait for conversation to load
