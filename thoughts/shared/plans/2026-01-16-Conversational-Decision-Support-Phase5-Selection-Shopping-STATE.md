@@ -2,23 +2,23 @@
 date: 2026-01-16
 phase: 5
 epic-id: 'EPIC-002'
-status: pending
-current-task: none
+status: in-progress
+current-task: PLAN-002
 ---
 
 # State: Phase 5 - Selection & Shopping List
 
 **Plan**: `thoughts/shared/plans/2026-01-16-Conversational-Decision-Support-Phase5-Selection-Shopping.md`
 
-**Current Task**: None (awaiting start)
+**Current Task**: PLAN-002
 
-**Completed Tasks**: (none yet)
+**Completed Tasks**: PLAN-001
 
 ---
 
 ## Task Checklist
 
-- [ ] PLAN-001: Create cooking-sessions.ts DAL
+- [x] PLAN-001: Create cooking-sessions.ts DAL
 - [ ] PLAN-002: Create shopping-list.ts utility
 - [ ] PLAN-003: Add confirmSelection to conversation-service.ts
 - [ ] PLAN-004: Add IPC handler for conversation:confirm-selection
@@ -91,7 +91,7 @@ npm run dev
 
 ### Technical Criteria
 
-- [ ] cooking_sessions DAL functions work (create, getById, getRecent)
+- [x] cooking_sessions DAL functions work (create, getById, getRecent)
 - [ ] Shopping list generation extracts ingredients correctly
 - [ ] confirmSelection validates state and saves to DB
 - [ ] IPC handler conversation:confirm-selection works securely
@@ -135,13 +135,17 @@ npm run dev
 
 ## Implementation Notes
 
-(Implementor: Add notes here as you work through tasks)
+### PLAN-001 Completed ✅
+- Created src/main/database/dal/cooking-sessions.ts
+- Implemented 3 functions: createCookingSession, getCookingSessionById, getRecentCookingSessions
+- Follows established DAL pattern with Kysely
+- All type conversions (snake_case ↔ camelCase) implemented correctly
+- Typecheck passes
+- Commit: 0dfb3f3
 
 ---
 
 ## Blockers / Issues
-
-(Implementor: Document any blockers or deviations from plan)
 
 - None
 
@@ -149,4 +153,4 @@ npm run dev
 
 **Last Updated**: 2026-01-16
 
-**Status**: Pending (awaiting implementation start)
+**Status**: In Progress (Task PLAN-002 next)
